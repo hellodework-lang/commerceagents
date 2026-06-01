@@ -1355,6 +1355,16 @@ body {
 
 .log-line {
   margin-bottom: 4px;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: log-entry 0.3s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes log-entry {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .log-tag {

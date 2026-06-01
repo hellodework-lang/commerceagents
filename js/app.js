@@ -12,6 +12,7 @@
   function initElements() {
     el = {
       splash: document.getElementById('splash-screen'),
+      loadingLog: document.getElementById('loading-log'),
       navItems: document.querySelectorAll('.nav-item'),
       views: {
         dashboard: document.getElementById('view-dashboard'),
@@ -654,13 +655,30 @@
   // ----------------------------------------------------
 
   function startSplashSequence() {
+    const steps = [
+      { text: 'Syncing with WhatsApp webhooks...', delay: 500 },
+      { text: 'AI prompt automation engines online.', delay: 1400 }
+    ];
+
+    if (el.loadingLog) {
+      steps.forEach(step => {
+        setTimeout(() => {
+          const logLine = document.createElement('div');
+          logLine.className = 'log-line';
+          logLine.innerHTML = `<span class="log-tag">[SYS]</span> ${step.text}`;
+          el.loadingLog.appendChild(logLine);
+          el.loadingLog.scrollTop = el.loadingLog.scrollHeight;
+        }, step.delay);
+      });
+    }
+
     // Fade out splash after delay
     setTimeout(() => {
       el.splash.classList.add('fade-out');
       setTimeout(() => {
         el.splash.style.display = 'none';
       }, 600);
-    }, 2400);
+    }, 2500);
   }
 
   // ----------------------------------------------------
