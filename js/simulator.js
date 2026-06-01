@@ -56,11 +56,11 @@
   };
 
   function simulateIncomingMessage(templateIndex) {
-    const { store, MOCK_TEMPLATES } = window.DashboardState;
+    const { store: appStore, MOCK_TEMPLATES } = window.DashboardState;
     const template = MOCK_TEMPLATES[templateIndex];
     if (!template) return;
 
-    const client = store.getState().clients.find(c => c.id === template.clientId);
+    const client = appStore.getState().clients.find(c => c.id === template.clientId);
     if (!client) return;
 
     // 1. Add the message to chat
@@ -83,10 +83,10 @@
     playSynthSound('incoming');
 
     // Push message to chat history
-    store.addMessage(client.phone, newMessage);
+    appStore.addMessage(client.phone, newMessage);
 
     // Set AI Generation state to active
-    store.updateState({
+    appStore.updateState({
       aiGenerationState: {
         isParsing: true,
         parsedText: "Listening & identifying language...",
@@ -99,13 +99,13 @@
     // Play scanning synthesizer sweep
     setTimeout(() => {
       playSynthSound('ai-start');
-      store.updateState({
+      appStore.updateState({
         aiGenerationState: {
           isParsing: true,
           parsedText: `Identified Language: ${template.language}. Extracting creative requirement: "${template.userMessage}"...`,
           isGenerating: true,
           generatedPrompt: null,
-          activeMessageId: store.getState().aiGenerationState.activeMessageId
+          activeMessageId: appStore.getState().aiGenerationState.activeMessageId
         }
       });
     }, 1200);
@@ -125,10 +125,10 @@
       };
 
       // Save generated prompt under client details and store
-      store.updateClientPromptHistory(client.phone, finalPrompt);
+      appStore.updateClientPromptHistory(client.phone, finalPrompt);
       playSynthSound('ai-success');
 
-      store.updateState({
+      appStore.updateState({
         aiGenerationState: {
           isParsing: false,
           parsedText: "",

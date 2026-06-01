@@ -3,7 +3,7 @@
   // Loaded globally without ES6 modules to support local file:// execution
 
   // Retrieve state and simulator objects from globals
-  const { store, MOCK_TEMPLATES } = window.DashboardState;
+  const { store: appStore, MOCK_TEMPLATES } = window.DashboardState;
   const { simulateIncomingMessage } = window.DashboardSimulator;
 
   // Elements Cache
@@ -382,7 +382,7 @@
         const phone = e.target.getAttribute('data-client-phone');
         const projId = e.target.getAttribute('data-project-id');
         const newStatus = e.target.value;
-        store.updateProjectStatus(phone, projId, newStatus);
+        appStore.updateProjectStatus(phone, projId, newStatus);
       });
     });
   }
@@ -441,7 +441,7 @@
 
   function handleViewSwitch(viewName) {
     // Update state
-    store.updateState({ activeView: viewName });
+    appStore.updateState({ activeView: viewName });
   }
 
   function updateActiveViewUI(activeView) {
@@ -540,8 +540,8 @@
       const card = e.target.closest('.chat-list-card');
       if (card) {
         const phone = card.getAttribute('data-phone');
-        store.updateState({ activeChatPhone: phone });
-        store.clearUnreads(phone);
+        appStore.updateState({ activeChatPhone: phone });
+        appStore.clearUnreads(phone);
       }
     });
 
@@ -552,11 +552,11 @@
         const row = e.target.closest('.recent-prompt-row');
         if (row) {
           const phone = row.getAttribute('data-phone');
-          store.updateState({
+          appStore.updateState({
             activeView: 'inbox',
             activeChatPhone: phone
           });
-          store.clearUnreads(phone);
+          appStore.clearUnreads(phone);
         }
       });
     }
@@ -566,8 +566,8 @@
       const row = e.target.closest('.client-profile-row');
       if (row) {
         const index = parseInt(row.getAttribute('data-index'), 10);
-        const client = store.getState().clients[index];
-        store.updateState({ activeChatPhone: client.phone });
+        const client = appStore.getState().clients[index];
+        appStore.updateState({ activeChatPhone: client.phone });
       }
     });
 
@@ -613,13 +613,13 @@
         const idx = parseInt(triggerBtn.getAttribute('data-index'), 10);
         // Auto-switch to inbox view and client chat so they see it happen
         const template = MOCK_TEMPLATES[idx];
-        const client = store.getState().clients.find(c => c.id === template.clientId);
+        const client = appStore.getState().clients.find(c => c.id === template.clientId);
         
-        store.updateState({
+        appStore.updateState({
           activeView: 'inbox',
           activeChatPhone: client.phone
         });
-        store.clearUnreads(client.phone);
+        appStore.clearUnreads(client.phone);
         
         // Trigger message flow simulation
         simulateIncomingMessage(idx);
@@ -634,7 +634,7 @@
 
   function setupSimulatorControls() {
     el.simulatorTemplates.innerHTML = MOCK_TEMPLATES.map((t, idx) => {
-      const client = store.getState().clients.find(c => c.id === t.clientId);
+      const client = appStore.getState().clients.find(c => c.id === t.clientId);
       return `
         <div class="simulator-card glass-panel">
           <div class="sim-header">
@@ -691,14 +691,14 @@
     initElements();
     
     // Set initial client in clients database detail pane
-    if (store.getState().clients.length > 0) {
-      const activePhone = store.getState().activeChatPhone;
-      const initialClient = store.getState().clients.find(c => c.phone === activePhone) || store.getState().clients[0];
+    if (appStore.getState().clients.length > 0) {
+      const activePhone = appStore.getState().activeChatPhone;
+      const initialClient = appStore.getState().clients.find(c => c.phone === activePhone) || appStore.getState().clients[0];
       renderClientDetails(initialClient);
     }
 
     // Subscribe UI Renderers to State Changes
-    store.subscribe((state) => {
+    appStore.subscribe((state) => {
       updateActiveViewUI(state.activeView);
       
       if (state.activeView === 'dashboard') {
@@ -720,7 +720,7 @@
     setupSimulatorControls();
 
     // Trigger initial dashboard rendering
-    renderDashboard(store.getState());
+    renderDashboard(appStore.getState());
 
     // Start initialization splash screen
     startSplashSequence();
