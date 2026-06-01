@@ -1311,7 +1311,7 @@ body {
   opacity: 0;
   clip-path: circle(0% at 50% 50%);
   filter: drop-shadow(0 0 0px transparent);
-  animation: logo-radial-reveal 1s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+  animation: logo-radial-reveal 1.8s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
 }
 
 @keyframes logo-radial-reveal {
@@ -1348,7 +1348,7 @@ body {
   opacity: 0;
   letter-spacing: 30px;
   filter: blur(6px);
-  animation: title-converge 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.3s forwards;
+  animation: title-converge 1.6s cubic-bezier(0.22, 1, 0.36, 1) 2.6s forwards;
 }
 
 @keyframes title-converge {
@@ -1379,7 +1379,7 @@ body {
 .splash-subtitle--reveal {
   opacity: 0;
   transform: translateY(8px);
-  animation: subtitle-fade 0.7s ease 2.3s forwards;
+  animation: subtitle-fade 1.2s ease 4.4s forwards;
 }
 
 @keyframes subtitle-fade {
@@ -1405,7 +1405,7 @@ body {
 
 .splash-bar--reveal {
   opacity: 0;
-  animation: bar-fade 0.5s ease 2.9s forwards;
+  animation: bar-fade 0.8s ease 5.5s forwards;
 }
 
 @keyframes bar-fade {
@@ -1421,7 +1421,7 @@ body {
   width: 0%;
   background-color: var(--accent-red);
   box-shadow: 0 0 10px var(--accent-red);
-  animation: progress-fill 2.8s 3s forwards cubic-bezier(0.1, 0.8, 0.25, 1);
+  animation: progress-fill 3.5s 6.2s forwards cubic-bezier(0.1, 0.8, 0.25, 1);
 }
 
 .splash-console {
