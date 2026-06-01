@@ -14,8 +14,8 @@
       },
       creativeDirection: "High-contrast photography, dynamic action shots, neon light trails, futuristic sportswear concepts, bold minimal overlays.",
       activeProjects: [
-        { id: "proj-1", name: "Air Max Pulse launch", status: "In Production", category: "Poster Design" },
-        { id: "proj-2", name: "Monsoon Runners social", status: "Pending Approval", category: "Social Media Campaign" }
+        { id: "proj-1", name: "Air Max Pulse launch", status: "In Production", category: "Poster Design", description: "Design high-energy promotional posters for the Air Max Pulse launch, incorporating bright red neon trails and motion-blurred runner silhouettes." },
+        { id: "proj-2", name: "Monsoon Runners social", status: "Pending Approval", category: "Social Media Campaign", description: "Social campaign focused on urban running in heavy rain. Requirements: overcast mood, wet asphalt reflection, and vibrant overlay details." }
       ],
       promptHistory: [
         {
@@ -25,6 +25,7 @@
           userMessage: "Bro, Air Max poster dynamic runner speed lines glowing red venum",
           generatedPrompt: "Dynamic action shot of a professional runner wearing Nike Air Max, motion blur speed lines, glowing red neon trails, volumetric dark atmospheric lighting, high-contrast sports photography, 8k resolution, cinematic style --ar 16:9 --style raw",
           status: "Completed",
+          mediaType: "image",
           media: "https://images.unsplash.com/photo-1502904582529-2479b7ee5981?auto=format&fit=crop&q=80&w=800"
         },
         {
@@ -34,6 +35,7 @@
           userMessage: "Need a minimalist typography design for just do it with red highlight",
           generatedPrompt: "Minimalist black poster featuring high-end typography 'JUST DO IT', bold futuristic font, glowing crimson red underline accent, dark studio backdrop, soft cinematic backlighting, high-fashion branding mockup --ar 4:5",
           status: "Completed",
+          mediaType: "image",
           media: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=800"
         }
       ]
@@ -50,7 +52,7 @@
       },
       creativeDirection: "Warm sunlight filters, cozy aesthetic setups, organic textures, elegant flatlays, minimalist typography, green-tinted shadows.",
       activeProjects: [
-        { id: "proj-3", name: "Filter Coffee Fusion campaign", status: "In Production", category: "Social Media Banner" }
+        { id: "proj-3", name: "Filter Coffee Fusion campaign", status: "In Production", category: "Social Media Banner", description: "Promoting South Indian Filter Coffee with warm wooden textures, cozy morning sunlight, scattered coffee beans, and traditional brass tumblers." }
       ],
       promptHistory: [
         {
@@ -60,7 +62,19 @@
           userMessage: "Cozy morning filter coffee flatlay with traditional brass tumbler and coffee beans, warm sun rays style",
           generatedPrompt: "Top-down flatlay of a traditional South Indian brass tumbler filled with hot frothy filter coffee, scattered coffee beans, set on a dark rustic wooden table next to green banana leaves, warm golden hour sunlight casting soft long shadows, editorial food photography, cozy inviting vibe --ar 1:1 --stylize 250",
           status: "Completed",
+          mediaType: "image",
           media: "https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&q=80&w=800"
+        },
+        {
+          id: "ph-3-audio",
+          date: "2026-05-28",
+          category: "Midjourney",
+          userMessage: "Voice Note: check filter coffee details prompt update cozy traditional theme",
+          generatedPrompt: "Aesthetic traditional South Indian kitchen window background, morning sunbeams, authentic brass coffee tumbler with rich brown filter coffee, cozy warm ambient lighting --ar 4:5",
+          status: "Completed",
+          mediaType: "audio",
+          media: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3",
+          duration: "0:12"
         }
       ]
     },
@@ -76,7 +90,7 @@
       },
       creativeDirection: "Saturated popping colors, close-up macro shots of melting cheese, retro pop-art style vectors, neon signage backgrounds, street-style poster design.",
       activeProjects: [
-        { id: "proj-4", name: "Ghost Pepper Burger launch", status: "Pending Manual Production", category: "Poster Design" }
+        { id: "proj-4", name: "Ghost Pepper Burger launch", status: "Pending Manual Production", category: "Poster Design", description: "Promote the ultra-spicy Ghost Pepper Cheese Burger. Focuses on macro cheese melting, dipping chili sauce, steam effects, and flashing retro neon signs." }
       ],
       promptHistory: [
         {
@@ -86,7 +100,18 @@
           userMessage: "Ghost pepper cheese burger neon splash poster",
           generatedPrompt: "Ultra close-up macro shot of a massive gourmet burger with melting cheddar cheese, dipping hot red ghost pepper sauce, crispy bacon, steam rising, set against a dark brick wall background illuminated by flashing red and yellow neon signs, high-contrast food commercial photography, highly detailed texture --ar 4:5 --v 6.0",
           status: "Completed",
+          mediaType: "image",
           media: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&q=80&w=800"
+        },
+        {
+          id: "ph-4-video",
+          date: "2026-05-27",
+          category: "Runway Gen-3",
+          userMessage: "Video Note: melting cheese pouring sauce on hamburger loop",
+          generatedPrompt: "Cinematic vertical video prompt: Slow-motion shot of warm melted cheddar cheese pouring over a premium grilled beef patty in a toasted sesame bun, close-up details, advertising style --ar 9:16 --v 6.0",
+          status: "Completed",
+          mediaType: "video",
+          media: "https://assets.mixkit.co/videos/preview/mixkit-pouring-sauce-on-a-hamburger-40057-large.mp4"
         }
       ]
     }
@@ -205,7 +230,7 @@
     constructor() {
       this.state = {
         clients: [...MOCK_CLIENTS],
-        activeView: "dashboard", // dashboard, inbox, clients, media
+        activeView: "dashboard", // dashboard, clients, media
         activeChatPhone: "+91 98765 43210",
         chats: JSON.parse(JSON.stringify(INITIAL_CHATS)), // deep copy initial chats
         recentPrompts: this.extractInitialPrompts(),
@@ -260,7 +285,8 @@
             id: "proj-" + Date.now(),
             name: newPrompt.projectTitle || "New AI Prompt Project",
             status: "Pending Manual Production",
-            category: newPrompt.category
+            category: newPrompt.category,
+            description: `Automated campaign brief generated from client request: "${newPrompt.userMessage}". Output style mapping targeted for ${newPrompt.category} production.`
           });
         } else {
           activeProj.status = "Pending Manual Production";
@@ -294,7 +320,7 @@
       this.state.chats[phone].push(msg);
 
       // If it's not the active chat, increment unread count
-      if (this.state.activeChatPhone !== phone || this.state.activeView !== "inbox") {
+      if (this.state.activeChatPhone !== phone || this.state.activeView !== "clients") {
         this.state.unreadCounts[phone] = (this.state.unreadCounts[phone] || 0) + 1;
       }
       this.notifyListeners();

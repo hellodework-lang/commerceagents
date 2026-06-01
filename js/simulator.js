@@ -127,7 +127,9 @@
         projectTitle: template.projectTitle,
         promptCategory: template.promptCategory,
         status: "Pending Manual Production",
-        media: (template.msgType === 'image' || template.msgType === 'video') ? newMessage.text : null
+        media: (template.msgType === 'image' || template.msgType === 'video' || template.msgType === 'audio') ? newMessage.text : null,
+        mediaType: template.msgType,
+        duration: template.msgType === 'audio' ? (template.duration || "0:12") : null
       };
 
       // Save generated prompt under client details and store
