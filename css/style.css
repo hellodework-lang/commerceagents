@@ -1298,34 +1298,102 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 40px;
+  gap: 18px;
+  margin-bottom: 44px;
 }
 
+/* ─── STEP 1: Logo — inside-to-outside radial reveal ─── */
 .splash-logo {
-  font-size: 70px;
   color: var(--accent-red);
-  text-shadow: 0 0 30px var(--accent-red-glow);
-  animation: logo-reveal 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards, pulse-glow-huge 1.8s infinite alternate ease-in-out 1.4s;
 }
 
+.splash-logo--reveal {
+  opacity: 0;
+  clip-path: circle(0% at 50% 50%);
+  filter: drop-shadow(0 0 0px transparent);
+  animation: logo-radial-reveal 1s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+}
+
+@keyframes logo-radial-reveal {
+  0% {
+    opacity: 0;
+    clip-path: circle(0% at 50% 50%);
+    filter: drop-shadow(0 0 0px transparent);
+  }
+  40% {
+    opacity: 1;
+    clip-path: circle(40% at 50% 50%);
+    filter: drop-shadow(0 0 6px var(--accent-red-glow));
+  }
+  100% {
+    opacity: 1;
+    clip-path: circle(100% at 50% 50%);
+    filter: drop-shadow(0 0 20px var(--accent-red));
+  }
+}
+
+/* ─── STEP 2: Title — outside-to-inside convergence ─── */
 .splash-title {
-  font-size: 24px;
-  font-weight: 800;
+  font-size: 26px;
+  font-weight: 900;
   letter-spacing: 1px;
-  opacity: 0;
-  animation: text-reveal-edges 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.2s forwards, text-reveal-tracking 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.2s forwards;
-}
-
-.splash-logo-container p {
-  opacity: 0;
-  animation: text-reveal-tracking 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.5s forwards;
+  text-transform: uppercase;
 }
 
 .splash-title span {
   color: var(--accent-red);
 }
 
+.splash-title--reveal {
+  opacity: 0;
+  letter-spacing: 30px;
+  filter: blur(6px);
+  animation: title-converge 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.3s forwards;
+}
+
+@keyframes title-converge {
+  0% {
+    opacity: 0;
+    letter-spacing: 30px;
+    filter: blur(6px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(1px);
+  }
+  100% {
+    opacity: 1;
+    letter-spacing: 1px;
+    filter: blur(0px);
+  }
+}
+
+/* ─── STEP 3: Subtitle — gentle fade after title ─── */
+.splash-subtitle {
+  font-size: 12px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+}
+
+.splash-subtitle--reveal {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: subtitle-fade 0.7s ease 2.3s forwards;
+}
+
+@keyframes subtitle-fade {
+  0% {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ─── STEP 4: Progress bar — slides in last ─── */
 .splash-loader-bar {
   width: 250px;
   height: 3px;
@@ -1333,7 +1401,16 @@ body {
   border-radius: 4px;
   position: relative;
   overflow: hidden;
-  margin-bottom: 30px;
+}
+
+.splash-bar--reveal {
+  opacity: 0;
+  animation: bar-fade 0.5s ease 2.9s forwards;
+}
+
+@keyframes bar-fade {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
 }
 
 .splash-loader-progress {
@@ -1344,20 +1421,11 @@ body {
   width: 0%;
   background-color: var(--accent-red);
   box-shadow: 0 0 10px var(--accent-red);
-  animation: progress-fill 2.8s forwards cubic-bezier(0.1, 0.8, 0.25, 1);
+  animation: progress-fill 2.8s 3s forwards cubic-bezier(0.1, 0.8, 0.25, 1);
 }
 
 .splash-console {
-  width: 480px;
-  height: 120px;
-  background-color: rgba(0, 0, 0, 0.4);
-  border: 1px solid var(--border-subtle);
-  border-radius: 6px;
-  padding: 12px 18px;
-  font-family: monospace;
-  font-size: 11px;
-  color: var(--text-muted);
-  overflow-y: auto;
+  display: none;
 }
 
 .log-line {
@@ -1465,40 +1533,3 @@ body {
   font-style: italic;
   font-size: 14px;
 }
-
-/* Splash Entrance reveals */
-@keyframes logo-reveal {
-  0% {
-    opacity: 0;
-    clip-path: circle(0% at 50% 50%);
-    transform: scale(0.75);
-  }
-  100% {
-    opacity: 1;
-    clip-path: circle(100% at 50% 50%);
-    transform: scale(1);
-  }
-}
-
-@keyframes text-reveal-edges {
-  0% {
-    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%, 100% 0, 100% 0, 100% 100%, 100% 100%);
-  }
-  100% {
-    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
-  }
-}
-
-@keyframes text-reveal-tracking {
-  0% {
-    opacity: 0;
-    letter-spacing: 14px;
-    filter: blur(6px);
-  }
-  100% {
-    opacity: 1;
-    letter-spacing: 1px;
-    filter: blur(0);
-  }
-}
-
