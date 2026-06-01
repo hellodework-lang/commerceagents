@@ -28,6 +28,7 @@
       chatFeed: document.getElementById('chat-feed'),
       clientProfileBrand: document.getElementById('client-profile-brand'),
       clientDirection: document.getElementById('client-direction'),
+      clientInboxProjects: document.getElementById('client-inbox-projects'),
       aiPromptOutput: document.getElementById('ai-prompt-output'),
       
       // Dashboard Stats
@@ -211,6 +212,34 @@
       <div class="brand-detail"><strong>Tone:</strong> ${activeClient.guidelines.brandTone}</div>
     `;
     el.clientDirection.textContent = activeClient.creativeDirection;
+
+    // Render Active Projects in Inbox Right Panel
+    el.clientInboxProjects.innerHTML = `
+      <div class="projects-table-wrapper compact">
+        <table class="dashboard-table compact">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Category</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${activeClient.activeProjects.map(p => `
+              <tr>
+                <td class="name-bold" style="font-size: 12px;">${p.name}</td>
+                <td style="font-size: 11px;">${p.category}</td>
+                <td>
+                  <span class="status-badge status-${p.status.toLowerCase().replace(/\s+/g, '-')}">
+                    ${p.status}
+                  </span>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
 
     // 5. Render Right Panel: AI Generation Panel
     const ai = state.aiGenerationState;

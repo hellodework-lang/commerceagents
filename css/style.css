@@ -347,6 +347,20 @@ body {
   font-size: 14px;
 }
 
+.dashboard-table.compact td {
+  padding: 8px 6px;
+  font-size: 12px;
+}
+
+.dashboard-table.compact th {
+  padding: 8px 6px;
+  font-size: 10px;
+}
+
+.projects-table-wrapper.compact {
+  border-radius: 4px;
+}
+
 .recent-prompt-row {
   transition: var(--transition-smooth);
 }
