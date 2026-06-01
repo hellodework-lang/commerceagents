@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="AI-Powered Creative Operations Dashboard with WhatsApp prompt automation for agencies.">
+  <title>Creative Ops - AI Prompt Automation Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script>
+    window.addEventListener('error', function(e) {
+      var errDiv = document.createElement('div');
+      errDiv.style.position = 'fixed';
+      errDiv.style.top = '0';
+      errDiv.style.left = '0';
+      errDiv.style.width = '100%';
+      errDiv.style.background = '#ff2233';
+      errDiv.style.color = '#fff';
+      errDiv.style.padding = '20px';
+      errDiv.style.zIndex = '99999';
+      errDiv.style.fontFamily = 'monospace';
+      errDiv.style.fontSize = '14px';
+      errDiv.style.whiteSpace = 'pre-wrap';
+      errDiv.innerHTML = '<strong>[JS ERROR]</strong> ' + e.message + '<br>File: ' + e.filename + '<br>Line: ' + e.lineno + ':' + e.colno + '<br><br>Stack: ' + (e.error ? e.error.stack : 'N/A');
+      document.body.appendChild(errDiv);
+    });
+    window.addEventListener('unhandledrejection', function(e) {
+      var errDiv = document.createElement('div');
+      errDiv.style.position = 'fixed';
+      errDiv.style.top = '0';
+      errDiv.style.left = '0';
+      errDiv.style.width = '100%';
+      errDiv.style.background = '#ff2233';
+      errDiv.style.color = '#fff';
+      errDiv.style.padding = '20px';
+      errDiv.style.zIndex = '99999';
+      errDiv.style.fontFamily = 'monospace';
+      errDiv.style.fontSize = '14px';
+      errDiv.style.whiteSpace = 'pre-wrap';
+      errDiv.innerHTML = '<strong>[UNHANDLED REJECTION]</strong> ' + e.reason;
+      document.body.appendChild(errDiv);
+    });
+  </script>
+</head>
+<body>
+
+  <!-- Futuristic Splash / Loading Screen -->
+  <div class="splash-container" id="splash-screen">
+    <div class="splash-logo-container">
+      <div class="splash-logo"><svg class="icon-svg" viewBox="0 0 24 24" style="width:70px; height:70px; stroke: var(--accent-red); filter: drop-shadow(0 0 15px var(--accent-red));"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="8" cy="16" r="1"></circle><circle cx="16" cy="16" r="1"></circle><path d="M9 2h6"></path><path d="M12 2v9"></path><path d="M2 14h1"></path><path d="M21 14h1"></path></svg></div>
+      <h1 class="splash-title">CREATIVE<span>OPS</span></h1>
+      <p style="font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;">AI Prompt Automation</p>
+    </div>
+    <div class="splash-loader-bar">
+      <div class="splash-loader-progress"></div>
+    </div>
+    <div class="splash-console" id="loading-log">
+      <!-- Loading logs printed programmatically -->
+    </div>
+  </div>
+
+  <!-- Main Application Wrapper -->
+  <div class="app-container">
+    
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="logo-section">
+        <div class="logo-icon"><svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="8" cy="16" r="1"></circle><circle cx="16" cy="16" r="1"></circle><path d="M9 2h6"></path><path d="M12 2v9"></path><path d="M2 14h1"></path><path d="M21 14h1"></path></svg></div>
+        <div class="logo-text">Creative<span>Ops</span></div>
+      </div>
+      
+      <nav class="nav-menu">
+        <button class="nav-item active" data-view="dashboard" id="nav-dashboard">
+          <span class="nav-item-icon"><svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg></span> Dashboard
+        </button>
+        <button class="nav-item" data-view="inbox" id="nav-inbox">
+          <span class="nav-item-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></span> WhatsApp Inbox
+        </button>
+        <button class="nav-item" data-view="clients" id="nav-clients">
+          <span class="nav-item-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span> Client Database
+        </button>
+        <button class="nav-item" data-view="media" id="nav-media">
+          <span class="nav-item-icon"><svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></span> Media Vault
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="sim-toggle-btn" id="simulator-toggle" title="Open client WhatsApp simulator">
+          <span><svg class="icon-svg" viewBox="0 0 24 24"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line><path d="M17 6h.01"></path><path d="M17 10h.01"></path><path d="M17 14h.01"></path></svg></span> Client Simulator
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Dynamic Content Workspace -->
+    <main class="workspace">
+
+      <!-- View 1: Dashboard Overview -->
+      <section class="view-panel active" id="view-dashboard">
+        <div class="view-header">
+          <h1>Creative Operations Overview</h1>
+          <p>Real-time telemetry and prompt queue metrics</p>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card" id="stat-card-clients" style="cursor: pointer;">
+            <div class="stat-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-clients-count">0</span>
+              <span class="stat-label">Total Clients</span>
+            </div>
+          </div>
+          <div class="stat-card" id="stat-card-prompts" style="cursor: pointer;">
+            <div class="stat-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg></div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-prompts-count">0</span>
+              <span class="stat-label">Prompts Generated</span>
+            </div>
+          </div>
+          <div class="stat-card" id="stat-card-pending" style="cursor: pointer;">
+            <div class="stat-icon"><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-pending-tasks">0</span>
+              <span class="stat-label">Pending Production</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-content-box">
+          <div class="box-title">Recent Prompt Generations</div>
+          <div class="table-wrapper">
+            <table class="dashboard-table">
+              <thead>
+                <tr>
+                  <th>Client</th>
+                  <th>Category</th>
+                  <th>Polished Prompt</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody id="dashboard-recent-prompts">
+                <!-- Recent prompts generated populated dynamically -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- View 2: WhatsApp Inbox View -->
+      <section class="view-panel" id="view-inbox">
+        <div class="inbox-grid">
+          
+          <!-- Column 1: WhatsApp Chats List -->
+          <div class="inbox-panel">
+            <div class="panel-header">
+              <h3>WhatsApp Streams</h3>
+            </div>
+            <div class="chat-list-scroller" id="chat-list">
+              <!-- Population by state.js -->
+            </div>
+          </div>
+
+          <!-- Column 2: Selected Chat Feed -->
+          <div class="inbox-panel">
+            <div class="chat-window-header">
+              <div class="chat-avatar" id="chat-header-avatar">⚡</div>
+              <div>
+                <h3 id="chat-header-name">Client Name</h3>
+                <p class="sub-phone" id="chat-header-phone">+91 98765 43210</p>
+              </div>
+            </div>
+            <div class="chat-window-feed" id="chat-feed">
+              <!-- Chat history logs populated dynamically -->
+            </div>
+          </div>
+
+          <!-- Column 3: AI Prompt Workspace & Client Guidelines -->
+          <div class="inbox-panel">
+            <div class="profile-section">
+              <h4>Brand Guidelines</h4>
+              <div id="client-profile-brand">
+                <!-- Colors & guidelines dynamic output -->
+              </div>
+            </div>
+            
+            <div class="profile-section" style="max-height: 160px; overflow-y: auto;">
+              <h4>Creative Style</h4>
+              <p class="direction-notes" id="client-direction">Client preferred style rules...</p>
+            </div>
+
+            <div class="ai-engine-card">
+              <div class="panel-header" style="border-bottom: 1px solid var(--border-subtle)">
+                <h3 style="color: var(--accent-red); font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">🤖 AI Prompt Generator</h3>
+              </div>
+              <div class="ai-output-box" id="ai-prompt-output">
+                <!-- Live parsing/loading and output card -->
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- View 3: Clients Database Grid -->
+      <section class="view-panel" id="view-clients">
+        <div class="view-header">
+          <h1>Client Directory</h1>
+          <p>Manage style presets, creative scopes, and past logs</p>
+        </div>
+
+        <div class="clients-grid">
+          <div class="clients-list-card" id="clients-list-container">
+            <!-- Render client rows here -->
+          </div>
+          
+          <div class="client-details-pane" id="client-details-pane">
+            <!-- Dynamically show active client details -->
+          </div>
+        </div>
+      </section>
+
+      <!-- View 4: Media Vault -->
+      <section class="view-panel" id="view-media">
+        <div class="view-header">
+          <h1>Creative Media Vault</h1>
+          <p>Archive of all client attachments and visual reference mockups</p>
+        </div>
+
+        <div class="media-vault-scroll">
+          <div class="media-grid" id="media-grid">
+            <!-- Grid of images and attachment logs -->
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Side Slide-out Client Simulator Panel -->
+    <div class="simulator-panel" id="simulator-panel">
+      <div class="simulator-header">
+        <h3>WhatsApp Simulator</h3>
+        <button class="close-btn" id="simulator-close">&times;</button>
+      </div>
+      <div class="simulator-scroller" id="simulator-templates">
+        <!-- Render preset simulation cards here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- JS Scripts -->
+  <script src="js/state.js"></script>
+  <script src="js/simulator.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
