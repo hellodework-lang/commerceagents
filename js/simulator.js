@@ -75,7 +75,13 @@
     };
 
     if (template.msgType === 'image') {
-      newMessage.text = "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=800";
+      newMessage.text = template.mediaUrl || "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=800";
+      newMessage.caption = template.userMessage;
+    } else if (template.msgType === 'audio') {
+      newMessage.text = template.mediaUrl || "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+      newMessage.duration = template.duration || "0:12";
+    } else if (template.msgType === 'video') {
+      newMessage.text = template.mediaUrl || "https://assets.mixkit.co/videos/preview/mixkit-pouring-sauce-on-a-hamburger-40057-large.mp4";
       newMessage.caption = template.userMessage;
     }
 
@@ -121,7 +127,7 @@
         projectTitle: template.projectTitle,
         promptCategory: template.promptCategory,
         status: "Pending Manual Production",
-        media: template.msgType === 'image' ? newMessage.text : null
+        media: (template.msgType === 'image' || template.msgType === 'video') ? newMessage.text : null
       };
 
       // Save generated prompt under client details and store

@@ -114,6 +114,18 @@
       promptCategory: "Creative Image Prompt"
     },
     {
+      clientId: "nike-india",
+      userMessage: "Bro monsoon runner poster prompt ready pannunga, speed lines neon red overlays podunga",
+      language: "Tanglish (Voice Note)",
+      msgType: "audio",
+      mediaUrl: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3",
+      duration: "0:14",
+      generatedPrompt: "Dynamic photography of a runner during heavy monsoon rainfall, wet roads reflecting glowing red laser speed lines, dramatic neon overlays, cinematic perspective, highly detailed sneaker details --ar 16:9 --style raw",
+      category: "Midjourney",
+      projectTitle: "Monsoon Speedrun Poster",
+      promptCategory: "Creative Image Prompt"
+    },
+    {
       clientId: "starbucks-tn",
       userMessage: "Filter coffee fusion launching video loop, traditional aesthetics with modern sound wave, simple design",
       language: "English",
@@ -134,6 +146,17 @@
       promptCategory: "Creative Image Prompt"
     },
     {
+      clientId: "starbucks-tn",
+      userMessage: "Video reference context, filter coffee brewing action for landing video loop",
+      language: "English (Video)",
+      msgType: "video",
+      mediaUrl: "https://assets.mixkit.co/videos/preview/mixkit-coffee-maker-machine-brewing-coffee-40292-large.mp4",
+      generatedPrompt: "Cozy vintage coffee shop setting, commercial close-up shot of rich filter coffee dripping through a traditional metal brewer into a brass cup, rising steam backlit by warm sunlight, warm earthy color palette --ar 9:16 --v 6.0",
+      category: "Runway Gen-3",
+      projectTitle: "Brewing Morning Video Loop",
+      promptCategory: "Video Motion Prompt"
+    },
+    {
       clientId: "local-burger",
       userMessage: "Special weekend discount social media post, spicy chicken burger neon theme",
       language: "Tanglish",
@@ -141,6 +164,17 @@
       generatedPrompt: "Eye-catching social media poster design featuring a crispy spicy chicken burger, neon red and yellow glowing typography saying 'SPICY WEEKEND', pop-art style halftone dots overlay, bold shadow outline, fast food menu layout --ar 1:1 --style raw",
       category: "Midjourney",
       projectTitle: "Weekend Spicy Special",
+      promptCategory: "Creative Image Prompt"
+    },
+    {
+      clientId: "local-burger",
+      userMessage: "Cheesy burger close-up reference for pop-art poster design",
+      language: "English (Image)",
+      msgType: "image",
+      mediaUrl: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&q=80&w=800",
+      generatedPrompt: "Pop art illustration of a delicious cheeseburger with thick melting cheddar cheese, vibrant retro color scheme, halftone dot pattern overlay, thick cartoon outlines, bold energetic food commercial mockup --ar 1:1",
+      category: "Midjourney",
+      projectTitle: "Cheesy Pop Art Poster",
       promptCategory: "Creative Image Prompt"
     }
   ];
