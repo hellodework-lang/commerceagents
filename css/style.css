@@ -473,6 +473,7 @@ body {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  min-height: 0;
 }
 
 /* Left Panel - Chat list */
@@ -767,6 +768,7 @@ body {
   flex-direction: column;
   background-image: linear-gradient(180deg, var(--bg-panel) 0%, rgba(255, 34, 51, 0.01) 100%);
   position: relative;
+  min-height: 0;
 }
 
 .ai-engine-card::before {
@@ -785,6 +787,7 @@ body {
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  min-height: 0;
 }
 
 /* AI Generation Loading States */
@@ -819,6 +822,7 @@ body {
   flex-direction: column;
   gap: 12px;
   flex: 1;
+  min-height: 0;
 }
 
 .prompt-meta {
