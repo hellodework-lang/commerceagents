@@ -1306,13 +1306,20 @@ body {
   font-size: 70px;
   color: var(--accent-red);
   text-shadow: 0 0 30px var(--accent-red-glow);
-  animation: pulse-glow-huge 1.8s infinite alternate ease-in-out;
+  animation: logo-reveal 1.4s cubic-bezier(0.16, 1, 0.3, 1) forwards, pulse-glow-huge 1.8s infinite alternate ease-in-out 1.4s;
 }
 
 .splash-title {
   font-size: 24px;
   font-weight: 800;
   letter-spacing: 1px;
+  opacity: 0;
+  animation: text-reveal-edges 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.2s forwards, text-reveal-tracking 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.2s forwards;
+}
+
+.splash-logo-container p {
+  opacity: 0;
+  animation: text-reveal-tracking 1.2s cubic-bezier(0.16, 1, 0.3, 1) 1.5s forwards;
 }
 
 .splash-title span {
@@ -1355,16 +1362,6 @@ body {
 
 .log-line {
   margin-bottom: 4px;
-  opacity: 0;
-  transform: translateY(8px);
-  animation: log-entry 0.3s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
-}
-
-@keyframes log-entry {
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .log-tag {
@@ -1468,3 +1465,40 @@ body {
   font-style: italic;
   font-size: 14px;
 }
+
+/* Splash Entrance reveals */
+@keyframes logo-reveal {
+  0% {
+    opacity: 0;
+    clip-path: circle(0% at 50% 50%);
+    transform: scale(0.75);
+  }
+  100% {
+    opacity: 1;
+    clip-path: circle(100% at 50% 50%);
+    transform: scale(1);
+  }
+}
+
+@keyframes text-reveal-edges {
+  0% {
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%, 100% 0, 100% 0, 100% 100%, 100% 100%);
+  }
+  100% {
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+}
+
+@keyframes text-reveal-tracking {
+  0% {
+    opacity: 0;
+    letter-spacing: 14px;
+    filter: blur(6px);
+  }
+  100% {
+    opacity: 1;
+    letter-spacing: 1px;
+    filter: blur(0);
+  }
+}
+
