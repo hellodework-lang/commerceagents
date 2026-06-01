@@ -41,7 +41,8 @@
       
       // Clients List View
       clientsContainer: document.getElementById('clients-list-container'),
-      clientDetailsPane: document.getElementById('client-details-pane'),
+      clientBrandPane: document.getElementById('client-brand-pane'),
+      clientProjectsPane: document.getElementById('client-projects-pane'),
       
       // Media Vault
       mediaGrid: document.getElementById('media-grid'),
@@ -286,11 +287,13 @@
 
   function renderClientDetails(client) {
     if (!client) {
-      el.clientDetailsPane.innerHTML = `<div class="empty-state">Select a client to view details</div>`;
+      el.clientBrandPane.innerHTML = `<div class="empty-state">Select a client to view details</div>`;
+      el.clientProjectsPane.innerHTML = ``;
       return;
     }
 
-    el.clientDetailsPane.innerHTML = `
+    // Column 2 (Brand Profile Guidelines)
+    el.clientBrandPane.innerHTML = `
       <div class="client-details-header">
         <div class="details-avatar">${client.avatar}</div>
         <div>
@@ -299,8 +302,8 @@
         </div>
       </div>
       
-      <div class="details-grid">
-        <div class="details-card glass-panel">
+      <div class="details-card-stack">
+        <div class="details-card glass-panel" style="margin-bottom: 20px;">
           <h3>🎨 Brand Guidelines</h3>
           <div class="brand-swatch-container" style="margin: 15px 0;">
             ${client.guidelines.brandColors.map(c => `
@@ -308,8 +311,8 @@
             `).join('')}
           </div>
           <p><strong>Primary Palette:</strong> ${client.guidelines.brandColors.join(', ')}</p>
-          <p><strong>Brand Fonts:</strong> ${client.guidelines.brandFonts.join(', ')}</p>
-          <p><strong>Tone of Voice:</strong> ${client.guidelines.brandTone}</p>
+          <p style="margin-top: 8px;"><strong>Brand Fonts:</strong> ${client.guidelines.brandFonts.join(', ')}</p>
+          <p style="margin-top: 8px;"><strong>Tone of Voice:</strong> ${client.guidelines.brandTone}</p>
         </div>
         
         <div class="details-card glass-panel">
@@ -317,8 +320,11 @@
           <p style="line-height: 1.6; opacity: 0.9;">${client.creativeDirection}</p>
         </div>
       </div>
+    `;
 
-      <div class="details-section">
+    // Column 3 (Active Projects & Prompt History)
+    el.clientProjectsPane.innerHTML = `
+      <div class="details-section" style="margin-bottom: 24px;">
         <h3>Active Projects</h3>
         <div class="projects-table-wrapper">
           <table class="dashboard-table">
@@ -377,7 +383,7 @@
     `;
 
     // Attach status change events
-    el.clientDetailsPane.querySelectorAll('.status-select-action').forEach(select => {
+    el.clientProjectsPane.querySelectorAll('.status-select-action').forEach(select => {
       select.addEventListener('change', (e) => {
         const phone = e.target.getAttribute('data-client-phone');
         const projId = e.target.getAttribute('data-project-id');
