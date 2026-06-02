@@ -26,7 +26,7 @@
           generatedPrompt: "Dynamic action shot of a professional runner wearing Nike Air Max, motion blur speed lines, glowing red neon trails, volumetric dark atmospheric lighting, high-contrast sports photography, 8k resolution, cinematic style --ar 16:9 --style raw",
           status: "Completed",
           mediaType: "image",
-          media: "https://images.unsplash.com/photo-1502904582529-2479b7ee5981?auto=format&fit=crop&q=80&w=800"
+          media: "https://images.unsplash.com/photo-1539185441755-769473a23570?auto=format&fit=crop&q=80&w=800"
         },
         {
           id: "ph-2",

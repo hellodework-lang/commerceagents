@@ -17,7 +17,8 @@
       views: {
         dashboard: document.getElementById('view-dashboard'),
         clients: document.getElementById('view-clients'),
-        media: document.getElementById('view-media')
+        media: document.getElementById('view-media'),
+        status: document.getElementById('view-status')
       },
       
       // Dashboard Stats
@@ -42,12 +43,47 @@
       // Media Vault
       mediaGrid: document.getElementById('media-grid'),
       
+      // Status Board Columns & Counters
+      colPending: document.getElementById('cards-pending'),
+      colApproval: document.getElementById('cards-approval'),
+      colProgress: document.getElementById('cards-progress'),
+      colCompleted: document.getElementById('cards-completed'),
+      countPending: document.getElementById('count-pending'),
+      countApproval: document.getElementById('count-approval'),
+      countProgress: document.getElementById('count-progress'),
+      countCompleted: document.getElementById('count-completed'),
+      
       // Simulator
       simulatorToggle: document.getElementById('simulator-toggle'),
       simulatorPanel: document.getElementById('simulator-panel'),
       simulatorClose: document.getElementById('simulator-close'),
       simulatorTemplates: document.getElementById('simulator-templates')
     };
+  }
+
+  // Helper to find the live project status for a prompt/media item
+  function getLiveProjectStatus(clientPhone, promptItem) {
+    const state = appStore.getState();
+    const client = state.clients.find(c => c.phone === clientPhone);
+    if (!client) return promptItem.status || 'Completed';
+
+    let project = null;
+    if (promptItem.projectTitle) {
+      project = client.activeProjects.find(p => p.name === promptItem.projectTitle);
+    }
+    if (!project) {
+      // Fallback lookup for mock data
+      const id = promptItem.id;
+      if (id === 'ph-1') project = client.activeProjects.find(p => p.id === 'proj-1');
+      else if (id === 'ph-2') project = client.activeProjects.find(p => p.id === 'proj-2');
+      else if (id === 'ph-3' || id === 'ph-3-audio') project = client.activeProjects.find(p => p.id === 'proj-3');
+      else if (id === 'ph-4' || id === 'ph-4-video') project = client.activeProjects.find(p => p.id === 'proj-4');
+    }
+
+    if (project) {
+      return project.status;
+    }
+    return promptItem.status || 'Completed';
   }
 
   // ----------------------------------------------------
@@ -72,31 +108,34 @@
       return;
     }
 
-    el.dashboardRecentPrompts.innerHTML = state.recentPrompts.map(p => `
-      <tr class="recent-prompt-row" data-phone="${p.phone}" style="cursor: pointer;">
-        <td>
-          <div class="table-client">
-            <span class="client-dot"></span>
-            <div>
-              <div class="name-bold">${p.clientName}</div>
-              <div class="sub-phone">${p.phone}</div>
+    el.dashboardRecentPrompts.innerHTML = state.recentPrompts.map(p => {
+      const liveStatus = getLiveProjectStatus(p.phone, p);
+      return `
+        <tr class="recent-prompt-row" data-phone="${p.phone}" style="cursor: pointer;">
+          <td>
+            <div class="table-client">
+              <span class="client-dot"></span>
+              <div>
+                <div class="name-bold">${p.clientName}</div>
+                <div class="sub-phone">${p.phone}</div>
+              </div>
             </div>
-          </div>
-        </td>
-        <td><span class="category-badge badge-${p.category.toLowerCase().replace(' ', '-')}">${p.category}</span></td>
-        <td><div class="prompt-text-truncate" title="${p.generatedPrompt}">${p.generatedPrompt}</div></td>
-        <td>
-          <span class="status-badge status-${p.status.toLowerCase().replace(/\s+/g, '-')}">
-            ${p.status}
-          </span>
-        </td>
-        <td>
-          <button class="action-btn copy-btn" data-prompt="${encodeURIComponent(p.generatedPrompt)}">
-            <span class="btn-icon"><svg class="icon-svg" viewBox="0 0 24 24" style="width:12px; height:12px;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span> Copy
-          </button>
-        </td>
-      </tr>
-    `).join('');
+          </td>
+          <td><span class="category-badge badge-${p.category.toLowerCase().replace(' ', '-')}">${p.category}</span></td>
+          <td><div class="prompt-text-truncate" title="${p.generatedPrompt}">${p.generatedPrompt}</div></td>
+          <td>
+            <span class="status-badge status-${liveStatus.toLowerCase().replace(/\s+/g, '-')}">
+              ${liveStatus}
+            </span>
+          </td>
+          <td>
+            <button class="action-btn copy-btn" data-prompt="${encodeURIComponent(p.generatedPrompt)}">
+              <span class="btn-icon"><svg class="icon-svg" viewBox="0 0 24 24" style="width:12px; height:12px;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span> Copy
+            </button>
+          </td>
+        </tr>
+      `;
+    }).join('');
   }
 
 
@@ -311,6 +350,7 @@
         }
       }
 
+      const liveStatus = getLiveProjectStatus(client.phone, ph);
       return `
         <div class="prompt-history-card glass-panel" style="padding: 14px; gap: 8px;">
           <div class="history-card-header" style="display: flex; justify-content: space-between; align-items: center;">
@@ -319,6 +359,10 @@
           </div>
           <div class="history-card-msg" style="font-size: 11px;"><strong>Req:</strong> "${ph.userMessage}"</div>
           ${mediaHtml}
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 4px; padding-top: 4px; border-top: 1px solid var(--border-subtle);">
+            <span style="font-size: 11px; color: var(--text-muted); font-weight: 500;">Project Status:</span>
+            <span class="status-badge status-${liveStatus.toLowerCase().replace(/\s+/g, '-')}">${liveStatus}</span>
+          </div>
           <div class="history-card-prompt" style="font-size: 11px; padding: 8px; margin-top: 4px;">${ph.generatedPrompt}</div>
           <div class="history-card-actions" style="margin-top: 4px; display: flex; justify-content: flex-end;">
             <button class="action-btn copy-btn primary-red-btn" data-prompt="${encodeURIComponent(ph.generatedPrompt)}" style="padding: 6px; font-size: 11px; display: flex; align-items: center; justify-content: center; gap: 4px; width: auto;">
@@ -341,75 +385,201 @@
   }
 
   function renderMediaVault(state) {
-    // Aggregate all prompts and chat messages with media attachments
-    const mediaItems = [];
+    // Group media attachments by client
+    const clientsMedia = [];
+
     state.clients.forEach(c => {
+      const items = [];
+      
+      // Prompts
       c.promptHistory.forEach(ph => {
         if (ph.media) {
-          mediaItems.push({
+          items.push({
             url: ph.media,
             clientName: c.name,
             date: ph.date,
             prompt: ph.generatedPrompt,
             mediaType: ph.mediaType || (ph.media.endsWith('.mp4') ? 'video' : (ph.media.endsWith('.mp3') ? 'audio' : 'image')),
-            duration: ph.duration
+            duration: ph.duration,
+            status: ph.status || 'Completed',
+            phone: c.phone,
+            phItem: ph
           });
         }
       });
-      // Add images, video and audio sent in the chat feeds
+
+      // Chats
       const chats = state.chats[c.phone] || [];
       chats.forEach(msg => {
         if (msg.type === 'image' || msg.type === 'video' || msg.type === 'audio') {
-          mediaItems.push({
+          items.push({
             url: msg.text,
             clientName: c.name,
             date: 'Chat History',
             prompt: msg.caption || (msg.type === 'audio' ? 'Voice Note' : 'Reference Attachment'),
             mediaType: msg.type,
-            duration: msg.duration
+            duration: msg.duration,
+            status: 'Received',
+            phone: c.phone,
+            phItem: null
           });
         }
       });
+
+      if (items.length > 0) {
+        clientsMedia.push({
+          clientName: c.name,
+          avatar: c.avatar,
+          items: items
+        });
+      }
     });
 
-    if (mediaItems.length === 0) {
+    if (clientsMedia.length === 0) {
       el.mediaGrid.innerHTML = `<div class="empty-state">No media attachments found.</div>`;
       return;
     }
 
-    el.mediaGrid.innerHTML = mediaItems.map(m => {
-      let previewHtml = '';
-      if (m.mediaType === 'image') {
-        previewHtml = `<img src="${m.url}" alt="Attachment from ${m.clientName}" class="media-card-img" />`;
-      } else if (m.mediaType === 'video') {
-        previewHtml = `<video src="${m.url}" loop muted playsinline class="media-card-img" style="background: #000; width: 100%; height: 100%; object-fit: cover;" onmouseover="this.play()" onmouseout="this.pause()"></video>`;
-      } else if (m.mediaType === 'audio') {
-        previewHtml = `
-          <div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(255, 34, 51, 0.08) 0%, var(--bg-card) 100%);">
-            <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; z-index: 1;">
-              <div style="width: 50px; height: 50px; border-radius: 50%; background: rgba(255, 34, 51, 0.1); border: 1px solid var(--border-glow); display: flex; align-items: center; justify-content: center; color: var(--accent-red); box-shadow: 0 0 10px var(--accent-red-glow);">
-                <svg class="icon-svg" viewBox="0 0 24 24" style="width: 24px; height: 24px;"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
+    el.mediaGrid.innerHTML = clientsMedia.map(group => {
+      const cardsHtml = group.items.map(m => {
+        let previewHtml = '';
+        if (m.mediaType === 'image') {
+          previewHtml = `<img src="${m.url}" alt="Attachment from ${m.clientName}" class="media-card-img" />`;
+        } else if (m.mediaType === 'video') {
+          previewHtml = `<video src="${m.url}" loop muted playsinline class="media-card-img" style="background: #000; width: 100%; height: 100%; object-fit: cover;" onmouseover="this.play()" onmouseout="this.pause()"></video>`;
+        } else if (m.mediaType === 'audio') {
+          previewHtml = `
+            <div style="display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; background: radial-gradient(circle at center, rgba(255, 34, 51, 0.08) 0%, var(--bg-card) 100%);">
+              <div style="display: flex; flex-direction: column; align-items: center; gap: 12px; z-index: 1;">
+                <div style="width: 50px; height: 50px; border-radius: 50%; background: rgba(255, 34, 51, 0.1); border: 1px solid var(--border-glow); display: flex; align-items: center; justify-content: center; color: var(--accent-red); box-shadow: 0 0 10px var(--accent-red-glow);">
+                  <svg class="icon-svg" viewBox="0 0 24 24" style="width: 24px; height: 24px;"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
+                </div>
+                <span style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Voice Note (${m.duration || '0:12'})</span>
               </div>
-              <span style="font-size: 12px; color: var(--text-muted); font-weight: 500;">Voice Note (${m.duration || '0:12'})</span>
+            </div>
+          `;
+        }
+
+        const liveStatus = m.phItem ? getLiveProjectStatus(m.phone, m.phItem) : m.status;
+
+        return `
+          <div class="media-card glass-panel animate-zoom-in">
+            <div class="media-card-status-badge">
+              <span class="status-badge status-${liveStatus.toLowerCase().replace(/\s+/g, '-')}">
+                ${liveStatus}
+              </span>
+            </div>
+            ${previewHtml}
+            <div class="media-card-overlay">
+              <h4>${m.clientName}</h4>
+              <p class="media-date">${m.date}</p>
+              <p class="media-prompt-ref">${m.prompt}</p>
+              <div style="margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                <span style="font-size: 11px; color: var(--text-muted);">Status:</span>
+                <span class="status-badge status-${liveStatus.toLowerCase().replace(/\s+/g, '-')}">
+                  ${liveStatus}
+                </span>
+              </div>
+              <button class="action-btn copy-btn media-copy-btn" data-prompt="${encodeURIComponent(m.prompt)}">
+                <svg class="icon-svg" viewBox="0 0 24 24" style="width:12px; height:12px; margin-right:4px;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg> Copy Associated Prompt
+              </button>
             </div>
           </div>
         `;
-      }
+      }).join('');
 
       return `
-        <div class="media-card glass-panel animate-zoom-in">
-          ${previewHtml}
-          <div class="media-card-overlay">
-            <h4>${m.clientName}</h4>
-            <p class="media-date">${m.date}</p>
-            <p class="media-prompt-ref">${m.prompt}</p>
-            <button class="action-btn copy-btn media-copy-btn" data-prompt="${encodeURIComponent(m.prompt)}">
-              <svg class="icon-svg" viewBox="0 0 24 24" style="width:12px; height:12px; margin-right:4px;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg> Copy Associated Prompt
-            </button>
+        <div class="media-client-group">
+          <div class="media-group-header">
+            <div class="chat-avatar" style="width: 32px; height: 32px; font-size: 14px; background: rgba(255, 34, 51, 0.05);">${group.avatar}</div>
+            <h2>${group.clientName}</h2>
+            <span class="column-count">${group.items.length} files</span>
+          </div>
+          <div class="media-grid">
+            ${cardsHtml}
           </div>
         </div>
       `;
     }).join('');
+  }
+
+  function renderStatusBoard(state) {
+    const pending = [];
+    const approval = [];
+    const progress = [];
+    const completed = [];
+
+    state.clients.forEach(c => {
+      c.activeProjects.forEach(p => {
+        const item = { ...p, clientName: c.name, phone: c.phone };
+        if (p.status === 'Pending Manual Production' || p.status === 'Pending') {
+          pending.push(item);
+        } else if (p.status === 'Pending Approval') {
+          approval.push(item);
+        } else if (p.status === 'In Production') {
+          progress.push(item);
+        } else if (p.status === 'Completed') {
+          completed.push(item);
+        }
+      });
+    });
+
+    const renderList = (list) => {
+      if (list.length === 0) {
+        return `<div class="empty-state" style="padding: 20px; font-size: 11px;">No projects.</div>`;
+      }
+      return list.map(p => `
+        <div class="status-project-card glass-panel" data-phone="${p.phone}">
+          <div class="project-card-header">
+            <span class="project-card-client">${p.clientName}</span>
+          </div>
+          <div class="project-card-title" style="margin-top: 4px;">${p.name}</div>
+          <p class="project-card-desc" style="margin-top: 4px; line-height: 1.4; color: var(--text-muted);">${p.description || ''}</p>
+          <div class="project-card-footer">
+            <span class="project-card-cat">${p.category}</span>
+            <select class="status-select-action mini-select" data-client-phone="${p.phone}" data-project-id="${p.id}">
+              <option value="Pending Manual Production" ${p.status === 'Pending Manual Production' ? 'selected' : ''}>Pending</option>
+              <option value="Pending Approval" ${p.status === 'Pending Approval' ? 'selected' : ''}>Approval</option>
+              <option value="In Production" ${p.status === 'In Production' ? 'selected' : ''}>Production</option>
+              <option value="Completed" ${p.status === 'Completed' ? 'selected' : ''}>Completed</option>
+            </select>
+          </div>
+        </div>
+      `).join('');
+    };
+
+    el.colPending.innerHTML = renderList(pending);
+    el.colApproval.innerHTML = renderList(approval);
+    el.colProgress.innerHTML = renderList(progress);
+    el.colCompleted.innerHTML = renderList(completed);
+
+    el.countPending.textContent = pending.length;
+    el.countApproval.textContent = approval.length;
+    el.countProgress.textContent = progress.length;
+    el.countCompleted.textContent = completed.length;
+
+    // Attach change event listeners for selector dropdowns inside the status board columns
+    [el.colPending, el.colApproval, el.colProgress, el.colCompleted].forEach(col => {
+      col.querySelectorAll('.status-select-action').forEach(select => {
+        select.addEventListener('change', (e) => {
+          const phone = e.target.getAttribute('data-client-phone');
+          const projId = e.target.getAttribute('data-project-id');
+          const newStatus = e.target.value;
+          appStore.updateProjectStatus(phone, projId, newStatus);
+        });
+      });
+
+      // Navigate to the client database view on card click (ignoring click on the dropdown itself)
+      col.querySelectorAll('.status-project-card').forEach(card => {
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('.status-select-action')) return;
+          const phone = card.getAttribute('data-phone');
+          appStore.updateState({ activeChatPhone: phone });
+          appStore.clearUnreads(phone);
+          handleViewSwitch('clients');
+        });
+      });
+    });
   }
 
   // ----------------------------------------------------
@@ -573,6 +743,14 @@
       });
     }
 
+    // Back button in Status Board top-bar - switches back to dashboard view
+    const toggleStatusSidebarBtn = document.querySelector('.toggle-sidebar-status-btn');
+    if (toggleStatusSidebarBtn) {
+      toggleStatusSidebarBtn.addEventListener('click', () => {
+        handleViewSwitch('dashboard');
+      });
+    }
+
     // Clipboard Copier Handler
     document.addEventListener('click', (e) => {
       const copyBtn = e.target.closest('.copy-btn');
@@ -713,7 +891,7 @@
       
       const appContainer = document.querySelector('.app-container');
       if (appContainer) {
-        if (state.activeView === 'clients') {
+        if (state.activeView === 'clients' || state.activeView === 'status') {
           appContainer.classList.add('sidebar-hidden');
         } else {
           appContainer.classList.remove('sidebar-hidden');
@@ -728,6 +906,8 @@
         renderClientDetails(activeClient);
       } else if (state.activeView === 'media') {
         renderMediaVault(state);
+      } else if (state.activeView === 'status') {
+        renderStatusBoard(state);
       }
     });
 
