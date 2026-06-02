@@ -43,7 +43,36 @@
 </head>
 <body>
 
+  <!-- Futuristic Splash / Loading Screen -->
+  <div class="splash-container" id="splash-screen">
+    <div class="splash-logo-container">
 
+      <!-- Step 1: Logo reveals inside-to-outside (radial clip-path expand) -->
+      <div class="splash-logo splash-logo--reveal">
+        <svg viewBox="0 0 24 24" style="width:80px; height:80px; fill:none; stroke: var(--accent-red); stroke-width:2; stroke-linecap:round; stroke-linejoin:round;">
+          <rect x="3" y="11" width="18" height="10" rx="2"></rect>
+          <circle cx="8" cy="16" r="1"></circle>
+          <circle cx="16" cy="16" r="1"></circle>
+          <path d="M9 2h6"></path>
+          <path d="M12 2v9"></path>
+          <path d="M2 14h1"></path>
+          <path d="M21 14h1"></path>
+        </svg>
+      </div>
+
+      <!-- Step 2: Brand name converges outside-to-inside after logo finishes -->
+      <h1 class="splash-title splash-title--reveal">CREATIVE<span>OPS</span></h1>
+
+      <!-- Step 3: Subtitle fades in after title -->
+      <p class="splash-subtitle splash-subtitle--reveal">AI Prompt Automation</p>
+
+    </div>
+
+    <!-- Step 4: Progress bar appears last -->
+    <div class="splash-loader-bar splash-bar--reveal">
+      <div class="splash-loader-progress"></div>
+    </div>
+  </div>
 
   <!-- Main Application Wrapper -->
   <div class="app-container">

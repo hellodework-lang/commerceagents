@@ -11,6 +11,7 @@
 
   function initElements() {
     el = {
+      splash: document.getElementById('splash-screen'),
       navItems: document.querySelectorAll('.nav-item'),
       views: {
         dashboard: document.getElementById('view-dashboard'),
@@ -648,7 +649,19 @@
     }).join('');
   }
 
+  // ----------------------------------------------------
+  // Initial Loading Splash Sequence
+  // ----------------------------------------------------
 
+  function startSplashSequence() {
+    // Fade out splash after delay
+    setTimeout(() => {
+      el.splash.classList.add('fade-out');
+      setTimeout(() => {
+        el.splash.style.display = 'none';
+      }, 600);
+    }, 2400);
+  }
 
   // ----------------------------------------------------
   // Initialization Entrypoint
@@ -688,6 +701,9 @@
 
     // Trigger initial dashboard rendering
     renderDashboard(store.getState());
+
+    // Start initialization splash screen
+    startSplashSequence();
   }
 
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
