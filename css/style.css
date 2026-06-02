@@ -2017,3 +2017,12 @@ body {
   background-color: rgba(255, 34, 51, 0.15);
   color: var(--text-main);
 }
+
+/* Custom Waving Robot Logo Masking Fills */
+.logo-robot-bg {
+  fill: var(--bg-main);
+}
+
+.splash-logo-container .logo-robot-bg {
+  fill: var(--bg-darker);
+}

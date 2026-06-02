@@ -47,36 +47,50 @@
   <div class="splash-container" id="splash-screen">
     <div class="splash-logo-container">
       <div class="splash-logo splash-logo--reveal">
-        <svg class="icon-svg logo-robot-svg" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width:70px; height:70px; stroke: var(--accent-red); filter: drop-shadow(0 0 15px var(--accent-red));">
-          <!-- Helmet Top loop -->
-          <path d="M 42,16 C 42,12 58,12 58,16" />
-          <!-- Helmet Arch -->
-          <path d="M 27,27 A 25,25 0 0,1 73,27" />
-          <!-- Main Head / Helmet Outline -->
-          <path d="M 25,32 A 26,26 0 1,1 75,32 A 26,26 0 0,1 25,32 Z" />
-          <!-- Face Shield / Visor -->
-          <path d="M 31,34 H 69 C 74,34 75,38 72,42 C 67,49 33,49 28,42 C 25,38 26,34 31,34 Z" />
-          <!-- Happy Smiling Eyes -->
-          <path d="M 38,39 A 4,4 0 0,1 46,39" />
-          <path d="M 54,39 A 4,4 0 0,1 62,39" />
-          <!-- Smiley Mouth -->
-          <path d="M 35,46 C 42,52 58,52 65,46" />
-          <!-- Left Ear Cup -->
-          <rect x="18" y="28" width="7" height="22" rx="3.5" />
-          <!-- Right Ear Cup -->
-          <rect x="75" y="28" width="7" height="22" rx="3.5" />
-          <!-- Left Ear Antenna -->
-          <path d="M 23,28 C 22,20 25,18 25,18" />
-          <!-- Right Ear Antenna -->
-          <path d="M 77,28 C 78,20 75,18 75,18" />
+        <svg class="icon-svg logo-robot-svg" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width:70px; height:70px; stroke: var(--accent-red); filter: drop-shadow(0 0 15px var(--accent-red));">
           <!-- Body Outline -->
-          <path d="M 33,56 C 30,76 38,85 50,85 C 62,85 70,76 67,56" />
-          <!-- Belly screen -->
-          <path d="M 40,63 C 40,77 60,77 60,63 Z" />
-          <!-- Left Arm (Waving) -->
-          <path d="M 66,66 C 73,63 80,54 82,49 C 84,44 80,41 77,44 C 73,48 67,57 65,64" />
-          <!-- Right Arm (Resting) -->
-          <path d="M 34,58 C 29,63 21,70 23,76 C 26,81 33,75 34,68" />
+          <path class="logo-robot-bg" d="M 32.5,52 C 32.5,70 38,81 50,81 C 62,81 67.5,70 67.5,52" stroke-width="3" />
+          
+          <!-- Belly Screen -->
+          <path d="M 40,61 C 40,60 60,60 60,61 C 60,68 57,74 50,74 C 43,74 40,68 40,61 Z" stroke-width="3" />
+          
+          <!-- Belly Side Lines -->
+          <path d="M 40.5,66.5 C 38,67.5 35,67.5 33,67" stroke-width="3" />
+          <path d="M 59.5,66.5 C 62,67.5 65,67.5 67,67" stroke-width="3" />
+
+          <!-- Left Arm (Resting) -->
+          <path class="logo-robot-bg" d="M 32.5,52 C 26,58 22,68 22,70 C 22,72.5 24,72.5 25.5,71.5 C 29,68 33.5,58 33.5,54" stroke-width="3" />
+
+          <!-- Right Arm (Waving) -->
+          <path class="logo-robot-bg" d="M 66,51.5 C 70,48 76.5,45.5 78.5,45.5 C 81,45.5 80.5,49.5 78,52.5 C 73.5,58 68,62.5 65,64" stroke-width="3" />
+
+          <!-- Helmet Outer Circle -->
+          <circle class="logo-robot-bg" cx="50" cy="39" r="23" stroke-width="3" />
+
+          <!-- Helmet Top Handle / Loop -->
+          <path class="logo-robot-bg" d="M 41,17.5 C 41,12 59,12 59,17.5" stroke-width="3" />
+
+          <!-- Left Earmuff & Antenna Group (Tilted) -->
+          <g transform="rotate(-12 24 39)">
+            <rect class="logo-robot-bg" x="20.5" y="28" width="7" height="22" rx="3.5" stroke-width="3" />
+            <path class="logo-robot-bg" d="M 21.5,28 C 21,17 24.5,16 24.5,16 C 24.5,16 26.5,19 26.5,28" stroke-width="3" />
+          </g>
+
+          <!-- Right Earmuff & Antenna Group (Tilted) -->
+          <g transform="rotate(12 76 39)">
+            <rect class="logo-robot-bg" x="72.5" y="28" width="7" height="22" rx="3.5" stroke-width="3" />
+            <path class="logo-robot-bg" d="M 78.5,28 C 79,17 75.5,16 75.5,16 C 75.5,16 73.5,19 73.5,28" stroke-width="3" />
+          </g>
+
+          <!-- Helmet Forehead Concentric Inner Arc -->
+          <path d="M 31.2,32 A 20,20 0 0,1 68.8,32" stroke-width="3" />
+
+          <!-- Visor / Face Shield -->
+          <path class="logo-robot-bg" d="M 34.5,33.5 A 16.5,16.5 0 0,1 65.5,33.5 C 65.5,43 59.5,47.5 50,47.5 C 40.5,47.5 34.5,43 34.5,33.5 Z" stroke-width="3" />
+
+          <!-- Happy Smiling Eyes -->
+          <path d="M 39.5,38.5 A 3,3 0 0,1 45.5,38.5" stroke-width="3.5" />
+          <path d="M 54.5,38.5 A 3,3 0 0,1 60.5,38.5" stroke-width="3.5" />
         </svg>
       </div>
       <h1 class="splash-title splash-title--reveal">AGENTS<span>COPS</span></h1>
@@ -91,36 +105,50 @@
     <aside class="sidebar">
       <div class="logo-section">
         <div class="logo-icon">
-          <svg class="icon-svg logo-robot-svg" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-            <!-- Helmet Top loop -->
-            <path d="M 42,16 C 42,12 58,12 58,16" />
-            <!-- Helmet Arch -->
-            <path d="M 27,27 A 25,25 0 0,1 73,27" />
-            <!-- Main Head / Helmet Outline -->
-            <path d="M 25,32 A 26,26 0 1,1 75,32 A 26,26 0 0,1 25,32 Z" />
-            <!-- Face Shield / Visor -->
-            <path d="M 31,34 H 69 C 74,34 75,38 72,42 C 67,49 33,49 28,42 C 25,38 26,34 31,34 Z" />
-            <!-- Happy Smiling Eyes -->
-            <path d="M 38,39 A 4,4 0 0,1 46,39" />
-            <path d="M 54,39 A 4,4 0 0,1 62,39" />
-            <!-- Smiley Mouth -->
-            <path d="M 35,46 C 42,52 58,52 65,46" />
-            <!-- Left Ear Cup -->
-            <rect x="18" y="28" width="7" height="22" rx="3.5" />
-            <!-- Right Ear Cup -->
-            <rect x="75" y="28" width="7" height="22" rx="3.5" />
-            <!-- Left Ear Antenna -->
-            <path d="M 23,28 C 22,20 25,18 25,18" />
-            <!-- Right Ear Antenna -->
-            <path d="M 77,28 C 78,20 75,18 75,18" />
+          <svg class="icon-svg logo-robot-svg" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
             <!-- Body Outline -->
-            <path d="M 33,56 C 30,76 38,85 50,85 C 62,85 70,76 67,56" />
-            <!-- Belly screen -->
-            <path d="M 40,63 C 40,77 60,77 60,63 Z" />
-            <!-- Left Arm (Waving) -->
-            <path d="M 66,66 C 73,63 80,54 82,49 C 84,44 80,41 77,44 C 73,48 67,57 65,64" />
-            <!-- Right Arm (Resting) -->
-            <path d="M 34,58 C 29,63 21,70 23,76 C 26,81 33,75 34,68" />
+            <path class="logo-robot-bg" d="M 32.5,52 C 32.5,70 38,81 50,81 C 62,81 67.5,70 67.5,52" stroke-width="3" />
+            
+            <!-- Belly Screen -->
+            <path d="M 40,61 C 40,60 60,60 60,61 C 60,68 57,74 50,74 C 43,74 40,68 40,61 Z" stroke-width="3" />
+            
+            <!-- Belly Side Lines -->
+            <path d="M 40.5,66.5 C 38,67.5 35,67.5 33,67" stroke-width="3" />
+            <path d="M 59.5,66.5 C 62,67.5 65,67.5 67,67" stroke-width="3" />
+
+            <!-- Left Arm (Resting) -->
+            <path class="logo-robot-bg" d="M 32.5,52 C 26,58 22,68 22,70 C 22,72.5 24,72.5 25.5,71.5 C 29,68 33.5,58 33.5,54" stroke-width="3" />
+
+            <!-- Right Arm (Waving) -->
+            <path class="logo-robot-bg" d="M 66,51.5 C 70,48 76.5,45.5 78.5,45.5 C 81,45.5 80.5,49.5 78,52.5 C 73.5,58 68,62.5 65,64" stroke-width="3" />
+
+            <!-- Helmet Outer Circle -->
+            <circle class="logo-robot-bg" cx="50" cy="39" r="23" stroke-width="3" />
+
+            <!-- Helmet Top Handle / Loop -->
+            <path class="logo-robot-bg" d="M 41,17.5 C 41,12 59,12 59,17.5" stroke-width="3" />
+
+            <!-- Left Earmuff & Antenna Group (Tilted) -->
+            <g transform="rotate(-12 24 39)">
+              <rect class="logo-robot-bg" x="20.5" y="28" width="7" height="22" rx="3.5" stroke-width="3" />
+              <path class="logo-robot-bg" d="M 21.5,28 C 21,17 24.5,16 24.5,16 C 24.5,16 26.5,19 26.5,28" stroke-width="3" />
+            </g>
+
+            <!-- Right Earmuff & Antenna Group (Tilted) -->
+            <g transform="rotate(12 76 39)">
+              <rect class="logo-robot-bg" x="72.5" y="28" width="7" height="22" rx="3.5" stroke-width="3" />
+              <path class="logo-robot-bg" d="M 78.5,28 C 79,17 75.5,16 75.5,16 C 75.5,16 73.5,19 73.5,28" stroke-width="3" />
+            </g>
+
+            <!-- Helmet Forehead Concentric Inner Arc -->
+            <path d="M 31.2,32 A 20,20 0 0,1 68.8,32" stroke-width="3" />
+
+            <!-- Visor / Face Shield -->
+            <path class="logo-robot-bg" d="M 34.5,33.5 A 16.5,16.5 0 0,1 65.5,33.5 C 65.5,43 59.5,47.5 50,47.5 C 40.5,47.5 34.5,43 34.5,33.5 Z" stroke-width="3" />
+
+            <!-- Happy Smiling Eyes -->
+            <path d="M 39.5,38.5 A 3,3 0 0,1 45.5,38.5" stroke-width="3.5" />
+            <path d="M 54.5,38.5 A 3,3 0 0,1 60.5,38.5" stroke-width="3.5" />
           </svg>
         </div>
         <div class="logo-text">Agents<span>Cops</span></div>
