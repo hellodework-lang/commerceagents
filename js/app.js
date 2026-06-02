@@ -11,6 +11,8 @@
 
   function initElements() {
     el = {
+      splash: document.getElementById('splash-screen'),
+      loadingLog: document.getElementById('loading-log'),
       navItems: document.querySelectorAll('.nav-item'),
       views: {
         dashboard: document.getElementById('view-dashboard'),
@@ -826,7 +828,43 @@
     }).join('');
   }
 
+  // ----------------------------------------------------
+  // Initial Loading Splash Sequence
+  // ----------------------------------------------------
 
+  function startSplashSequence() {
+    const steps = [
+      { text: 'Syncing with WhatsApp webhooks...', delay: 300 },
+      { text: 'Database: 3 client profiles loaded.', delay: 700 },
+      { text: 'Loading prompt categories: Midjourney, Runway, Stable Diffusion...', delay: 1100 },
+      { text: 'AI natural language translator online (EN/TA/Tanglish)...', delay: 1500 },
+      { text: 'Dashboard initialized.', delay: 1900 }
+    ];
+
+    steps.forEach(step => {
+      setTimeout(() => {
+        const logLine = document.createElement('div');
+        logLine.className = 'log-line';
+        logLine.innerHTML = `<span class="log-tag">[SYS]</span> ${step.text}`;
+        el.loadingLog.appendChild(logLine);
+        el.loadingLog.scrollTop = el.loadingLog.scrollHeight;
+      }, step.delay);
+    });
+
+    // Fade out splash
+    setTimeout(() => {
+      el.splash.classList.add('fade-out');
+      // Make app container visible during fade out
+      const appContainer = document.querySelector('.app-container');
+      if (appContainer) {
+        appContainer.style.display = 'flex';
+      }
+      // Once faded, render first views
+      setTimeout(() => {
+        el.splash.style.display = 'none';
+      }, 600);
+    }, 2400);
+  }
 
   // ----------------------------------------------------
   // Initialization Entrypoint
@@ -885,6 +923,9 @@
 
     // Trigger initial dashboard rendering
     renderDashboard(appStore.getState());
+
+    // Start initialization splash screen
+    startSplashSequence();
   }
 
   if (document.readyState === 'complete' || document.readyState === 'interactive') {
