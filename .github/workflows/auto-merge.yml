@@ -11,7 +11,7 @@ permissions:
   contents: write
 
 jobs:
-  merge-and-sync:
+  merge-and-sync: 
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
