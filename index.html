@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="AI-Powered Creative Operations Dashboard with WhatsApp prompt automation for agencies.">
   <title>Creative Ops - AI Prompt Automation Dashboard</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/style.css?v=20">
   <script>
     window.addEventListener('error', function(e) {
       var errDiv = document.createElement('div');
@@ -46,36 +46,17 @@
   <!-- Futuristic Splash / Loading Screen -->
   <div class="splash-container" id="splash-screen">
     <div class="splash-logo-container">
-
-      <!-- Step 1: Logo reveals inside-to-outside (radial clip-path expand) -->
-      <div class="splash-logo splash-logo--reveal">
-        <svg viewBox="0 0 24 24" style="width:80px; height:80px; fill:none; stroke: var(--accent-red); stroke-width:2; stroke-linecap:round; stroke-linejoin:round;">
-          <rect x="3" y="11" width="18" height="10" rx="2"></rect>
-          <circle cx="8" cy="16" r="1"></circle>
-          <circle cx="16" cy="16" r="1"></circle>
-          <path d="M9 2h6"></path>
-          <path d="M12 2v9"></path>
-          <path d="M2 14h1"></path>
-          <path d="M21 14h1"></path>
-        </svg>
-      </div>
-
-      <!-- Step 2: Brand name converges outside-to-inside after logo finishes -->
-      <h1 class="splash-title splash-title--reveal">CREATIVE<span>OPS</span></h1>
-
-      <!-- Step 3: Subtitle fades in after title -->
-      <p class="splash-subtitle splash-subtitle--reveal">AI Prompt Automation</p>
-
+      <div class="splash-logo"><svg class="icon-svg" viewBox="0 0 24 24" style="width:70px; height:70px; stroke: var(--accent-red); filter: drop-shadow(0 0 15px var(--accent-red));"><rect x="3" y="11" width="18" height="10" rx="2"></rect><circle cx="8" cy="16" r="1"></circle><circle cx="16" cy="16" r="1"></circle><path d="M9 2h6"></path><path d="M12 2v9"></path><path d="M2 14h1"></path><path d="M21 14h1"></path></svg></div>
+      <h1 class="splash-title">CREATIVE<span>OPS</span></h1>
+      <p style="font-size: 13px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 2px;">AI Prompt Automation</p>
     </div>
-
-    <!-- Step 4: Progress bar appears last -->
-    <div class="splash-loader-bar splash-bar--reveal">
+    <div class="splash-loader-bar">
       <div class="splash-loader-progress"></div>
     </div>
   </div>
 
   <!-- Main Application Wrapper -->
-  <div class="app-container">
+  <div class="app-container" style="display: none;">
     
     <!-- Sidebar Navigation -->
     <aside class="sidebar">
@@ -88,14 +69,14 @@
         <button class="nav-item active" data-view="dashboard" id="nav-dashboard">
           <span class="nav-item-icon"><svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg></span> Dashboard
         </button>
-        <button class="nav-item" data-view="inbox" id="nav-inbox">
-          <span class="nav-item-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg></span> WhatsApp Inbox
-        </button>
         <button class="nav-item" data-view="clients" id="nav-clients">
           <span class="nav-item-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span> Client Database
         </button>
         <button class="nav-item" data-view="media" id="nav-media">
           <span class="nav-item-icon"><svg class="icon-svg" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg></span> Media Vault
+        </button>
+        <button class="nav-item" data-view="status" id="nav-status">
+          <span class="nav-item-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg></span> Status
         </button>
       </nav>
 
@@ -139,111 +120,143 @@
             </div>
           </div>
         </div>
-
-        <div class="dashboard-content-box">
-          <div class="box-title">Recent Prompt Generations</div>
-          <div class="table-wrapper">
-            <table class="dashboard-table">
-              <thead>
-                <tr>
-                  <th>Client</th>
-                  <th>Category</th>
-                  <th>Polished Prompt</th>
-                  <th>Status</th>
-                  <th>Action</th>
-                </tr>
-              </thead>
-              <tbody id="dashboard-recent-prompts">
-                <!-- Recent prompts generated populated dynamically -->
-              </tbody>
-            </table>
-          </div>
-        </div>
       </section>
 
-      <!-- View 2: WhatsApp Inbox View -->
-      <section class="view-panel" id="view-inbox">
-        <div class="inbox-grid">
-          
-          <!-- Column 1: WhatsApp Chats List -->
-          <div class="inbox-panel">
-            <div class="panel-header">
-              <h3>WhatsApp Streams</h3>
-            </div>
-            <div class="chat-list-scroller" id="chat-list">
-              <!-- Population by state.js -->
-            </div>
-          </div>
-
-          <!-- Column 2: Selected Chat Feed -->
-          <div class="inbox-panel">
-            <div class="chat-window-header">
-              <div class="chat-avatar" id="chat-header-avatar">⚡</div>
-              <div>
-                <h3 id="chat-header-name">Client Name</h3>
-                <p class="sub-phone" id="chat-header-phone">+91 98765 43210</p>
-              </div>
-            </div>
-            <div class="chat-window-feed" id="chat-feed">
-              <!-- Chat history logs populated dynamically -->
-            </div>
-          </div>
-
-          <!-- Column 3: AI Prompt Workspace & Client Guidelines -->
-          <div class="inbox-panel">
-            <div class="profile-section">
-              <h4>Brand Guidelines</h4>
-              <div id="client-profile-brand">
-                <!-- Colors & guidelines dynamic output -->
-              </div>
-            </div>
-            
-            <div class="profile-section" style="max-height: 160px; overflow-y: auto;">
-              <h4>Creative Style</h4>
-              <p class="direction-notes" id="client-direction">Client preferred style rules...</p>
-            </div>
-
-            <div class="ai-engine-card">
-              <div class="panel-header" style="border-bottom: 1px solid var(--border-subtle)">
-                <h3 style="color: var(--accent-red); font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">🤖 AI Prompt Generator</h3>
-              </div>
-              <div class="ai-output-box" id="ai-prompt-output">
-                <!-- Live parsing/loading and output card -->
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </section>
 
       <!-- View 3: Clients Database Grid -->
-      <section class="view-panel" id="view-clients">
-        <div class="view-header">
-          <h1>Client Directory</h1>
-          <p>Manage style presets, creative scopes, and past logs</p>
+      <section class="view-panel" id="view-clients" style="padding: 20px;">
+        <!-- Top Navigation Header Bar -->
+        <div class="clients-top-bar" style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 20px;">
+          <div>
+            <button id="toggle-sidebar-btn" class="action-btn" style="width: 36px; height: 36px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%;" title="Toggle Sidebar Navigation">
+              <svg class="icon-svg" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+            </button>
+          </div>
+          
+          <div class="company-filter-wrapper" style="display: flex; align-items: center; gap: 8px;">
+            <div class="custom-dropdown" id="client-db-filter-dropdown">
+              <div class="custom-dropdown-trigger">
+                <span id="custom-dropdown-selected-name">Select Client</span>
+                <svg class="icon-svg dropdown-arrow" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+              <div class="custom-dropdown-options" id="custom-dropdown-options-list">
+                <!-- Populate dynamically via state -->
+              </div>
+            </div>
+          </div>
         </div>
 
         <div class="clients-grid">
-          <div class="clients-list-card" id="clients-list-container">
-            <!-- Render client rows here -->
+          <!-- Column 1: Client Messages -->
+          <div class="client-details-pane" id="client-col-messages">
+            <!-- Dynamically show active client WhatsApp messages -->
           </div>
           
-          <div class="client-details-pane" id="client-details-pane">
-            <!-- Dynamically show active client details -->
+          <!-- Column 2: Brand Guidelines -->
+          <div class="client-details-pane" id="client-col-guidelines">
+            <!-- Dynamically show active client guidelines -->
+          </div>
+
+          <!-- Column 3: About the Project -->
+          <div class="client-details-pane" id="client-col-projects">
+            <!-- Dynamically show active client projects -->
+          </div>
+
+          <!-- Column 4: Prompt -->
+          <div class="client-details-pane" id="client-col-prompt-history">
+            <!-- Dynamically show active client generated prompts -->
           </div>
         </div>
       </section>
 
       <!-- View 4: Media Vault -->
-      <section class="view-panel" id="view-media">
-        <div class="view-header">
-          <h1>Creative Media Vault</h1>
-          <p>Archive of all client attachments and visual reference mockups</p>
+      <section class="view-panel" id="view-media" style="padding: 20px;">
+        <!-- Top Navigation Header Bar -->
+        <div class="media-top-bar" style="display: flex; align-items: center; margin-bottom: 16px; gap: 20px;">
+          <button class="action-btn toggle-sidebar-media-btn" style="width: 36px; height: 36px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%;" title="Go back to Dashboard">
+            <svg class="icon-svg" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          </button>
+          <div class="view-header" style="margin-bottom: 0;">
+            <h1 style="font-size: 24px; font-weight: 700; margin: 0;">Creative Media Vault</h1>
+            <p style="margin-top: 2px;">Archive of all client attachments and visual reference mockups</p>
+          </div>
         </div>
 
         <div class="media-vault-scroll">
-          <div class="media-grid" id="media-grid">
-            <!-- Grid of images and attachment logs -->
+          <div class="media-vault-container" id="media-grid">
+            <!-- Grid of images grouped by client -->
+          </div>
+        </div>
+      </section>
+
+      <!-- View 5: Project Status Telemetry Board -->
+      <section class="view-panel" id="view-status" style="padding: 20px;">
+        <!-- Top Navigation Header Bar -->
+        <div class="status-top-bar" style="display: flex; align-items: center; margin-bottom: 16px; gap: 20px;">
+          <button class="action-btn toggle-sidebar-status-btn" style="width: 36px; height: 36px; padding: 0; display: flex; align-items: center; justify-content: center; border-radius: 50%;" title="Go back to Dashboard">
+            <svg class="icon-svg" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          </button>
+          <div class="view-header" style="margin-bottom: 0;">
+            <h1 style="font-size: 24px; font-weight: 700; margin: 0;">Production Status Board</h1>
+            <p style="margin-top: 2px;">Centralized tracking for all client deliverables and campaign progress</p>
+          </div>
+        </div>
+
+        <div class="clients-grid" id="status-board">
+          <!-- Pending Production Column -->
+          <div class="client-details-pane" id="col-pending">
+            <div class="panel-header" style="padding-bottom: 12px; margin-bottom: 16px; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="column-dot dot-yellow"></span>
+                <h3 style="font-size: 14px; font-weight: 700; margin: 0; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px;">Pending</h3>
+              </div>
+              <span class="column-count" id="count-pending" style="font-size: 11px; font-weight: 700; background: rgba(255, 255, 255, 0.05); padding: 2px 8px; border-radius: 10px; color: var(--text-muted);">0</span>
+            </div>
+            <div class="column-cards" id="cards-pending" style="display: flex; flex-direction: column; gap: 12px; height: calc(100% - 45px); overflow-y: auto; padding-right: 5px;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Pending Approval Column -->
+          <div class="client-details-pane" id="col-approval">
+            <div class="panel-header" style="padding-bottom: 12px; margin-bottom: 16px; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="column-dot dot-orange"></span>
+                <h3 style="font-size: 14px; font-weight: 700; margin: 0; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px;">Approval</h3>
+              </div>
+              <span class="column-count" id="count-approval" style="font-size: 11px; font-weight: 700; background: rgba(255, 255, 255, 0.05); padding: 2px 8px; border-radius: 10px; color: var(--text-muted);">0</span>
+            </div>
+            <div class="column-cards" id="cards-approval" style="display: flex; flex-direction: column; gap: 12px; height: calc(100% - 45px); overflow-y: auto; padding-right: 5px;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- In Production Column -->
+          <div class="client-details-pane" id="col-progress">
+            <div class="panel-header" style="padding-bottom: 12px; margin-bottom: 16px; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="column-dot dot-blue"></span>
+                <h3 style="font-size: 14px; font-weight: 700; margin: 0; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px;">Production</h3>
+              </div>
+              <span class="column-count" id="count-progress" style="font-size: 11px; font-weight: 700; background: rgba(255, 255, 255, 0.05); padding: 2px 8px; border-radius: 10px; color: var(--text-muted);">0</span>
+            </div>
+            <div class="column-cards" id="cards-progress" style="display: flex; flex-direction: column; gap: 12px; height: calc(100% - 45px); overflow-y: auto; padding-right: 5px;">
+              <!-- Rendered dynamically -->
+            </div>
+          </div>
+
+          <!-- Completed Column -->
+          <div class="client-details-pane" id="col-completed">
+            <div class="panel-header" style="padding-bottom: 12px; margin-bottom: 16px; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between;">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <span class="column-dot dot-green"></span>
+                <h3 style="font-size: 14px; font-weight: 700; margin: 0; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px;">Completed</h3>
+              </div>
+              <span class="column-count" id="count-completed" style="font-size: 11px; font-weight: 700; background: rgba(255, 255, 255, 0.05); padding: 2px 8px; border-radius: 10px; color: var(--text-muted);">0</span>
+            </div>
+            <div class="column-cards" id="cards-completed" style="display: flex; flex-direction: column; gap: 12px; height: calc(100% - 45px); overflow-y: auto; padding-right: 5px;">
+              <!-- Rendered dynamically -->
+            </div>
           </div>
         </div>
       </section>
@@ -263,8 +276,8 @@
   </div>
 
   <!-- JS Scripts -->
-  <script src="js/state.js"></script>
-  <script src="js/simulator.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/state.js?v=20"></script>
+  <script src="js/simulator.js?v=20"></script>
+  <script src="js/app.js?v=20"></script>
 </body>
 </html>

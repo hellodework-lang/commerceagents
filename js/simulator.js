@@ -56,11 +56,11 @@
   };
 
   function simulateIncomingMessage(templateIndex) {
-    const { store, MOCK_TEMPLATES } = window.DashboardState;
+    const { store: appStore, MOCK_TEMPLATES } = window.DashboardState;
     const template = MOCK_TEMPLATES[templateIndex];
     if (!template) return;
 
-    const client = store.getState().clients.find(c => c.id === template.clientId);
+    const client = appStore.getState().clients.find(c => c.id === template.clientId);
     if (!client) return;
 
     // 1. Add the message to chat
@@ -75,7 +75,13 @@
     };
 
     if (template.msgType === 'image') {
-      newMessage.text = "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=800";
+      newMessage.text = template.mediaUrl || "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&q=80&w=800";
+      newMessage.caption = template.userMessage;
+    } else if (template.msgType === 'audio') {
+      newMessage.text = template.mediaUrl || "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3";
+      newMessage.duration = template.duration || "0:12";
+    } else if (template.msgType === 'video') {
+      newMessage.text = template.mediaUrl || "https://assets.mixkit.co/videos/preview/mixkit-pouring-sauce-on-a-hamburger-40057-large.mp4";
       newMessage.caption = template.userMessage;
     }
 
@@ -83,10 +89,10 @@
     playSynthSound('incoming');
 
     // Push message to chat history
-    store.addMessage(client.phone, newMessage);
+    appStore.addMessage(client.phone, newMessage);
 
     // Set AI Generation state to active
-    store.updateState({
+    appStore.updateState({
       aiGenerationState: {
         isParsing: true,
         parsedText: "Listening & identifying language...",
@@ -99,13 +105,13 @@
     // Play scanning synthesizer sweep
     setTimeout(() => {
       playSynthSound('ai-start');
-      store.updateState({
+      appStore.updateState({
         aiGenerationState: {
           isParsing: true,
           parsedText: `Identified Language: ${template.language}. Extracting creative requirement: "${template.userMessage}"...`,
           isGenerating: true,
           generatedPrompt: null,
-          activeMessageId: store.getState().aiGenerationState.activeMessageId
+          activeMessageId: appStore.getState().aiGenerationState.activeMessageId
         }
       });
     }, 1200);
@@ -121,14 +127,16 @@
         projectTitle: template.projectTitle,
         promptCategory: template.promptCategory,
         status: "Pending Manual Production",
-        media: template.msgType === 'image' ? newMessage.text : null
+        media: (template.msgType === 'image' || template.msgType === 'video' || template.msgType === 'audio') ? newMessage.text : null,
+        mediaType: template.msgType,
+        duration: template.msgType === 'audio' ? (template.duration || "0:12") : null
       };
 
       // Save generated prompt under client details and store
-      store.updateClientPromptHistory(client.phone, finalPrompt);
+      appStore.updateClientPromptHistory(client.phone, finalPrompt);
       playSynthSound('ai-success');
 
-      store.updateState({
+      appStore.updateState({
         aiGenerationState: {
           isParsing: false,
           parsedText: "",
