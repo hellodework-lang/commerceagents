@@ -569,12 +569,18 @@
           <p class="project-card-desc" style="margin-top: 4px; line-height: 1.4; color: var(--text-muted);">${p.description || ''}</p>
           <div class="project-card-footer">
             <span class="project-card-cat">${p.category}</span>
-            <select class="status-select-action mini-select" data-client-phone="${p.phone}" data-project-id="${p.id}">
-              <option value="Pending Manual Production" ${p.status === 'Pending Manual Production' ? 'selected' : ''}>Pending</option>
-              <option value="Pending Approval" ${p.status === 'Pending Approval' ? 'selected' : ''}>Approval</option>
-              <option value="In Production" ${p.status === 'In Production' ? 'selected' : ''}>Production</option>
-              <option value="Completed" ${p.status === 'Completed' ? 'selected' : ''}>Completed</option>
-            </select>
+            <div class="custom-status-dropdown" data-client-phone="${p.phone}" data-project-id="${p.id}">
+              <div class="custom-status-trigger">
+                <span>${p.status === 'Pending Manual Production' ? 'Pending' : (p.status === 'Pending Approval' ? 'Approval' : (p.status === 'In Production' ? 'Production' : 'Completed'))}</span>
+                <svg class="icon-svg status-dropdown-arrow" viewBox="0 0 24 24" style="width: 10px; height: 10px; margin-left: 4px;"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+              <div class="custom-status-options">
+                <div class="custom-status-option ${p.status === 'Pending Manual Production' ? 'selected' : ''}" data-value="Pending Manual Production">Pending</div>
+                <div class="custom-status-option ${p.status === 'Pending Approval' ? 'selected' : ''}" data-value="Pending Approval">Approval</div>
+                <div class="custom-status-option ${p.status === 'In Production' ? 'selected' : ''}" data-value="In Production">Production</div>
+                <div class="custom-status-option ${p.status === 'Completed' ? 'selected' : ''}" data-value="Completed">Completed</div>
+              </div>
+            </div>
           </div>
         </div>
       `).join('');
@@ -590,21 +596,12 @@
     el.countProgress.textContent = progress.length;
     el.countCompleted.textContent = completed.length;
 
-    // Attach change event listeners for selector dropdowns inside the status board columns
+    // Attach click listeners on status cards
     [el.colPending, el.colApproval, el.colProgress, el.colCompleted].forEach(col => {
-      col.querySelectorAll('.status-select-action').forEach(select => {
-        select.addEventListener('change', (e) => {
-          const phone = e.target.getAttribute('data-client-phone');
-          const projId = e.target.getAttribute('data-project-id');
-          const newStatus = e.target.value;
-          appStore.updateProjectStatus(phone, projId, newStatus);
-        });
-      });
-
       // Navigate to the client database view on card click (ignoring click on the dropdown itself)
       col.querySelectorAll('.status-project-card').forEach(card => {
         card.addEventListener('click', (e) => {
-          if (e.target.closest('.status-select-action')) return;
+          if (e.target.closest('.custom-status-dropdown')) return;
           const phone = card.getAttribute('data-phone');
           appStore.updateState({ activeChatPhone: phone });
           appStore.clearUnreads(phone);
@@ -750,9 +747,42 @@
       }
 
       document.addEventListener('click', (e) => {
-        if (!el.clientDbFilterDropdown.contains(e.target)) {
+        if (el.clientDbFilterDropdown && !el.clientDbFilterDropdown.contains(e.target)) {
           el.clientDbFilterDropdown.classList.remove('open');
         }
+
+        // Handle custom status dropdown trigger click inside project cards
+        const statusTrigger = e.target.closest('.custom-status-trigger');
+        if (statusTrigger) {
+          e.stopPropagation();
+          const dropdown = statusTrigger.closest('.custom-status-dropdown');
+          
+          // Close all other status dropdowns first
+          document.querySelectorAll('.custom-status-dropdown.open').forEach(d => {
+            if (d !== dropdown) d.classList.remove('open');
+          });
+          
+          dropdown.classList.toggle('open');
+          return;
+        }
+
+        // Handle custom status option click
+        const statusOption = e.target.closest('.custom-status-option');
+        if (statusOption) {
+          e.stopPropagation();
+          const dropdown = statusOption.closest('.custom-status-dropdown');
+          const phone = dropdown.getAttribute('data-client-phone');
+          const projId = dropdown.getAttribute('data-project-id');
+          const newStatus = statusOption.getAttribute('data-value');
+          
+          appStore.updateProjectStatus(phone, projId, newStatus);
+          return;
+        }
+
+        // Clicked outside, close all status dropdowns
+        document.querySelectorAll('.custom-status-dropdown.open').forEach(d => {
+          d.classList.remove('open');
+        });
       });
     }
 
