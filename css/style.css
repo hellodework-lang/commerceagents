@@ -1876,10 +1876,10 @@ body {
   height: 100%;
   border-radius: 50%;
   background: conic-gradient(
-    var(--accent-red) 0% 65%,
-    #9034ff 65% 85%,
-    #3498db 85% 95%,
-    #f1c40f 95% 100%
+    #2ecc71 0% 43%,
+    #3498db 43% 71%,
+    #9034ff 71% 85%,
+    var(--accent-red) 85% 100%
   );
   box-shadow: 0 0 15px rgba(255, 34, 51, 0.1);
   transition: var(--transition-smooth);

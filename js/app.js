@@ -100,6 +100,74 @@
     });
     el.statPendingTasks.textContent = pendingCount;
 
+    // Calculate Project status split for Company Overview
+    let totalProjects = 0;
+    let completedCount = 0;
+    let inProgressCount = 0;
+    let pendingApprovalCount = 0;
+    let pendingProductionCount = 0;
+
+    state.clients.forEach(c => {
+      c.activeProjects.forEach(p => {
+        totalProjects++;
+        if (p.status === 'Completed') {
+          completedCount++;
+        } else if (p.status === 'In Production') {
+          inProgressCount++;
+        } else if (p.status === 'Pending Approval') {
+          pendingApprovalCount++;
+        } else {
+          pendingProductionCount++;
+        }
+      });
+    });
+
+    const total = totalProjects || 1; // prevent division by zero
+    const pctCompleted = Math.round((completedCount / total) * 100);
+    const pctProgress = Math.round((inProgressCount / total) * 100);
+    const pctApproval = Math.round((pendingApprovalCount / total) * 100);
+    const pctPending = 100 - pctCompleted - pctProgress - pctApproval;
+
+    // Update Donut Chart DOM elements
+    const projectsRing = document.getElementById('donut-projects-ring');
+    const projectsVal = document.getElementById('donut-projects-val');
+    const companiesVal = document.getElementById('donut-companies-val');
+    const completedVal = document.getElementById('donut-completed-val');
+    const completedPct = document.getElementById('donut-completed-pct');
+    const productionVal = document.getElementById('donut-production-val');
+    const productionPct = document.getElementById('donut-production-pct');
+    const approvalVal = document.getElementById('donut-approval-val');
+    const approvalPct = document.getElementById('donut-approval-pct');
+    const pendingVal = document.getElementById('donut-pending-val');
+    const pendingPct = document.getElementById('donut-pending-pct');
+
+    if (projectsVal) projectsVal.textContent = totalProjects;
+    if (companiesVal) companiesVal.textContent = state.clients.length;
+    if (completedVal) completedVal.textContent = completedCount;
+    if (completedPct) completedPct.textContent = `(${pctCompleted}%)`;
+    if (productionVal) productionVal.textContent = inProgressCount;
+    if (productionPct) productionPct.textContent = `(${pctProgress}%)`;
+    if (approvalVal) approvalVal.textContent = pendingApprovalCount;
+    if (approvalPct) approvalPct.textContent = `(${pctApproval}%)`;
+    if (pendingVal) pendingVal.textContent = pendingProductionCount;
+    if (pendingPct) pendingPct.textContent = `(${pctPending}%)`;
+
+    // Conic gradient background rendering:
+    // Completed (Green): #2ecc71
+    // In Production (Blue): #3498db
+    // Pending Approval (Purple): #9034ff
+    // Pending Production (Red): var(--accent-red)
+    if (projectsRing) {
+      const stop1 = pctCompleted;
+      const stop2 = stop1 + pctProgress;
+      const stop3 = stop2 + pctApproval;
+      projectsRing.style.background = `conic-gradient(
+        #2ecc71 0% ${stop1}%,
+        #3498db ${stop1}% ${stop2}%,
+        #9034ff ${stop2}% ${stop3}%,
+        var(--accent-red) ${stop3}% 100%
+      )`;
+    }
   }
 
 

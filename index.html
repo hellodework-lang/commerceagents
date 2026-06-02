@@ -142,10 +142,10 @@
             </div>
           </div>
 
-          <!-- Engine Split Overview Box -->
+          <!-- Operations Overview Box -->
           <div class="performance-card glass-panel" style="border-radius: 12px; border: 1px solid var(--border-subtle); padding: 20px; background: var(--bg-panel); display: flex; flex-direction: column; gap: 16px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <h3 style="font-size: 14px; font-weight: 700; margin: 0; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px;">Engine Overview</h3>
+              <h3 style="font-size: 14px; font-weight: 700; margin: 0; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px;">Operations Overview</h3>
               <button class="action-btn-mini" style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 2px;">
                 <svg class="icon-svg" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
               </button>
@@ -154,59 +154,71 @@
             <div class="donut-chart-layout" style="display: flex; align-items: center; gap: 20px;">
               <!-- Left: Donut Chart -->
               <div class="donut-chart-wrapper">
-                <div class="donut-chart-ring"></div>
+                <div class="donut-chart-ring" id="donut-projects-ring"></div>
                 <div class="donut-chart-hole">
-                  <span class="donut-val">1.2k</span>
-                  <span class="donut-lbl">Generations</span>
+                  <span class="donut-val" id="donut-projects-val">0</span>
+                  <span class="donut-lbl" id="donut-projects-lbl">Projects</span>
                 </div>
               </div>
               
               <!-- Right: Split Details -->
               <div style="flex: 1; display: flex; flex-direction: column; gap: 12px;">
-                <!-- Top: Total Active Stat -->
+                <!-- Top: Total Active Companies Stat -->
                 <div style="display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px;">
                   <div style="background: rgba(255, 34, 51, 0.1); border-radius: 6px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--accent-red);">
-                    <svg class="icon-svg" viewBox="0 0 24 24" style="width: 18px; height: 18px;"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                    <svg class="icon-svg" viewBox="0 0 24 24" style="width: 18px; height: 18px;"><rect x="2" y="2" width="20" height="20" rx="2" ry="2"></rect><path d="M7 22V14h10v8"></path><path d="M9 8h6"></path><path d="M9 12h6"></path></svg>
                   </div>
                   <div>
-                    <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Total Active</div>
-                    <div style="font-size: 16px; font-weight: 700; color: var(--text-main); line-height: 1.1;">1,240</div>
+                    <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Active Companies</div>
+                    <div style="font-size: 16px; font-weight: 700; color: var(--text-main); line-height: 1.1;" id="donut-companies-val">0</div>
                   </div>
                 </div>
                 
                 <!-- Bottom: 2x2 Grid -->
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px;">
-                  <!-- Midjourney -->
+                  <!-- Completed -->
                   <div>
                     <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; margin-bottom: 2px;">
-                      <span class="legend-dot" style="width: 6px; height: 6px; background: var(--accent-red); border-radius: 50%;"></span>
-                      <span style="color: var(--text-muted); font-weight: 500;">Midjourney</span>
+                      <span class="legend-dot" style="width: 6px; height: 6px; background: #2ecc71; border-radius: 50%;"></span>
+                      <span style="color: var(--text-muted); font-weight: 500;">Completed</span>
                     </div>
-                    <div style="font-size: 12px; font-weight: 700; color: var(--text-main); padding-left: 12px;">806 <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);">(65%)</span></div>
-                  </div>
-                  <!-- Runway Gen-3 -->
-                  <div>
-                    <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; margin-bottom: 2px;">
-                      <span class="legend-dot" style="width: 6px; height: 6px; background: #9034ff; border-radius: 50%;"></span>
-                      <span style="color: var(--text-muted); font-weight: 500;">Runway</span>
+                    <div style="font-size: 12px; font-weight: 700; color: var(--text-main); padding-left: 12px;">
+                      <span id="donut-completed-val">0</span>
+                      <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);" id="donut-completed-pct">(0%)</span>
                     </div>
-                    <div style="font-size: 12px; font-weight: 700; color: var(--text-main); padding-left: 12px;">248 <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);">(20%)</span></div>
                   </div>
-                  <!-- Stable Diffusion -->
+                  <!-- In Production -->
                   <div>
                     <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; margin-bottom: 2px;">
                       <span class="legend-dot" style="width: 6px; height: 6px; background: #3498db; border-radius: 50%;"></span>
-                      <span style="color: var(--text-muted); font-weight: 500;">Stable Diff.</span>
+                      <span style="color: var(--text-muted); font-weight: 500;">Production</span>
                     </div>
-                    <div style="font-size: 12px; font-weight: 700; color: var(--text-main); padding-left: 12px;">124 <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);">(10%)</span></div>
+                    <div style="font-size: 12px; font-weight: 700; color: var(--text-main); padding-left: 12px;">
+                      <span id="donut-production-val">0</span>
+                      <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);" id="donut-production-pct">(0%)</span>
+                    </div>
                   </div>
-                  <!-- Dall-E 3 -->
+                  <!-- Pending Approval -->
                   <div>
                     <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; margin-bottom: 2px;">
-                      <span class="legend-dot" style="width: 6px; height: 6px; background: #f1c40f; border-radius: 50%;"></span>
-                      <span style="color: var(--text-muted); font-weight: 500;">Dall-E 3</span>
+                      <span class="legend-dot" style="width: 6px; height: 6px; background: #9034ff; border-radius: 50%;"></span>
+                      <span style="color: var(--text-muted); font-weight: 500;">Approval</span>
                     </div>
-                    <div style="font-size: 12px; font-weight: 700; color: var(--text-main); padding-left: 12px;">62 <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);">(5%)</span></div>
+                    <div style="font-size: 12px; font-weight: 700; color: var(--text-main); padding-left: 12px;">
+                      <span id="donut-approval-val">0</span>
+                      <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);" id="donut-approval-pct">(0%)</span>
+                    </div>
+                  </div>
+                  <!-- Pending Production -->
+                  <div>
+                    <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; margin-bottom: 2px;">
+                      <span class="legend-dot" style="width: 6px; height: 6px; background: var(--accent-red); border-radius: 50%;"></span>
+                      <span style="color: var(--text-muted); font-weight: 500;">Pending</span>
+                    </div>
+                    <div style="font-size: 12px; font-weight: 700; color: var(--text-main); padding-left: 12px;">
+                      <span id="donut-pending-val">0</span>
+                      <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);" id="donut-pending-pct">(0%)</span>
+                    </div>
                   </div>
                 </div>
               </div>

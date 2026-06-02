@@ -15,7 +15,8 @@
       creativeDirection: "High-contrast photography, dynamic action shots, neon light trails, futuristic sportswear concepts, bold minimal overlays.",
       activeProjects: [
         { id: "proj-1", name: "Air Max Pulse launch", status: "In Production", category: "Poster Design", description: "Design high-energy promotional posters for the Air Max Pulse launch, incorporating bright red neon trails and motion-blurred runner silhouettes." },
-        { id: "proj-2", name: "Monsoon Runners social", status: "Pending Approval", category: "Social Media Campaign", description: "Social campaign focused on urban running in heavy rain. Requirements: overcast mood, wet asphalt reflection, and vibrant overlay details." }
+        { id: "proj-2", name: "Monsoon Runners social", status: "Pending Approval", category: "Social Media Campaign", description: "Social campaign focused on urban running in heavy rain. Requirements: overcast mood, wet asphalt reflection, and vibrant overlay details." },
+        { id: "proj-comp-1", name: "Pegasus 40 promotion", status: "Completed", category: "Poster Design", description: "Design promotional materials for Pegasus 40 launch." }
       ],
       promptHistory: [
         {
@@ -52,7 +53,8 @@
       },
       creativeDirection: "Warm sunlight filters, cozy aesthetic setups, organic textures, elegant flatlays, minimalist typography, green-tinted shadows.",
       activeProjects: [
-        { id: "proj-3", name: "Filter Coffee Fusion campaign", status: "In Production", category: "Social Media Banner", description: "Promoting South Indian Filter Coffee with warm wooden textures, cozy morning sunlight, scattered coffee beans, and traditional brass tumblers." }
+        { id: "proj-3", name: "Filter Coffee Fusion campaign", status: "In Production", category: "Social Media Banner", description: "Promoting South Indian Filter Coffee with warm wooden textures, cozy morning sunlight, scattered coffee beans, and traditional brass tumblers." },
+        { id: "proj-comp-2", name: "Summer Drink campaign", status: "Completed", category: "Social Media Banner", description: "Completed social assets for summer season drinks." }
       ],
       promptHistory: [
         {
@@ -90,7 +92,8 @@
       },
       creativeDirection: "Saturated popping colors, close-up macro shots of melting cheese, retro pop-art style vectors, neon signage backgrounds, street-style poster design.",
       activeProjects: [
-        { id: "proj-4", name: "Ghost Pepper Burger launch", status: "Pending Manual Production", category: "Poster Design", description: "Promote the ultra-spicy Ghost Pepper Cheese Burger. Focuses on macro cheese melting, dipping chili sauce, steam effects, and flashing retro neon signs." }
+        { id: "proj-4", name: "Ghost Pepper Burger launch", status: "Pending Manual Production", category: "Poster Design", description: "Promote the ultra-spicy Ghost Pepper Cheese Burger. Focuses on macro cheese melting, dipping chili sauce, steam effects, and flashing retro neon signs." },
+        { id: "proj-comp-3", name: "Grand Opening banner", status: "Completed", category: "Poster Design", description: "Completed storefront banner design." }
       ],
       promptHistory: [
         {
