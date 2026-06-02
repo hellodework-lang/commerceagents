@@ -1431,13 +1431,13 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: var(--bg-darker);
+  background: radial-gradient(circle at center, #0a0a0f 0%, #000000 100%);
   z-index: 1000;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.6s ease;
+  transition: opacity 1s cubic-bezier(0.16, 1, 0.3, 1), filter 1s ease;
 }
 
 .splash-container.fade-out {
@@ -1453,102 +1453,112 @@ body {
   margin-bottom: 44px;
 }
 
-/* ─── STEP 1: Logo — inside-to-outside radial reveal ─── */
+/* ─── STEP 1: Cinematic Logo Reveal (Organic Glow) ─── */
 .splash-logo {
   color: var(--accent-red);
+  position: relative;
 }
 
 .splash-logo--reveal {
   opacity: 0;
-  clip-path: circle(0% at 50% 50%);
-  filter: drop-shadow(0 0 0px transparent);
-  animation: logo-radial-reveal 1s cubic-bezier(0.22, 1, 0.36, 1) 0.2s forwards;
+  filter: blur(15px) brightness(2) drop-shadow(0 0 0px transparent);
+  transform: scale(0.6);
+  animation: logo-organic-reveal 2.5s cubic-bezier(0.16, 1, 0.3, 1) 0.3s forwards;
 }
 
-@keyframes logo-radial-reveal {
+@keyframes logo-organic-reveal {
   0% {
     opacity: 0;
-    clip-path: circle(0% at 50% 50%);
-    filter: drop-shadow(0 0 0px transparent);
+    filter: blur(15px) brightness(2) drop-shadow(0 0 0px transparent);
+    transform: scale(0.6);
   }
-  40% {
+  50% {
     opacity: 1;
-    clip-path: circle(40% at 50% 50%);
-    filter: drop-shadow(0 0 6px var(--accent-red-glow));
+    filter: blur(3px) brightness(1.2) drop-shadow(0 0 40px rgba(255, 34, 51, 0.9));
+    transform: scale(1.05);
   }
   100% {
     opacity: 1;
-    clip-path: circle(100% at 50% 50%);
-    filter: drop-shadow(0 0 20px var(--accent-red));
+    filter: blur(0px) brightness(1) drop-shadow(0 0 15px rgba(255, 34, 51, 0.5));
+    transform: scale(1);
   }
 }
 
-/* ─── STEP 2: Title — outside-to-inside convergence ─── */
+/* ─── STEP 2: Title — Cinematic Outside-to-Inside Materialize ─── */
 .splash-title {
   font-size: 26px;
   font-weight: 900;
-  letter-spacing: 1px;
+  letter-spacing: 2px;
   text-transform: uppercase;
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
 }
 
 .splash-title span {
   color: var(--accent-red);
+  text-shadow: 0 0 15px rgba(255, 34, 51, 0.6);
 }
 
 .splash-title--reveal {
   opacity: 0;
-  letter-spacing: 30px;
-  filter: blur(6px);
-  animation: title-converge 0.9s cubic-bezier(0.22, 1, 0.36, 1) 1.3s forwards;
+  letter-spacing: 60px;
+  filter: blur(15px);
+  transform: scale(1.1);
+  animation: title-cinematic-converge 2s cubic-bezier(0.16, 1, 0.3, 1) 1.5s forwards;
 }
 
-@keyframes title-converge {
+@keyframes title-cinematic-converge {
   0% {
     opacity: 0;
-    letter-spacing: 30px;
-    filter: blur(6px);
+    letter-spacing: 60px;
+    filter: blur(15px);
+    transform: scale(1.1);
   }
-  60% {
+  50% {
     opacity: 1;
-    filter: blur(1px);
+    filter: blur(2px);
   }
   100% {
     opacity: 1;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     filter: blur(0px);
+    transform: scale(1);
   }
 }
 
-/* ─── STEP 3: Subtitle — gentle fade after title ─── */
+/* ─── STEP 3: Subtitle — Subtle Fade ─── */
 .splash-subtitle {
   font-size: 12px;
-  color: var(--text-muted);
+  color: rgba(255,255,255,0.4);
   text-transform: uppercase;
-  letter-spacing: 4px;
+  letter-spacing: 6px;
 }
 
 .splash-subtitle--reveal {
   opacity: 0;
-  transform: translateY(8px);
-  animation: subtitle-fade 0.7s ease 2.3s forwards;
+  transform: translateY(15px);
+  filter: blur(4px);
+  animation: subtitle-cinematic-fade 1.5s cubic-bezier(0.16, 1, 0.3, 1) 2.2s forwards;
 }
 
-@keyframes subtitle-fade {
+@keyframes subtitle-cinematic-fade {
   0% {
     opacity: 0;
-    transform: translateY(8px);
+    transform: translateY(15px);
+    filter: blur(4px);
   }
   100% {
     opacity: 1;
     transform: translateY(0);
+    filter: blur(0px);
   }
 }
 
-/* ─── STEP 4: Progress bar — slides in last ─── */
+/* ─── STEP 4: Progress bar ─── */
 .splash-loader-bar {
-  width: 250px;
-  height: 3px;
-  background-color: rgba(255, 255, 255, 0.05);
+  width: 280px;
+  height: 2px;
+  background-color: rgba(255, 255, 255, 0.03);
   border-radius: 4px;
   position: relative;
   overflow: hidden;
@@ -1556,7 +1566,7 @@ body {
 
 .splash-bar--reveal {
   opacity: 0;
-  animation: bar-fade 0.5s ease 2.9s forwards;
+  animation: bar-fade 1s ease 2.5s forwards;
 }
 
 @keyframes bar-fade {
@@ -1571,8 +1581,16 @@ body {
   height: 100%;
   width: 0%;
   background-color: var(--accent-red);
-  box-shadow: 0 0 10px var(--accent-red);
-  animation: progress-fill 2.8s 3s forwards cubic-bezier(0.1, 0.8, 0.25, 1);
+  box-shadow: 0 0 15px var(--accent-red), 0 0 5px #fff;
+  animation: cinematic-progress 2s forwards cubic-bezier(0.16, 1, 0.3, 1) 2.6s;
+}
+
+@keyframes cinematic-progress {
+  0% { width: 0%; opacity: 0; }
+  10% { opacity: 1; }
+  40% { width: 30%; }
+  70% { width: 85%; }
+  100% { width: 100%; opacity: 1; }
 }
 
 .splash-console {
@@ -1824,35 +1842,6 @@ body {
   line-height: 1;
 }
 
-/* Premium Dashboard Layout Grid */
-.dashboard-grid {
-  margin-top: 20px;
-}
-
-/* Animated SVG Area Chart */
-.chart-line-path {
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
-  animation: draw-line 3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-.chart-area-path {
-  opacity: 0;
-  animation: fade-in-area 1.5s 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes draw-line {
-  to {
-    stroke-dashoffset: 0;
-  }
-}
-
-@keyframes fade-in-area {
-  to {
-    opacity: 1;
-  }
-}
-
 /* Live Diagnostics Pulse Dot */
 .pulse-dot {
   animation: pulse-dot-glow 1.5s infinite alternate ease-in-out;
@@ -1905,10 +1894,10 @@ body {
   height: 100%;
   border-radius: 50%;
   background: conic-gradient(
-    var(--accent-red) 0% 65%,
-    #9034ff 65% 85%,
-    #3498db 85% 95%,
-    #f1c40f 95% 100%
+    #2ecc71 0% 43%,
+    #3498db 43% 71%,
+    #9034ff 71% 85%,
+    var(--accent-red) 85% 100%
   );
   box-shadow: 0 0 15px rgba(255, 34, 51, 0.1);
   transition: var(--transition-smooth);
