@@ -97,157 +97,120 @@
           <p>Real-time telemetry and prompt queue metrics</p>
         </div>
 
-        <div class="dashboard-grid" style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px; margin-top: 10px;">
-          <!-- Left Column: Stats & SVG Area Chart -->
-          <div style="display: flex; flex-direction: column; gap: 24px;">
-            <!-- Stats Row -->
-            <div class="stats-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 0;">
-              <div class="stat-card" id="stat-card-clients" style="cursor: pointer;">
-                <div class="stat-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
-                <div class="stat-info">
-                  <span class="stat-value" id="stat-clients-count">0</span>
-                  <span class="stat-label">Total Clients</span>
-                </div>
-              </div>
-              <div class="stat-card" id="stat-card-prompts" style="cursor: pointer;">
-                <div class="stat-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg></div>
-                <div class="stat-info">
-                  <span class="stat-value" id="stat-prompts-count">0</span>
-                  <span class="stat-label">Prompts Generated</span>
-                </div>
-              </div>
-              <div class="stat-card" id="stat-card-pending" style="cursor: pointer;">
-                <div class="stat-icon"><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
-                <div class="stat-info">
-                  <span class="stat-value" id="stat-pending-tasks">0</span>
-                  <span class="stat-label">Pending Production</span>
-                </div>
+        <!-- Stats Row -->
+        <div class="stats-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 20px; margin-bottom: 24px;">
+          <div class="stat-card" id="stat-card-clients" style="cursor: pointer;">
+            <div class="stat-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-clients-count">0</span>
+              <span class="stat-label">Total Clients</span>
+            </div>
+          </div>
+          <div class="stat-card" id="stat-card-prompts" style="cursor: pointer;">
+            <div class="stat-icon"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"></path></svg></div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-prompts-count">0</span>
+              <span class="stat-label">Prompts Generated</span>
+            </div>
+          </div>
+          <div class="stat-card" id="stat-card-pending" style="cursor: pointer;">
+            <div class="stat-icon"><svg class="icon-svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></div>
+            <div class="stat-info">
+              <span class="stat-value" id="stat-pending-tasks">0</span>
+              <span class="stat-label">Pending Production</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Telemetry Bottom Grid -->
+        <div class="dashboard-bottom-grid" style="display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px;">
+          <!-- Live Diagnostics Panel -->
+          <div class="diagnostics-card glass-panel" style="border-radius: 12px; border: 1px solid var(--border-subtle); padding: 20px; background: var(--bg-panel); display: flex; flex-direction: column; gap: 14px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 style="font-size: 14px; font-weight: 700; margin: 0; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px;">Live Diagnostics</h3>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <span class="pulse-dot" style="width: 8px; height: 8px; background: #2ecc71; border-radius: 50%; box-shadow: 0 0 8px #2ecc71;"></span>
+                <span style="font-size: 11px; color: var(--text-muted);">SYS ONLINE</span>
               </div>
             </div>
-
-            <!-- Chart Panel -->
-            <div class="analytics-card glass-panel" style="position: relative; border-radius: 12px; border: 1px solid var(--border-subtle); padding: 24px; background: var(--bg-panel); display: flex; flex-direction: column; gap: 16px;">
-              <h3 style="font-size: 14px; font-weight: 700; margin: 0; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px;">Prompt Activity (Telemetry)</h3>
-              <div style="position: relative; height: 160px; display: flex; align-items: flex-end;">
-                <svg viewBox="0 0 500 150" class="chart-svg" style="width: 100%; height: 100%; overflow: visible;">
-                  <defs>
-                    <linearGradient id="chart-glow" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stop-color="var(--accent-red)" stop-opacity="0.25"/>
-                      <stop offset="100%" stop-color="var(--accent-red)" stop-opacity="0.0"/>
-                    </linearGradient>
-                    <linearGradient id="line-grad" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stop-color="#ff3b30"/>
-                      <stop offset="50%" stop-color="#ff2233"/>
-                      <stop offset="100%" stop-color="#ff5566"/>
-                    </linearGradient>
-                  </defs>
-                  <!-- Grid Lines -->
-                  <line x1="0" y1="20" x2="500" y2="20" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
-                  <line x1="0" y1="60" x2="500" y2="60" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
-                  <line x1="0" y1="100" x2="500" y2="100" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
-                  <line x1="0" y1="140" x2="500" y2="140" stroke="rgba(255,255,255,0.03)" stroke-width="1" />
-                  <!-- Area Path -->
-                  <path d="M 0 140 Q 80 40 160 90 T 320 20 T 480 50 L 500 50 L 500 140 Z" fill="url(#chart-glow)" class="chart-area-path" />
-                  <!-- Line Path -->
-                  <path d="M 0 140 Q 80 40 160 90 T 320 20 T 480 50 L 500 50" fill="none" stroke="url(#line-grad)" stroke-width="3" stroke-linecap="round" class="chart-line-path" filter="drop-shadow(0 4px 10px rgba(255, 34, 51, 0.3))" />
-                  <!-- Glowing Dots -->
-                  <circle cx="160" cy="90" r="4" fill="#ff2233" stroke="#fff" stroke-width="1.5" />
-                  <circle cx="320" cy="20" r="4" fill="#ff2233" stroke="#fff" stroke-width="1.5" />
-                  <circle cx="480" cy="50" r="4" fill="#ff2233" stroke="#fff" stroke-width="1.5" />
-                </svg>
-              </div>
+            <div class="diag-console" style="background: rgba(0,0,0,0.3); border-radius: 6px; padding: 12px; font-family: monospace; font-size: 11px; line-height: 1.6; color: var(--text-muted); height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+              <div><span style="color: var(--accent-red); font-weight: bold;">[CORE]</span> State manager initiated successfully.</div>
+              <div><span style="color: #3498db; font-weight: bold;">[WHATSAPP]</span> Webhook listener active on port 8080.</div>
+              <div><span style="color: #2ecc71; font-weight: bold;">[AI-ENGINE]</span> Translation models online (EN/TA/Tanglish).</div>
+              <div><span style="color: #e67e22; font-weight: bold;">[QUEUE]</span> 1 project currently in active manual production.</div>
+              <div><span style="color: var(--text-dim);">[MEM]</span> Heap utilization: 42MB / 512MB (8%).</div>
             </div>
           </div>
 
-          <!-- Right Column: Diagnostics and Performance split -->
-          <div style="display: flex; flex-direction: column; gap: 24px;">
-            <!-- Live Diagnostics Panel -->
-            <div class="diagnostics-card glass-panel" style="border-radius: 12px; border: 1px solid var(--border-subtle); padding: 20px; background: var(--bg-panel); display: flex; flex-direction: column; gap: 14px;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="font-size: 14px; font-weight: 700; margin: 0; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px;">Live Diagnostics</h3>
-                <div style="display: flex; align-items: center; gap: 6px;">
-                  <span class="pulse-dot" style="width: 8px; height: 8px; background: #2ecc71; border-radius: 50%; box-shadow: 0 0 8px #2ecc71;"></span>
-                  <span style="font-size: 11px; color: var(--text-muted);">SYS ONLINE</span>
+          <!-- Engine Split Overview Box -->
+          <div class="performance-card glass-panel" style="border-radius: 12px; border: 1px solid var(--border-subtle); padding: 20px; background: var(--bg-panel); display: flex; flex-direction: column; gap: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <h3 style="font-size: 14px; font-weight: 700; margin: 0; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px;">Engine Overview</h3>
+              <button class="action-btn-mini" style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 2px;">
+                <svg class="icon-svg" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+              </button>
+            </div>
+            
+            <div class="donut-chart-layout" style="display: flex; align-items: center; gap: 20px;">
+              <!-- Left: Donut Chart -->
+              <div class="donut-chart-wrapper">
+                <div class="donut-chart-ring"></div>
+                <div class="donut-chart-hole">
+                  <span class="donut-val">1.2k</span>
+                  <span class="donut-lbl">Generations</span>
                 </div>
               </div>
-              <div class="diag-console" style="background: rgba(0,0,0,0.3); border-radius: 6px; padding: 12px; font-family: monospace; font-size: 11px; line-height: 1.6; color: var(--text-muted); height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
-                <div><span style="color: var(--accent-red); font-weight: bold;">[CORE]</span> State manager initiated successfully.</div>
-                <div><span style="color: #3498db; font-weight: bold;">[WHATSAPP]</span> Webhook listener active on port 8080.</div>
-                <div><span style="color: #2ecc71; font-weight: bold;">[AI-ENGINE]</span> Translation models online (EN/TA/Tanglish).</div>
-                <div><span style="color: #e67e22; font-weight: bold;">[QUEUE]</span> 1 project currently in active manual production.</div>
-                <div><span style="color: var(--text-dim);">[MEM]</span> Heap utilization: 42MB / 512MB (8%).</div>
-              </div>
-            </div>
-
-            <!-- Engine Split Overview Box -->
-            <div class="performance-card glass-panel" style="border-radius: 12px; border: 1px solid var(--border-subtle); padding: 20px; background: var(--bg-panel); display: flex; flex-direction: column; gap: 16px;">
-              <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h3 style="font-size: 14px; font-weight: 700; margin: 0; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px;">Engine Overview</h3>
-                <button class="action-btn-mini" style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 2px;">
-                  <svg class="icon-svg" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
-                </button>
-              </div>
               
-              <div class="donut-chart-layout" style="display: flex; align-items: center; gap: 20px;">
-                <!-- Left: Donut Chart -->
-                <div class="donut-chart-wrapper">
-                  <div class="donut-chart-ring"></div>
-                  <div class="donut-chart-hole">
-                    <span class="donut-val">1.2k</span>
-                    <span class="donut-lbl">Generations</span>
+              <!-- Right: Split Details -->
+              <div style="flex: 1; display: flex; flex-direction: column; gap: 12px;">
+                <!-- Top: Total Active Stat -->
+                <div style="display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px;">
+                  <div style="background: rgba(255, 34, 51, 0.1); border-radius: 6px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--accent-red);">
+                    <svg class="icon-svg" viewBox="0 0 24 24" style="width: 18px; height: 18px;"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                  </div>
+                  <div>
+                    <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Total Active</div>
+                    <div style="font-size: 16px; font-weight: 700; color: var(--text-main); line-height: 1.1;">1,240</div>
                   </div>
                 </div>
                 
-                <!-- Right: Split Details -->
-                <div style="flex: 1; display: flex; flex-direction: column; gap: 12px;">
-                  <!-- Top: Total Active Stat -->
-                  <div style="display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px;">
-                    <div style="background: rgba(255, 34, 51, 0.1); border-radius: 6px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--accent-red);">
-                      <svg class="icon-svg" viewBox="0 0 24 24" style="width: 18px; height: 18px;"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+                <!-- Bottom: 2x2 Grid -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px;">
+                  <!-- Midjourney -->
+                  <div>
+                    <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; margin-bottom: 2px;">
+                      <span class="legend-dot" style="width: 6px; height: 6px; background: var(--accent-red); border-radius: 50%;"></span>
+                      <span style="color: var(--text-muted); font-weight: 500;">Midjourney</span>
                     </div>
-                    <div>
-                      <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Total Active</div>
-                      <div style="font-size: 16px; font-weight: 700; color: var(--text-main); line-height: 1.1;">1,240</div>
-                    </div>
+                    <div style="font-size: 12px; font-weight: 700; color: var(--text-main); padding-left: 12px;">806 <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);">(65%)</span></div>
                   </div>
-                  
-                  <!-- Bottom: 2x2 Grid -->
-                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px;">
-                    <!-- Midjourney -->
-                    <div>
-                      <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; margin-bottom: 2px;">
-                        <span class="legend-dot" style="width: 6px; height: 6px; background: var(--accent-red); border-radius: 50%;"></span>
-                        <span style="color: var(--text-muted); font-weight: 500;">Midjourney</span>
-                      </div>
-                      <div style="font-size: 12px; font-weight: 700; color: var(--text-main); padding-left: 12px;">806 <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);">(65%)</span></div>
+                  <!-- Runway Gen-3 -->
+                  <div>
+                    <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; margin-bottom: 2px;">
+                      <span class="legend-dot" style="width: 6px; height: 6px; background: #9034ff; border-radius: 50%;"></span>
+                      <span style="color: var(--text-muted); font-weight: 500;">Runway</span>
                     </div>
-                    <!-- Runway Gen-3 -->
-                    <div>
-                      <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; margin-bottom: 2px;">
-                        <span class="legend-dot" style="width: 6px; height: 6px; background: #9034ff; border-radius: 50%;"></span>
-                        <span style="color: var(--text-muted); font-weight: 500;">Runway</span>
-                      </div>
-                      <div style="font-size: 12px; font-weight: 700; color: var(--text-main); padding-left: 12px;">248 <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);">(20%)</span></div>
+                    <div style="font-size: 12px; font-weight: 700; color: var(--text-main); padding-left: 12px;">248 <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);">(20%)</span></div>
+                  </div>
+                  <!-- Stable Diffusion -->
+                  <div>
+                    <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; margin-bottom: 2px;">
+                      <span class="legend-dot" style="width: 6px; height: 6px; background: #3498db; border-radius: 50%;"></span>
+                      <span style="color: var(--text-muted); font-weight: 500;">Stable Diff.</span>
                     </div>
-                    <!-- Stable Diffusion -->
-                    <div>
-                      <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; margin-bottom: 2px;">
-                        <span class="legend-dot" style="width: 6px; height: 6px; background: #3498db; border-radius: 50%;"></span>
-                        <span style="color: var(--text-muted); font-weight: 500;">Stable Diff.</span>
-                      </div>
-                      <div style="font-size: 12px; font-weight: 700; color: var(--text-main); padding-left: 12px;">124 <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);">(10%)</span></div>
+                    <div style="font-size: 12px; font-weight: 700; color: var(--text-main); padding-left: 12px;">124 <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);">(10%)</span></div>
+                  </div>
+                  <!-- Dall-E 3 -->
+                  <div>
+                    <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; margin-bottom: 2px;">
+                      <span class="legend-dot" style="width: 6px; height: 6px; background: #f1c40f; border-radius: 50%;"></span>
+                      <span style="color: var(--text-muted); font-weight: 500;">Dall-E 3</span>
                     </div>
-                    <!-- Dall-E 3 -->
-                    <div>
-                      <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; margin-bottom: 2px;">
-                        <span class="legend-dot" style="width: 6px; height: 6px; background: #f1c40f; border-radius: 50%;"></span>
-                        <span style="color: var(--text-muted); font-weight: 500;">Dall-E 3</span>
-                      </div>
-                      <div style="font-size: 12px; font-weight: 700; color: var(--text-main); padding-left: 12px;">62 <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);">(5%)</span></div>
-                    </div>
+                    <div style="font-size: 12px; font-weight: 700; color: var(--text-main); padding-left: 12px;">62 <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);">(5%)</span></div>
                   </div>
                 </div>
               </div>
+            </div>
           </div>
         </div>
       </section>
