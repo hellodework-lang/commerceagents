@@ -2026,3 +2026,32 @@ body {
 .splash-logo-container .logo-robot-bg {
   fill: var(--bg-darker);
 }
+
+/* Animated Robot Logo Components */
+.logo-right-arm {
+  transform-origin: 68.5px 48px;
+  animation: robot-wave 2.5s ease-in-out infinite;
+}
+
+.logo-head {
+  transform-origin: 50px 38px;
+  animation: robot-head-bob 4s ease-in-out infinite;
+}
+
+@keyframes robot-wave {
+  0%, 100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-18deg);
+  }
+}
+
+@keyframes robot-head-bob {
+  0%, 100% {
+    transform: rotate(0deg) translateY(0);
+  }
+  50% {
+    transform: rotate(2deg) translateY(0.5px);
+  }
+}
