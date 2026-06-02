@@ -27,7 +27,6 @@
       statClientsCount: document.getElementById('stat-clients-count'),
       statPromptsCount: document.getElementById('stat-prompts-count'),
       statPendingTasks: document.getElementById('stat-pending-tasks'),
-      dashboardRecentPrompts: document.getElementById('dashboard-recent-prompts'),
       
       // Clients Directory 4-Column Layout
       clientDbFilterDropdown: document.getElementById('client-db-filter-dropdown'),
@@ -101,40 +100,6 @@
     });
     el.statPendingTasks.textContent = pendingCount;
 
-    // Recent Prompt Table
-    if (state.recentPrompts.length === 0) {
-      el.dashboardRecentPrompts.innerHTML = `<tr><td colspan="5" class="empty-state">No prompts generated yet.</td></tr>`;
-      return;
-    }
-
-    el.dashboardRecentPrompts.innerHTML = state.recentPrompts.map(p => {
-      const liveStatus = getLiveProjectStatus(p.phone, p);
-      return `
-        <tr class="recent-prompt-row" data-phone="${p.phone}" style="cursor: pointer;">
-          <td>
-            <div class="table-client">
-              <span class="client-dot"></span>
-              <div>
-                <div class="name-bold">${p.clientName}</div>
-                <div class="sub-phone">${p.phone}</div>
-              </div>
-            </div>
-          </td>
-          <td><span class="category-badge badge-${p.category.toLowerCase().replace(' ', '-')}">${p.category}</span></td>
-          <td><div class="prompt-text-truncate" title="${p.generatedPrompt}">${p.generatedPrompt}</div></td>
-          <td>
-            <span class="status-badge status-${liveStatus.toLowerCase().replace(/\s+/g, '-')}">
-              ${liveStatus}
-            </span>
-          </td>
-          <td>
-            <button class="action-btn copy-btn" data-prompt="${encodeURIComponent(p.generatedPrompt)}">
-              <span class="btn-icon"><svg class="icon-svg" viewBox="0 0 24 24" style="width:12px; height:12px;"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg></span> Copy
-            </button>
-          </td>
-        </tr>
-      `;
-    }).join('');
   }
 
 
@@ -693,19 +658,7 @@
       });
     }
 
-    // Recent prompt row click navigation
-    if (el.dashboardRecentPrompts) {
-      el.dashboardRecentPrompts.addEventListener('click', (e) => {
-        if (e.target.closest('.copy-btn')) return;
-        const row = e.target.closest('.recent-prompt-row');
-        if (row) {
-          const phone = row.getAttribute('data-phone');
-          appStore.updateState({ activeChatPhone: phone });
-          appStore.clearUnreads(phone);
-          handleViewSwitch('clients');
-        }
-      });
-    }
+
 
     // Company custom dropdown filter toggle and change in Client Directory
     if (el.clientDbFilterDropdown) {
