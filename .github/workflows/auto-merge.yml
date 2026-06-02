@@ -1,0 +1,49 @@
+name: Auto Merge and Sync Branches
+
+on:
+  push:
+    branches:
+      - jk-dev
+      - ap-dev
+
+permissions:
+  contents: write
+
+jobs:
+  merge-and-sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Merge into main
+        run: |
+          BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+          echo "Merging branch '$BRANCH_NAME' into main..."
+
+          git checkout main
+          git pull origin main
+
+          git merge origin/$BRANCH_NAME --no-edit
+
+          git push origin main
+          echo "Successfully merged '$BRANCH_NAME' into main."
+
+      - name: Sync main back into all dev branches
+        run: |
+          for BRANCH in jk-dev ap-dev; do
+            echo "Syncing main into '$BRANCH'..."
+            git checkout $BRANCH
+            git pull origin $BRANCH
+            git merge main --no-edit
+            git push origin $BRANCH
+            echo "Successfully synced '$BRANCH' with main."
+          done
