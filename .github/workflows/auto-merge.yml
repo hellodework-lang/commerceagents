@@ -5,6 +5,7 @@ on:
     branches:
       - jk-dev
       - ap-dev
+      - de-dev
 
 permissions:
   contents: write
@@ -32,18 +33,37 @@ jobs:
           git checkout main
           git pull origin main
 
-          git merge origin/$BRANCH_NAME --no-edit
-
-          git push origin main
-          echo "Successfully merged '$BRANCH_NAME' into main."
+          # Attempt merge - if conflicts exist, abort and notify
+          if git merge origin/$BRANCH_NAME --no-edit; then
+            git push origin main
+            echo "✅ Successfully merged '$BRANCH_NAME' into main."
+          else
+            echo "❌ Merge conflict detected merging '$BRANCH_NAME' into main."
+            echo "Please resolve conflicts manually."
+            git merge --abort
+            exit 1
+          fi
 
       - name: Sync main back into all dev branches
+        if: success()
         run: |
-          for BRANCH in jk-dev ap-dev; do
+          for BRANCH in jk-dev ap-dev de-dev; do
             echo "Syncing main into '$BRANCH'..."
+            
+            # Check if the remote branch exists
+            if ! git ls-remote --exit-code origin $BRANCH > /dev/null 2>&1; then
+              echo "⚠️ Branch '$BRANCH' does not exist on remote. Skipping."
+              continue
+            fi
+
             git checkout $BRANCH
             git pull origin $BRANCH
-            git merge main --no-edit
-            git push origin $BRANCH
-            echo "Successfully synced '$BRANCH' with main."
+
+            if git merge main --no-edit; then
+              git push origin $BRANCH
+              echo "✅ Successfully synced '$BRANCH' with main."
+            else
+              echo "❌ Conflict syncing main into '$BRANCH'. Skipping."
+              git merge --abort
+            fi
           done
