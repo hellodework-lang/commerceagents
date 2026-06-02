@@ -750,6 +750,14 @@
       });
     }
 
+    // Back button in Media Vault top-bar - switches back to dashboard view
+    const toggleMediaSidebarBtn = document.querySelector('.toggle-sidebar-media-btn');
+    if (toggleMediaSidebarBtn) {
+      toggleMediaSidebarBtn.addEventListener('click', () => {
+        handleViewSwitch('dashboard');
+      });
+    }
+
     // Clipboard Copier Handler
     document.addEventListener('click', (e) => {
       const copyBtn = e.target.closest('.copy-btn');
@@ -877,7 +885,7 @@
       
       const appContainer = document.querySelector('.app-container');
       if (appContainer) {
-        if (state.activeView === 'clients' || state.activeView === 'status') {
+        if (state.activeView === 'clients' || state.activeView === 'status' || state.activeView === 'media') {
           appContainer.classList.add('sidebar-hidden');
         } else {
           appContainer.classList.remove('sidebar-hidden');
