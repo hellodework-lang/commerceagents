@@ -491,9 +491,9 @@
     // Scene
     const scene = new THREE.Scene();
 
-    // Camera
-    const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
-    camera.position.set(0, 0, 5.0);
+    // Camera (Focused tightly on robot head chatbot icon)
+    const camera = new THREE.PerspectiveCamera(35, width / height, 0.1, 100);
+    camera.position.set(0, 0.15, 4.0);
 
     // Renderer
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
@@ -518,9 +518,13 @@
     blueBackLight.position.set(-1.5, -0.5, -1.5);
     scene.add(blueBackLight);
 
-    // Build model
-    const robot = createRobotModel();
-    robot.position.y = -0.15; // align center
+    // Build head model (extract headGroup only, no body/arms for clean chatbot icon look)
+    const fullModel = createRobotModel();
+    const head = fullModel.getObjectByName("headGroup");
+    head.position.set(0, -0.15, 0); // Center the head in the frame
+    
+    const robot = new THREE.Group();
+    robot.add(head);
     scene.add(robot);
 
     // Extract animated bones
