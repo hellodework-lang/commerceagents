@@ -55,7 +55,12 @@
       simulatorToggle: document.getElementById('simulator-toggle'),
       simulatorPanel: document.getElementById('simulator-panel'),
       simulatorClose: document.getElementById('simulator-close'),
-      simulatorTemplates: document.getElementById('simulator-templates')
+      simulatorTemplates: document.getElementById('simulator-templates'),
+      
+      // Hero Copilot Chatbot
+      heroChatLog: document.getElementById('hero-chat-log'),
+      heroChatInput: document.getElementById('hero-chat-input'),
+      heroChatSend: document.getElementById('hero-chat-send')
     };
   }
 
@@ -907,6 +912,132 @@
   }
 
   // ----------------------------------------------------
+  // Hero Copilot Chatbot Controller
+  // ----------------------------------------------------
+  function initHeroChat() {
+    if (!el.heroChatLog || !el.heroChatInput || !el.heroChatSend) return;
+
+    function appendMessage(sender, text, isBot = false) {
+      const msgDiv = document.createElement('div');
+      msgDiv.className = `hero-chat-msg ${isBot ? 'bot' : 'user'}`;
+      msgDiv.style.lineHeight = '1.4';
+      
+      const labelSpan = document.createElement('span');
+      labelSpan.style.color = isBot ? 'var(--accent-red)' : '#3498db';
+      labelSpan.style.fontWeight = 'bold';
+      labelSpan.textContent = `[${sender}]: `;
+      
+      msgDiv.appendChild(labelSpan);
+      msgDiv.appendChild(document.createTextNode(text));
+      
+      el.heroChatLog.appendChild(msgDiv);
+      el.heroChatLog.scrollTop = el.heroChatLog.scrollHeight;
+    }
+
+    function processQuery(query) {
+      const q = query.toLowerCase().trim();
+      const state = appStore.getState();
+
+      // Helper to format project list for a client
+      function getClientProjectStatus(clientKey, clientName) {
+        const client = state.clients.find(c => c.id.toLowerCase().includes(clientKey) || c.name.toLowerCase().includes(clientKey));
+        if (!client) return `I couldn't find client "${clientName}" in our records.`;
+        
+        if (!client.activeProjects || client.activeProjects.length === 0) {
+          return `${client.name} currently has no active projects.`;
+        }
+        
+        const projDetails = client.activeProjects.map(p => `'${p.name}' (${p.status})`).join(', ');
+        return `${client.name} active campaigns: ${projDetails}.`;
+      }
+
+      // Check keywords
+      if (q.includes('nike')) {
+        return getClientProjectStatus('nike', 'Nike');
+      }
+      if (q.includes('starbucks')) {
+        return getClientProjectStatus('starbucks', 'Starbucks');
+      }
+      if (q.includes('burger') || q.includes('local burger')) {
+        return getClientProjectStatus('burger', 'Local Burger');
+      }
+      if (q.includes('list') || q.includes('all project') || q.includes('active project') || q.includes('every project')) {
+        let response = 'Active dashboard projects list:\n';
+        state.clients.forEach(c => {
+          const projs = c.activeProjects.map(p => `'${p.name}' (${p.status})`).join(', ') || 'No projects';
+          response += `• ${c.name}: ${projs}\n`;
+        });
+        return response.trim();
+      }
+      if (q.includes('prompt') || q.includes('how many prompt') || q.includes('count')) {
+        let totalPrompts = state.recentPrompts ? state.recentPrompts.length : 0;
+        state.clients.forEach(c => {
+          if (c.promptHistory) totalPrompts += c.promptHistory.length;
+        });
+        return `We have generated a total of ${totalPrompts} AI creative prompts in this workspace.`;
+      }
+      if (q.includes('help') || q.includes('what can i') || q.includes('question') || q.includes('hello') || q.includes('hi')) {
+        return `Hello! I am Copilot, your dashboard mascot. You can ask me queries like:\n- "Nike project status"\n- "Starbucks campaign status"\n- "List all projects"\n- "How many prompts generated?"`;
+      }
+
+      // Default fallback response
+      return `I'm not sure how to answer that. Try asking "what is the status of the Nike project?" or "list all projects".`;
+    }
+
+    function handleSend() {
+      const query = el.heroChatInput.value.trim();
+      if (!query) return;
+
+      // 1. Show user message
+      appendMessage('You', query, false);
+      el.heroChatInput.value = '';
+
+      // 2. Trigger mascot think and blink animations on the window if available
+      if (typeof window.triggerHomeRobotThink === 'function') {
+        window.triggerHomeRobotThink();
+      }
+      if (typeof window.triggerHomeRobotBlink === 'function') {
+        window.triggerHomeRobotBlink();
+      }
+
+      // 3. Show typing indicator
+      const typingDiv = document.createElement('div');
+      typingDiv.className = 'hero-chat-msg bot typing-indicator';
+      typingDiv.style.color = 'var(--text-dim)';
+      typingDiv.style.fontStyle = 'italic';
+      typingDiv.textContent = '[Copilot is thinking...]';
+      el.heroChatLog.appendChild(typingDiv);
+      el.heroChatLog.scrollTop = el.heroChatLog.scrollHeight;
+
+      // 4. Simulate small delay for processing
+      setTimeout(() => {
+        // Remove typing indicator
+        if (typingDiv.parentNode) {
+          typingDiv.parentNode.removeChild(typingDiv);
+        }
+
+        // Formulate response
+        const answer = processQuery(query);
+
+        // Append bot response
+        appendMessage('Copilot', answer, true);
+
+        // Trigger another cute blink response
+        if (typeof window.triggerHomeRobotBlink === 'function') {
+          window.triggerHomeRobotBlink();
+        }
+      }, 500);
+    }
+
+    el.heroChatSend.addEventListener('click', handleSend);
+    el.heroChatInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        handleSend();
+      }
+    });
+  }
+
+  // ----------------------------------------------------
   // Initialization Entrypoint
   // ----------------------------------------------------
 
@@ -960,6 +1091,9 @@
     attachGlobalListeners();
     setupAudioPlayerEvents();
     setupSimulatorControls();
+
+    // Initialize hero card Copilot chatbot
+    initHeroChat();
 
     // Trigger initial dashboard rendering
     renderDashboard(appStore.getState());
