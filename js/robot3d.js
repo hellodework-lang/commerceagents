@@ -527,8 +527,7 @@
     robot.add(head);
     scene.add(robot);
 
-    // Extract animated bones
-    const head = robot.getObjectByName("headGroup");
+    // Extract animated bones (head is already declared above)
     const rightArm = robot.getObjectByName("rightArm");
     const leftArm = robot.getObjectByName("leftArm");
     const leftEye = robot.getObjectByName("leftEye");
