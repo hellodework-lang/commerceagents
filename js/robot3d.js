@@ -478,27 +478,33 @@
   }
 
   // -------------------------------------------------------------------------
-  // Instance 3: Home Page Mascot Robot
+  // Instance 3: Home Page Mascot Robot (Full Body - Floating Chatbot Launcher)
   // -------------------------------------------------------------------------
   function initHome3D() {
     const container = document.getElementById('home-robot-3d');
     const fallbackSvg = document.getElementById('home-logo-svg');
     if (!container || !fallbackSvg) return;
 
-    const width = container.clientWidth || 160;
-    const height = container.clientHeight || 160;
+    const width = container.clientWidth || 90;
+    const height = container.clientHeight || 110;
 
-    // Scene
+    // Scene - explicit null background ensures WebGL clears to transparent
     const scene = new THREE.Scene();
+    scene.background = null;
 
-    // Camera
+    // Camera - pulled back to show the full body
     const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
     camera.position.set(0, 0, 5.0);
 
-    // Renderer
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    // Renderer: premultipliedAlpha:false is the key fix for the dark box
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, premultipliedAlpha: false });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+    renderer.setClearAlpha(0);
+    // CSS fallback: screen blend makes pure-black pixels transparent
+    renderer.domElement.style.background = 'transparent';
+    renderer.domElement.style.mixBlendMode = 'screen';
     container.appendChild(renderer.domElement);
 
     // Lights
@@ -509,18 +515,17 @@
     dirLight.position.set(2, 4, 3);
     scene.add(dirLight);
 
-    // Neon Red glow lights
     const redGlow1 = new THREE.PointLight(0xff2233, 2.5, 6);
-    redGlow1.position.set(0, -0.3, 1.2); // Shifted down near chest to avoid specular reflections on face visor
+    redGlow1.position.set(0, -0.3, 1.2);
     scene.add(redGlow1);
 
     const blueBackLight = new THREE.PointLight(0x00aaff, 1.8, 5);
     blueBackLight.position.set(-1.5, -0.5, -1.5);
     scene.add(blueBackLight);
 
-    // Build model
+    // Build FULL robot model (head + body + arms)
     const robot = createRobotModel();
-    robot.position.y = -0.15; // align center
+    robot.position.y = -0.15; // slight vertical centering
     scene.add(robot);
 
     // Extract animated bones
@@ -566,13 +571,12 @@
 
     // Animation Loop
     const clock = new THREE.Clock();
-    let animFrameId;
 
     function animate() {
-      animFrameId = requestAnimationFrame(animate);
+      requestAnimationFrame(animate);
       const delta = Math.min(clock.getDelta(), 0.1);
 
-      // Interpolate breathing speed multiplier (thinking frequency state transition)
+      // Interpolate breathing speed multiplier
       breathingSpeedMultiplier = THREE.MathUtils.lerp(breathingSpeedMultiplier, targetBreathingSpeedMultiplier, 0.1);
       breathingPhase += delta * 1.5 * breathingSpeedMultiplier;
 
@@ -590,28 +594,24 @@
 
       // 1. Slow breathing / floating
       robot.position.y = -0.15 + Math.sin(breathingPhase) * 0.07;
-      
-      // 2. Mouse tracking for head and upper body
+
+      // 2. Mouse tracking for head
       if (head) {
-        // Target rotation values based on mouse position
         const targetRotX = mouse.y * 0.28;
         const targetRotY = mouse.x * 0.35;
-        // Smooth interpolation (slerp)
         head.rotation.x = THREE.MathUtils.lerp(head.rotation.x, targetRotX, 0.08);
         head.rotation.y = THREE.MathUtils.lerp(head.rotation.y, targetRotY, 0.08);
       }
 
-      // 3. Right arm subtle breathing swing
+      // 3. Arm breathing swing
       if (rightArm) {
         rightArm.rotation.z = 0.2 - Math.sin(breathingPhase) * 0.08;
       }
-
-      // Left arm subtle breathing swing
       if (leftArm) {
         leftArm.rotation.z = Math.sin(breathingPhase) * 0.08;
       }
 
-      // Slow torso twist with mouse
+      // 4. Slow torso twist with mouse
       const torso = robot.getObjectByName("torsoGroup");
       if (torso) {
         torso.rotation.y = THREE.MathUtils.lerp(torso.rotation.y, mouse.x * 0.15, 0.06);

@@ -82,7 +82,10 @@
       // Hero Copilot Chatbot
       heroChatLog: document.getElementById('hero-chat-log'),
       heroChatInput: document.getElementById('hero-chat-input'),
-      heroChatSend: document.getElementById('hero-chat-send')
+      heroChatSend: document.getElementById('hero-chat-send'),
+      copilotLauncherBtn: document.getElementById('copilot-launcher-btn'),
+      copilotChatWindow: document.getElementById('copilot-chat-window'),
+      copilotChatClose: document.getElementById('copilot-chat-close')
     };
   }
 
@@ -1042,12 +1045,10 @@
         window.triggerHomeRobotBlink();
       }
 
-      // 3. Show typing indicator
+      // 3. Show animated typing indicator with bouncing dots
       const typingDiv = document.createElement('div');
       typingDiv.className = 'hero-chat-msg bot typing-indicator';
-      typingDiv.style.color = 'var(--text-dim)';
-      typingDiv.style.fontStyle = 'italic';
-      typingDiv.textContent = '[Copilot is thinking...]';
+      typingDiv.innerHTML = `<span style="color: var(--accent-red); font-weight: bold;">[Copilot]: </span><span class="typing-dots"><span></span><span></span><span></span></span>`;
       el.heroChatLog.appendChild(typingDiv);
       el.heroChatLog.scrollTop = el.heroChatLog.scrollHeight;
 
@@ -1077,6 +1078,48 @@
         handleSend();
       }
     });
+
+    // --- Floating Widget Toggle Logic ---
+    function openChat() {
+      // Step 1: make it visible in layout (display:flex)
+      el.copilotChatWindow.style.display = 'flex';
+      // Step 2: one frame later trigger the CSS transition
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          el.copilotChatWindow.classList.add('open');
+        });
+      });
+      // Step 3: focus input after transition
+      setTimeout(() => {
+        if (el.heroChatInput) el.heroChatInput.focus();
+      }, 320);
+      // Blink greeting
+      if (typeof window.triggerHomeRobotBlink === 'function') {
+        window.triggerHomeRobotBlink();
+      }
+    }
+
+    function closeChat() {
+      el.copilotChatWindow.classList.remove('open');
+      // After the CSS transition finishes, truly hide so backdrop-filter doesn't bleed
+      setTimeout(() => {
+        el.copilotChatWindow.style.display = 'none';
+      }, 320);
+    }
+
+    if (el.copilotLauncherBtn && el.copilotChatWindow) {
+      el.copilotLauncherBtn.addEventListener('click', () => {
+        const isOpen = el.copilotChatWindow.classList.contains('open');
+        isOpen ? closeChat() : openChat();
+      });
+    }
+
+    if (el.copilotChatClose && el.copilotChatWindow) {
+      el.copilotChatClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeChat();
+      });
+    }
   }
 
   // ----------------------------------------------------
