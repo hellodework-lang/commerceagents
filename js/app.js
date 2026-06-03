@@ -60,7 +60,10 @@
       // Hero Copilot Chatbot
       heroChatLog: document.getElementById('hero-chat-log'),
       heroChatInput: document.getElementById('hero-chat-input'),
-      heroChatSend: document.getElementById('hero-chat-send')
+      heroChatSend: document.getElementById('hero-chat-send'),
+      copilotLauncherBtn: document.getElementById('copilot-launcher-btn'),
+      copilotChatWindow: document.getElementById('copilot-chat-window'),
+      copilotChatClose: document.getElementById('copilot-chat-close')
     };
   }
 
@@ -1000,12 +1003,10 @@
         window.triggerHomeRobotBlink();
       }
 
-      // 3. Show typing indicator
+      // 3. Show animated typing indicator with bouncing dots
       const typingDiv = document.createElement('div');
       typingDiv.className = 'hero-chat-msg bot typing-indicator';
-      typingDiv.style.color = 'var(--text-dim)';
-      typingDiv.style.fontStyle = 'italic';
-      typingDiv.textContent = '[Copilot is thinking...]';
+      typingDiv.innerHTML = `<span style="color: var(--accent-red); font-weight: bold;">[Copilot]: </span><span class="typing-dots"><span></span><span></span><span></span></span>`;
       el.heroChatLog.appendChild(typingDiv);
       el.heroChatLog.scrollTop = el.heroChatLog.scrollHeight;
 
@@ -1035,6 +1036,33 @@
         handleSend();
       }
     });
+
+    // --- Floating Widget Toggle Logic ---
+    if (el.copilotLauncherBtn && el.copilotChatWindow) {
+      el.copilotLauncherBtn.addEventListener('click', () => {
+        const isOpen = el.copilotChatWindow.classList.contains('open');
+        if (isOpen) {
+          el.copilotChatWindow.classList.remove('open');
+        } else {
+          el.copilotChatWindow.classList.add('open');
+          // Focus the input after transition completes
+          setTimeout(() => {
+            if (el.heroChatInput) el.heroChatInput.focus();
+          }, 320);
+          // Trigger a greeting blink from the mascot
+          if (typeof window.triggerHomeRobotBlink === 'function') {
+            window.triggerHomeRobotBlink();
+          }
+        }
+      });
+    }
+
+    if (el.copilotChatClose && el.copilotChatWindow) {
+      el.copilotChatClose.addEventListener('click', (e) => {
+        e.stopPropagation();
+        el.copilotChatWindow.classList.remove('open');
+      });
+    }
   }
 
   // ----------------------------------------------------
