@@ -1038,29 +1038,44 @@
     });
 
     // --- Floating Widget Toggle Logic ---
+    function openChat() {
+      // Step 1: make it visible in layout (display:flex)
+      el.copilotChatWindow.style.display = 'flex';
+      // Step 2: one frame later trigger the CSS transition
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          el.copilotChatWindow.classList.add('open');
+        });
+      });
+      // Step 3: focus input after transition
+      setTimeout(() => {
+        if (el.heroChatInput) el.heroChatInput.focus();
+      }, 320);
+      // Blink greeting
+      if (typeof window.triggerHomeRobotBlink === 'function') {
+        window.triggerHomeRobotBlink();
+      }
+    }
+
+    function closeChat() {
+      el.copilotChatWindow.classList.remove('open');
+      // After the CSS transition finishes, truly hide so backdrop-filter doesn't bleed
+      setTimeout(() => {
+        el.copilotChatWindow.style.display = 'none';
+      }, 320);
+    }
+
     if (el.copilotLauncherBtn && el.copilotChatWindow) {
       el.copilotLauncherBtn.addEventListener('click', () => {
         const isOpen = el.copilotChatWindow.classList.contains('open');
-        if (isOpen) {
-          el.copilotChatWindow.classList.remove('open');
-        } else {
-          el.copilotChatWindow.classList.add('open');
-          // Focus the input after transition completes
-          setTimeout(() => {
-            if (el.heroChatInput) el.heroChatInput.focus();
-          }, 320);
-          // Trigger a greeting blink from the mascot
-          if (typeof window.triggerHomeRobotBlink === 'function') {
-            window.triggerHomeRobotBlink();
-          }
-        }
+        isOpen ? closeChat() : openChat();
       });
     }
 
     if (el.copilotChatClose && el.copilotChatWindow) {
       el.copilotChatClose.addEventListener('click', (e) => {
         e.stopPropagation();
-        el.copilotChatWindow.classList.remove('open');
+        closeChat();
       });
     }
   }
