@@ -495,10 +495,13 @@
     const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
     camera.position.set(0, 0, 5.0);
 
-    // Renderer with alpha so background is transparent (no dark circle)
+    // Renderer with alpha so background is transparent (no dark box)
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    // Force fully transparent clear — eliminates the dark box behind the robot
+    renderer.setClearColor(0x000000, 0);
+    renderer.domElement.style.background = 'transparent';
     container.appendChild(renderer.domElement);
 
     // Lights
