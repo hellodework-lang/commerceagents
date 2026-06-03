@@ -543,14 +543,14 @@
       </div>
     </div>
 
-    <!-- Floating Launcher Trigger Button (Hosting the 3D Mascot Head) -->
-    <button id="copilot-launcher-btn" style="width: 70px; height: 70px; border-radius: 50%; background: var(--bg-panel); border: 1px solid var(--border-subtle); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); cursor: pointer; overflow: visible; position: relative; display: flex; align-items: center; justify-content: center; outline: none; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.2s; padding: 0;">
-      <!-- 3D Mascot Canvas Slot -->
-      <div id="home-robot-3d" style="width: 100%; height: 100%; border-radius: 50%; overflow: hidden; pointer-events: none;"></div>
+    <!-- Floating Launcher Trigger Button (Full 3D Bot, no circle) -->
+    <button id="copilot-launcher-btn" style="width: 90px; height: 110px; border-radius: 0; background: transparent; border: none; box-shadow: none; cursor: pointer; overflow: visible; position: relative; display: flex; align-items: center; justify-content: center; outline: none; padding: 0; filter: drop-shadow(0 8px 24px rgba(0,0,0,0.5));">
+      <!-- 3D Mascot Canvas Slot - full body, no clip -->
+      <div id="home-robot-3d" style="width: 100%; height: 100%; overflow: visible; pointer-events: none;"></div>
       
       <!-- Fallback SVG in case WebGL is disabled -->
-      <div class="home-logo-wrapper" id="home-logo-wrapper" style="position: absolute; width: 44px; height: 44px; pointer-events: none; display: flex; align-items: center; justify-content: center;">
-        <svg id="home-logo-svg" class="icon-svg logo-robot-svg" viewBox="24 -4 52 52" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width: 32px; height: 32px; stroke: var(--accent-red); filter: drop-shadow(0 0 5px var(--accent-red-glow)); transition: opacity 0.5s ease; z-index: 1;">
+      <div class="home-logo-wrapper" id="home-logo-wrapper" style="position: absolute; width: 54px; height: 54px; pointer-events: none; display: flex; align-items: center; justify-content: center;">
+        <svg id="home-logo-svg" class="icon-svg logo-robot-svg" viewBox="24 -4 52 52" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width: 40px; height: 40px; stroke: var(--accent-red); filter: drop-shadow(0 0 5px var(--accent-red-glow)); transition: opacity 0.5s ease; z-index: 1;">
           <!-- Helmet Outer Outline -->
           <rect class="logo-robot-bg" x="30" y="11" width="40" height="26" rx="11" ry="11" stroke-width="3" />
           
@@ -585,9 +585,9 @@
 
   <!-- JS Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="js/robot3d.js?v=28"></script>
-  <script src="js/state.js?v=28"></script>
-  <script src="js/simulator.js?v=28"></script>
-  <script src="js/app.js?v=28"></script>
+  <script src="js/robot3d.js?v=29"></script>
+  <script src="js/state.js?v=29"></script>
+  <script src="js/simulator.js?v=29"></script>
+  <script src="js/app.js?v=29"></script>
 </body>
 </html>
