@@ -107,8 +107,8 @@ body {
 
 .logo-icon {
   font-size: 28px;
-  color: var(--accent-red);
-  text-shadow: 0 0 10px var(--accent-red-glow);
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.25);
   animation: pulse-glow 2s infinite;
 }
 
@@ -1610,11 +1610,11 @@ body {
 @keyframes pulse-glow {
   0%, 100% {
     transform: scale(1);
-    filter: drop-shadow(0 0 2px var(--accent-red-glow));
+    filter: drop-shadow(0 0 2px rgba(255, 255, 255, 0.25));
   }
   50% {
     transform: scale(1.05);
-    filter: drop-shadow(0 0 8px var(--accent-red));
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.5));
   }
 }
 
