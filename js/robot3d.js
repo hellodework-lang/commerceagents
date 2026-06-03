@@ -488,20 +488,23 @@
     const width = container.clientWidth || 90;
     const height = container.clientHeight || 110;
 
-    // Scene
+    // Scene - explicit null background ensures WebGL clears to transparent
     const scene = new THREE.Scene();
+    scene.background = null;
 
     // Camera - pulled back to show the full body
     const camera = new THREE.PerspectiveCamera(38, width / height, 0.1, 100);
     camera.position.set(0, 0, 5.0);
 
-    // Renderer with alpha so background is transparent (no dark box)
-    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+    // Renderer: premultipliedAlpha:false is the key fix for the dark box
+    const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, premultipliedAlpha: false });
     renderer.setSize(width, height);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-    // Force fully transparent clear — eliminates the dark box behind the robot
     renderer.setClearColor(0x000000, 0);
+    renderer.setClearAlpha(0);
+    // CSS fallback: screen blend makes pure-black pixels transparent
     renderer.domElement.style.background = 'transparent';
+    renderer.domElement.style.mixBlendMode = 'screen';
     container.appendChild(renderer.domElement);
 
     // Lights
