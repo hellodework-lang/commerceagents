@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="AI-Powered Creative Operations Dashboard with WhatsApp prompt automation for agencies.">
   <title>Agents Cops - AI Prompt Automation Dashboard</title>
-  <link rel="stylesheet" href="css/style.css?v=23">
+  <link rel="stylesheet" href="css/style.css?v=24">
   <script>
     window.addEventListener('error', function(e) {
       var errDiv = document.createElement('div');
@@ -216,7 +216,12 @@
         <div class="dashboard-hero-card glass-panel" style="display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-radius: 12px; border: 1px solid var(--border-subtle); background: var(--bg-panel); margin-top: 20px; margin-bottom: 24px; position: relative; overflow: hidden; min-height: 180px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);">
           <div style="flex: 1; z-index: 2; display: flex; flex-direction: column; gap: 12px; height: 100%;">
             <div style="display: flex; align-items: center; gap: 8px;">
-              <span class="pulse-dot" style="width: 8px; height: 8px; background: #2ecc71; border-radius: 50%; box-shadow: 0 0 8px #2ecc71;"></span>
+              <div style="position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <svg class="icon-svg" viewBox="0 0 24 24" style="width: 16px; height: 16px; stroke: var(--accent-red); fill: none; stroke-width: 2.5; filter: drop-shadow(0 0 4px var(--accent-red-glow));">
+                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                </svg>
+                <span class="pulse-dot" style="position: absolute; bottom: -2px; right: -2px; width: 6px; height: 6px; background: #2ecc71; border-radius: 50%; box-shadow: 0 0 6px #2ecc71;"></span>
+              </div>
               <h2 style="font-size: 13px; font-weight: 700; margin: 0; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">Agents Cops Copilot</h2>
             </div>
             
@@ -228,8 +233,11 @@
             
             <div style="display: flex; gap: 8px; align-items: center; max-width: 520px;">
               <input type="text" id="hero-chat-input" placeholder="Ask about project statuses..." style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 8px 12px; color: var(--text-main); font-size: 12px; outline: none; transition: border-color 0.2s;" />
-              <button id="hero-chat-send" style="background: var(--accent-red); border: none; border-radius: 6px; color: var(--text-main); font-weight: 600; font-size: 12px; padding: 8px 16px; cursor: pointer; transition: background 0.2s;">
-                Ask
+              <button id="hero-chat-send" style="background: var(--accent-red); border: none; border-radius: 6px; color: var(--text-main); width: 34px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; flex-shrink: 0;" title="Send Message">
+                <svg class="icon-svg" viewBox="0 0 24 24" style="width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.5;">
+                  <line x1="22" y1="2" x2="11" y2="13"></line>
+                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
               </button>
             </div>
           </div>
@@ -552,9 +560,9 @@
 
   <!-- JS Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="js/robot3d.js?v=23"></script>
-  <script src="js/state.js?v=23"></script>
-  <script src="js/simulator.js?v=23"></script>
-  <script src="js/app.js?v=23"></script>
+  <script src="js/robot3d.js?v=24"></script>
+  <script src="js/state.js?v=24"></script>
+  <script src="js/simulator.js?v=24"></script>
+  <script src="js/app.js?v=24"></script>
 </body>
 </html>
