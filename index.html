@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="AI-Powered Creative Operations Dashboard with WhatsApp prompt automation for agencies.">
   <title>Agents Cops - AI Prompt Automation Dashboard</title>
-  <link rel="stylesheet" href="css/style.css?v=26">
+  <link rel="stylesheet" href="css/style.css?v=27">
   <script>
     window.addEventListener('error', function(e) {
       var errDiv = document.createElement('div');
@@ -213,66 +213,13 @@
 
       <!-- View 1: Dashboard Overview -->
       <section class="view-panel active" id="view-dashboard">
-        <div class="dashboard-hero-card glass-panel" style="display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-radius: 12px; border: 1px solid var(--border-subtle); background: var(--bg-panel); margin-top: 20px; margin-bottom: 24px; position: relative; overflow: hidden; min-height: 180px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);">
-          <div style="flex: 1; z-index: 2; display: flex; flex-direction: column; gap: 12px; height: 100%;">
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <div style="position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                <svg class="icon-svg" viewBox="0 0 24 24" style="width: 16px; height: 16px; stroke: var(--accent-red); fill: none; stroke-width: 2.5; filter: drop-shadow(0 0 4px var(--accent-red-glow));">
-                  <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                </svg>
-                <span class="pulse-dot" style="position: absolute; bottom: -2px; right: -2px; width: 6px; height: 6px; background: #2ecc71; border-radius: 50%; box-shadow: 0 0 6px #2ecc71;"></span>
-              </div>
-              <h2 style="font-size: 13px; font-weight: 700; margin: 0; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">Agents Cops Copilot</h2>
-            </div>
-            
-            <div id="hero-chat-log" style="height: 85px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; font-size: 12px; padding-right: 6px; scrollbar-width: thin; line-height: 1.5;">
-              <div class="hero-chat-msg bot" style="color: var(--text-muted);">
-                <span style="color: var(--accent-red); font-weight: bold;">[Copilot]:</span> Hello! Ask me about active project statuses (e.g., "what is the status of the Nike project?" or "list all projects").
-              </div>
-            </div>
-            
-            <div style="display: flex; gap: 8px; align-items: center; max-width: 520px;">
-              <input type="text" id="hero-chat-input" placeholder="Ask about project statuses..." style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 8px 12px; color: var(--text-main); font-size: 12px; outline: none; transition: border-color 0.2s;" />
-              <button id="hero-chat-send" style="background: var(--accent-red); border: none; border-radius: 6px; color: var(--text-main); width: 34px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; flex-shrink: 0;" title="Send Message">
-                <svg class="icon-svg" viewBox="0 0 24 24" style="width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2.5;">
-                  <line x1="22" y1="2" x2="11" y2="13"></line>
-                  <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                </svg>
-              </button>
-            </div>
+        <div class="dashboard-hero-card glass-panel" style="display: flex; align-items: center; justify-content: space-between; padding: 24px 30px; border-radius: 12px; border: 1px solid var(--border-subtle); background: var(--bg-panel); margin-top: 20px; margin-bottom: 24px; position: relative; overflow: hidden; min-height: 120px; box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);">
+          <div style="z-index: 2; display: flex; flex-direction: column; gap: 6px;">
+            <h1 style="font-size: 22px; font-weight: 700; margin: 0; color: var(--text-main); text-transform: none; letter-spacing: 0.5px;">Welcome to AGENTS<span>COPS</span> Overview</h1>
+            <p style="margin: 0; color: var(--text-muted); font-size: 13px;">Real-time automated WhatsApp marketing operations and campaign diagnostics</p>
           </div>
-          <div class="home-logo-wrapper" id="home-logo-wrapper" style="position: relative; width: 160px; height: 160px; display: flex; align-items: center; justify-content: center; overflow: visible; flex-shrink: 0;">
-            <svg id="home-logo-svg" class="icon-svg logo-robot-svg" viewBox="24 -4 52 52" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width: 80px; height: 80px; stroke: var(--accent-red); filter: drop-shadow(0 0 10px var(--accent-red-glow)); transition: opacity 0.5s ease; position: absolute; z-index: 1;">
-              <!-- Helmet Outer Outline -->
-              <rect class="logo-robot-bg" x="30" y="11" width="40" height="26" rx="11" ry="11" stroke-width="3" />
-              
-              <!-- Helmet Top Panel -->
-              <path d="M 38,16 C 44,14.5 56,14.5 62,16" stroke-width="3" />
-              <path d="M 38,11.5 L 38,16" stroke-width="3" />
-              <path d="M 62,11.5 L 62,16" stroke-width="3" />
-
-              <!-- Left Earmuff & Antenna -->
-              <rect class="logo-robot-bg" x="26.5" y="17" width="3.5" height="14" rx="1.5" stroke-width="3" />
-              <rect class="logo-robot-bg" x="25" y="19.5" width="1.5" height="9" rx="0.75" stroke-width="3" />
-              <path d="M 28.25,17 L 28.25,8" stroke-width="3" />
-              <circle class="logo-robot-bg" cx="28.25" cy="7.5" r="1.5" stroke-width="3" />
-
-              <!-- Right Earmuff & Antenna -->
-              <rect class="logo-robot-bg" x="70" y="17" width="3.5" height="14" rx="1.5" stroke-width="3" />
-              <rect class="logo-robot-bg" x="73.5" y="19.5" width="1.5" height="9" rx="0.75" stroke-width="3" />
-              <path d="M 71.75,17 L 71.75,8" stroke-width="3" />
-              <circle class="logo-robot-bg" cx="71.75" cy="7.5" r="1.5" stroke-width="3" />
-
-              <!-- Face Visor Double Borders -->
-              <rect class="logo-robot-bg" x="33.5" y="15" width="33" height="18" rx="8" ry="8" stroke-width="3" />
-              <rect x="34.5" y="16" width="31" height="16" rx="7" ry="7" stroke-width="3" />
-
-              <!-- Eyes -->
-              <ellipse cx="42" cy="23.5" rx="1.75" ry="3.25" fill="currentColor" stroke="none" />
-              <ellipse cx="58" cy="23.5" rx="1.75" ry="3.25" fill="currentColor" stroke="none" />
-            </svg>
-            <div id="home-robot-3d" style="width: 100%; height: 100%; position: absolute; z-index: 2; opacity: 0; transition: opacity 0.5s ease; pointer-events: none;"></div>
-          </div>
+          <!-- Futuristic background glow -->
+          <div style="position: absolute; right: -50px; top: -50px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(255,34,51,0.08) 0%, transparent 70%); border-radius: 50%; pointer-events: none;"></div>
         </div>
 
         <!-- Stats Row -->
@@ -558,11 +505,89 @@
     </div>
   </div>
 
+  <!-- Floating Copilot Chat Widget -->
+  <div class="copilot-widget-container" style="position: fixed; bottom: 24px; right: 24px; z-index: 10000; display: flex; flex-direction: column; align-items: flex-end; gap: 16px;">
+    
+    <!-- Floating Chat Window (Initially Hidden) -->
+    <div class="copilot-chat-window glass-panel" id="copilot-chat-window" style="width: 350px; height: 450px; flex-direction: column; border-radius: 16px; border: 1px solid var(--border-subtle); background: rgba(12, 12, 16, 0.95); backdrop-filter: blur(20px); box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6); overflow: hidden;">
+      <!-- Header -->
+      <div style="background: rgba(255, 34, 51, 0.05); padding: 16px 20px; border-bottom: 1px solid var(--border-subtle); display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <div style="position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg class="icon-svg" viewBox="0 0 24 24" style="width: 16px; height: 16px; stroke: var(--accent-red); fill: none; stroke-width: 2.5; filter: drop-shadow(0 0 4px var(--accent-red-glow));">
+              <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span class="pulse-dot" style="position: absolute; bottom: -2px; right: -2px; width: 6px; height: 6px; background: #2ecc71; border-radius: 50%; box-shadow: 0 0 6px #2ecc71;"></span>
+          </div>
+          <span style="font-size: 13px; font-weight: 700; color: var(--text-main); text-transform: uppercase; letter-spacing: 0.5px;">Agents Cops Copilot</span>
+        </div>
+        <button id="copilot-chat-close" style="background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 20px; line-height: 1; padding: 4px; transition: color 0.2s;">&times;</button>
+      </div>
+      
+      <!-- Chat Feed -->
+      <div id="hero-chat-log" style="flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; font-size: 12px; line-height: 1.5; scrollbar-width: thin;">
+        <div class="hero-chat-msg bot" style="color: var(--text-muted); margin-bottom: 8px;">
+          <span style="color: var(--accent-red); font-weight: bold;">[Copilot]:</span> Hello! Ask me about active project statuses (e.g., "what is the status of the Nike project?" or "list all projects").
+        </div>
+      </div>
+      
+      <!-- Input Area -->
+      <div style="padding: 16px 20px; border-top: 1px solid var(--border-subtle); display: flex; gap: 10px; align-items: center; background: rgba(0,0,0,0.15);">
+        <input type="text" id="hero-chat-input" placeholder="Ask about project statuses..." style="flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--border-subtle); border-radius: 6px; padding: 10px 14px; color: var(--text-main); font-size: 12px; outline: none; transition: border-color 0.2s;" />
+        <button id="hero-chat-send" style="background: var(--accent-red); border: none; border-radius: 6px; color: var(--text-main); width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s; flex-shrink: 0;" title="Send Message">
+          <svg class="icon-svg" viewBox="0 0 24 24" style="width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.5;">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Floating Launcher Trigger Button (Hosting the 3D Mascot Head) -->
+    <button id="copilot-launcher-btn" style="width: 70px; height: 70px; border-radius: 50%; background: var(--bg-panel); border: 1px solid var(--border-subtle); box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4); cursor: pointer; overflow: visible; position: relative; display: flex; align-items: center; justify-content: center; outline: none; transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.2s; padding: 0;">
+      <!-- 3D Mascot Canvas Slot -->
+      <div id="home-robot-3d" style="width: 100%; height: 100%; border-radius: 50%; overflow: hidden; pointer-events: none;"></div>
+      
+      <!-- Fallback SVG in case WebGL is disabled -->
+      <div class="home-logo-wrapper" id="home-logo-wrapper" style="position: absolute; width: 44px; height: 44px; pointer-events: none; display: flex; align-items: center; justify-content: center;">
+        <svg id="home-logo-svg" class="icon-svg logo-robot-svg" viewBox="24 -4 52 52" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="width: 32px; height: 32px; stroke: var(--accent-red); filter: drop-shadow(0 0 5px var(--accent-red-glow)); transition: opacity 0.5s ease; z-index: 1;">
+          <!-- Helmet Outer Outline -->
+          <rect class="logo-robot-bg" x="30" y="11" width="40" height="26" rx="11" ry="11" stroke-width="3" />
+          
+          <!-- Helmet Top Panel -->
+          <path d="M 38,16 C 44,14.5 56,14.5 62,16" stroke-width="3" />
+          <path d="M 38,11.5 L 38,16" stroke-width="3" />
+          <path d="M 62,11.5 L 62,16" stroke-width="3" />
+
+          <!-- Left Earmuff & Antenna -->
+          <rect class="logo-robot-bg" x="26.5" y="17" width="3.5" height="14" rx="1.5" stroke-width="3" />
+          <rect class="logo-robot-bg" x="25" y="19.5" width="1.5" height="9" rx="0.75" stroke-width="3" />
+          <path d="M 28.25,17 L 28.25,8" stroke-width="3" />
+          <circle class="logo-robot-bg" cx="28.25" cy="7.5" r="1.5" stroke-width="3" />
+
+          <!-- Right Earmuff & Antenna -->
+          <rect class="logo-robot-bg" x="70" y="17" width="3.5" height="14" rx="1.5" stroke-width="3" />
+          <rect class="logo-robot-bg" x="73.5" y="19.5" width="1.5" height="9" rx="0.75" stroke-width="3" />
+          <path d="M 71.75,17 L 71.75,8" stroke-width="3" />
+          <circle class="logo-robot-bg" cx="71.75" cy="7.5" r="1.5" stroke-width="3" />
+
+          <!-- Face Visor Double Borders -->
+          <rect class="logo-robot-bg" x="33.5" y="15" width="33" height="18" rx="8" ry="8" stroke-width="3" />
+          <rect x="34.5" y="16" width="31" height="16" rx="7" ry="7" stroke-width="3" />
+
+          <!-- Eyes -->
+          <ellipse cx="42" cy="23.5" rx="1.75" ry="3.25" fill="currentColor" stroke="none" />
+          <ellipse cx="58" cy="23.5" rx="1.75" ry="3.25" fill="currentColor" stroke="none" />
+        </svg>
+      </div>
+    </button>
+  </div>
+
   <!-- JS Scripts -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-  <script src="js/robot3d.js?v=26"></script>
-  <script src="js/state.js?v=26"></script>
-  <script src="js/simulator.js?v=26"></script>
-  <script src="js/app.js?v=26"></script>
+  <script src="js/robot3d.js?v=28"></script>
+  <script src="js/state.js?v=28"></script>
+  <script src="js/simulator.js?v=28"></script>
+  <script src="js/app.js?v=28"></script>
 </body>
 </html>
