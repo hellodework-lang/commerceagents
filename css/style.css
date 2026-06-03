@@ -116,6 +116,7 @@ body {
   font-weight: 700;
   font-size: 20px;
   letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 .logo-text span {
