@@ -297,97 +297,169 @@
           <!-- Live Diagnostics Panel -->
           <div class="diagnostics-card glass-panel" style="border-radius: 12px; border: 1px solid var(--border-subtle); padding: 20px; background: var(--bg-panel); display: flex; flex-direction: column; gap: 14px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
-              <h3 style="font-size: 14px; font-weight: 700; margin: 0; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px;">Live Diagnostics</h3>
-              <div style="display: flex; align-items: center; gap: 6px;">
-                <span class="pulse-dot" style="width: 8px; height: 8px; background: #2ecc71; border-radius: 50%; box-shadow: 0 0 8px #2ecc71;"></span>
-                <span style="font-size: 11px; color: var(--text-muted);">SYS ONLINE</span>
+          <!-- Live Diagnostics Panel -->
+          <div class="diagnostics-card premium-glass-panel" style="position: relative; overflow: hidden;">
+            <div class="scanner-sweep"></div>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; position: relative; z-index: 2;">
+              <h3 style="font-size: 14px; font-weight: 700; margin: 0; color: var(--text-main); text-transform: uppercase; letter-spacing: 1px;">Live Diagnostics</h3>
+              <div style="display: flex; align-items: center; gap: 8px; background: rgba(46, 204, 113, 0.1); padding: 4px 10px; border-radius: 20px; border: 1px solid rgba(46, 204, 113, 0.2);">
+                <span class="pulse-dot glow-green-dot"></span>
+                <span style="font-size: 10px; font-weight: 600; color: #2ecc71; letter-spacing: 0.5px;">SYS ONLINE</span>
               </div>
             </div>
-            <div class="diag-console" style="background: rgba(0,0,0,0.3); border-radius: 6px; padding: 12px; font-family: monospace; font-size: 11px; line-height: 1.6; color: var(--text-muted); height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
-              <div><span style="color: var(--accent-red); font-weight: bold;">[CORE]</span> State manager initiated successfully.</div>
-              <div><span style="color: #3498db; font-weight: bold;">[WHATSAPP]</span> Webhook listener active on port 8080.</div>
-              <div><span style="color: #2ecc71; font-weight: bold;">[AI-ENGINE]</span> Translation models online (EN/TA/Tanglish).</div>
-              <div><span style="color: #e67e22; font-weight: bold;">[QUEUE]</span> 1 project currently in active manual production.</div>
-              <div><span style="color: var(--text-dim);">[MEM]</span> Heap utilization: 42MB / 512MB (8%).</div>
+            <div class="diag-console-premium">
+              <div class="health-metric-row">
+                <div class="metric-icon-box" style="color: var(--accent-red); background: rgba(255, 34, 51, 0.1);"><svg class="icon-svg" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2" ry="2"></rect><path d="M12 22V8"></path><path d="M5 12H2"></path><path d="M22 12h-3"></path></svg></div>
+                <div class="metric-info">
+                  <span class="metric-name">Core State</span>
+                  <span class="metric-desc">Manager initiated successfully</span>
+                </div>
+                <span class="metric-status online">Active</span>
+              </div>
+              <div class="health-metric-row">
+                <div class="metric-icon-box" style="color: #3498db; background: rgba(52, 152, 219, 0.1);"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
+                <div class="metric-info">
+                  <span class="metric-name">WhatsApp</span>
+                  <span class="metric-desc">Webhook listener active</span>
+                </div>
+                <span class="metric-status online">Active</span>
+              </div>
+              <div class="health-metric-row">
+                <div class="metric-icon-box" style="color: #2ecc71; background: rgba(46, 204, 113, 0.1);"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z"></path><path d="M12 6v6l4 2"></path></svg></div>
+                <div class="metric-info">
+                  <span class="metric-name">AI-Engine</span>
+                  <span class="metric-desc">EN/TA/Tanglish online</span>
+                </div>
+                <span class="metric-status online">Active</span>
+              </div>
+              <div class="health-metric-row">
+                <div class="metric-icon-box" style="color: #e67e22; background: rgba(230, 126, 34, 0.1);"><svg class="icon-svg" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg></div>
+                <div class="metric-info">
+                  <span class="metric-name">Queue</span>
+                  <span class="metric-desc">Active manual production</span>
+                </div>
+                <span class="metric-status warning">1 Proj</span>
+              </div>
+              <div class="health-metric-row">
+                <div class="metric-icon-box" style="color: #9034ff; background: rgba(144, 52, 255, 0.1);"><svg class="icon-svg" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2" ry="2"></rect><rect x="9" y="9" width="6" height="6"></rect><line x1="9" y1="1" x2="9" y2="4"></line><line x1="15" y1="1" x2="15" y2="4"></line><line x1="9" y1="20" x2="9" y2="23"></line><line x1="15" y1="20" x2="15" y2="23"></line><line x1="20" y1="9" x2="23" y2="9"></line><line x1="20" y1="14" x2="23" y2="14"></line><line x1="1" y1="9" x2="4" y2="9"></line><line x1="1" y1="14" x2="4" y2="14"></line></svg></div>
+                <div class="metric-info">
+                  <span class="metric-name">Memory</span>
+                  <span class="metric-desc">42MB / 512MB</span>
+                </div>
+                <span class="metric-status neutral">8% Util</span>
+              </div>
             </div>
           </div>
 
           <!-- Operations Overview Box -->
-          <div class="performance-card glass-panel" style="border-radius: 12px; border: 1px solid var(--border-subtle); padding: 20px; background: var(--bg-panel); display: flex; flex-direction: column; gap: 16px;">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-              <h3 style="font-size: 14px; font-weight: 700; margin: 0; color: var(--accent-red); text-transform: uppercase; letter-spacing: 0.5px;">Operations Overview</h3>
-              <button class="action-btn-mini" style="background: none; border: none; color: var(--text-muted); cursor: pointer; padding: 2px;">
-                <svg class="icon-svg" viewBox="0 0 24 24" style="width: 16px; height: 16px;"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
+          <div class="performance-card premium-glass-panel">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+              <h3 style="font-size: 14px; font-weight: 700; margin: 0; color: var(--text-main); text-transform: uppercase; letter-spacing: 1px;">Operations Overview</h3>
+              <button class="action-btn-mini" style="background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-subtle); color: var(--text-muted); cursor: pointer; padding: 4px; border-radius: 6px; transition: all 0.2s ease;">
+                <svg class="icon-svg" viewBox="0 0 24 24" style="width: 14px; height: 14px;"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
               </button>
             </div>
             
-            <div class="donut-chart-layout" style="display: flex; align-items: center; gap: 20px;">
-              <!-- Left: Donut Chart -->
-              <div class="donut-chart-wrapper">
-                <div class="donut-chart-ring" id="donut-projects-ring"></div>
-                <div class="donut-chart-hole">
-                  <span class="donut-val" id="donut-projects-val">0</span>
-                  <span class="donut-lbl" id="donut-projects-lbl">Projects</span>
+            <div class="radial-layout-container">
+              <!-- Left: Premium Radial Chart -->
+              <div class="radial-chart-wrapper">
+                <svg class="radial-svg" viewBox="0 0 100 100">
+                  <defs>
+                    <filter id="glow-green" x="-20%" y="-20%" width="140%" height="140%">
+                      <feGaussianBlur stdDeviation="3" result="blur" />
+                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                    <filter id="glow-blue" x="-20%" y="-20%" width="140%" height="140%">
+                      <feGaussianBlur stdDeviation="3" result="blur" />
+                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                    <filter id="glow-purple" x="-20%" y="-20%" width="140%" height="140%">
+                      <feGaussianBlur stdDeviation="3" result="blur" />
+                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                    <filter id="glow-red" x="-20%" y="-20%" width="140%" height="140%">
+                      <feGaussianBlur stdDeviation="3" result="blur" />
+                      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                    </filter>
+                  </defs>
+                  
+                  <!-- Track -->
+                  <circle cx="50" cy="50" r="40" class="radial-track"></circle>
+                  
+                  <!-- Progress Rings -->
+                  <!-- Red: Pending Production -->
+                  <circle cx="50" cy="50" r="40" class="radial-progress stroke-red" id="radial-ring-pending" filter="url(#glow-red)" stroke-dasharray="251.2" stroke-dashoffset="251.2"></circle>
+                  <!-- Purple: Pending Approval -->
+                  <circle cx="50" cy="50" r="40" class="radial-progress stroke-purple" id="radial-ring-approval" filter="url(#glow-purple)" stroke-dasharray="251.2" stroke-dashoffset="251.2"></circle>
+                  <!-- Blue: In Production -->
+                  <circle cx="50" cy="50" r="40" class="radial-progress stroke-blue" id="radial-ring-production" filter="url(#glow-blue)" stroke-dasharray="251.2" stroke-dashoffset="251.2"></circle>
+                  <!-- Green: Completed -->
+                  <circle cx="50" cy="50" r="40" class="radial-progress stroke-green" id="radial-ring-completed" filter="url(#glow-green)" stroke-dasharray="251.2" stroke-dashoffset="251.2"></circle>
+                </svg>
+                
+                <div class="radial-center-content">
+                  <span class="radial-total-val" id="donut-projects-val">0</span>
+                  <span class="radial-total-lbl">Projects</span>
                 </div>
               </div>
               
               <!-- Right: Split Details -->
-              <div style="flex: 1; display: flex; flex-direction: column; gap: 12px;">
+              <div class="radial-stats-container">
                 <!-- Top: Total Active Companies Stat -->
-                <div style="display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--border-subtle); padding-bottom: 8px;">
-                  <div style="background: rgba(255, 34, 51, 0.1); border-radius: 6px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; color: var(--accent-red);">
-                    <svg class="icon-svg" viewBox="0 0 24 24" style="width: 18px; height: 18px;"><rect x="2" y="2" width="20" height="20" rx="2" ry="2"></rect><path d="M7 22V14h10v8"></path><path d="M9 8h6"></path><path d="M9 12h6"></path></svg>
+                <div class="company-stat-card">
+                  <div class="company-stat-icon">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="2" ry="2"></rect><path d="M7 22V14h10v8"></path><path d="M9 8h6"></path><path d="M9 12h6"></path></svg>
                   </div>
-                  <div>
-                    <div style="font-size: 10px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px;">Active Companies</div>
-                    <div style="font-size: 16px; font-weight: 700; color: var(--text-main); line-height: 1.1;" id="donut-companies-val">0</div>
+                  <div class="company-stat-text-box">
+                    <div class="company-stat-label">Active Companies</div>
+                    <div class="company-stat-value" id="donut-companies-val">0</div>
                   </div>
                 </div>
                 
                 <!-- Bottom: 2x2 Grid -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px;">
+                <div class="stats-glass-grid">
                   <!-- Completed -->
-                  <div>
-                    <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; margin-bottom: 2px;">
-                      <span class="legend-dot" style="width: 6px; height: 6px; background: #2ecc71; border-radius: 50%;"></span>
-                      <span style="color: var(--text-muted); font-weight: 500;">Completed</span>
+                  <div class="stat-glass-card">
+                    <div class="stat-glass-header">
+                      <span class="legend-dot bg-green glow-green-dot"></span>
+                      <span class="stat-glass-name">Completed</span>
                     </div>
-                    <div style="font-size: 12px; font-weight: 700; color: var(--text-main); padding-left: 12px;">
-                      <span id="donut-completed-val">0</span>
-                      <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);" id="donut-completed-pct">(0%)</span>
+                    <div class="stat-glass-body">
+                      <span class="stat-glass-val" id="donut-completed-val">0</span>
+                      <span class="stat-glass-pct" id="donut-completed-pct">(0%)</span>
                     </div>
                   </div>
                   <!-- In Production -->
-                  <div>
-                    <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; margin-bottom: 2px;">
-                      <span class="legend-dot" style="width: 6px; height: 6px; background: #3498db; border-radius: 50%;"></span>
-                      <span style="color: var(--text-muted); font-weight: 500;">Production</span>
+                  <div class="stat-glass-card">
+                    <div class="stat-glass-header">
+                      <span class="legend-dot bg-blue glow-blue-dot"></span>
+                      <span class="stat-glass-name">Production</span>
                     </div>
-                    <div style="font-size: 12px; font-weight: 700; color: var(--text-main); padding-left: 12px;">
-                      <span id="donut-production-val">0</span>
-                      <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);" id="donut-production-pct">(0%)</span>
+                    <div class="stat-glass-body">
+                      <span class="stat-glass-val" id="donut-production-val">0</span>
+                      <span class="stat-glass-pct" id="donut-production-pct">(0%)</span>
                     </div>
                   </div>
                   <!-- Pending Approval -->
-                  <div>
-                    <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; margin-bottom: 2px;">
-                      <span class="legend-dot" style="width: 6px; height: 6px; background: #9034ff; border-radius: 50%;"></span>
-                      <span style="color: var(--text-muted); font-weight: 500;">Approval</span>
+                  <div class="stat-glass-card">
+                    <div class="stat-glass-header">
+                      <span class="legend-dot bg-purple glow-purple-dot"></span>
+                      <span class="stat-glass-name">Approval</span>
                     </div>
-                    <div style="font-size: 12px; font-weight: 700; color: var(--text-main); padding-left: 12px;">
-                      <span id="donut-approval-val">0</span>
-                      <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);" id="donut-approval-pct">(0%)</span>
+                    <div class="stat-glass-body">
+                      <span class="stat-glass-val" id="donut-approval-val">0</span>
+                      <span class="stat-glass-pct" id="donut-approval-pct">(0%)</span>
                     </div>
                   </div>
                   <!-- Pending Production -->
-                  <div>
-                    <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; margin-bottom: 2px;">
-                      <span class="legend-dot" style="width: 6px; height: 6px; background: var(--accent-red); border-radius: 50%;"></span>
-                      <span style="color: var(--text-muted); font-weight: 500;">Pending</span>
+                  <div class="stat-glass-card">
+                    <div class="stat-glass-header">
+                      <span class="legend-dot bg-red glow-red-dot"></span>
+                      <span class="stat-glass-name">Pending</span>
                     </div>
-                    <div style="font-size: 12px; font-weight: 700; color: var(--text-main); padding-left: 12px;">
-                      <span id="donut-pending-val">0</span>
-                      <span style="font-size: 10px; font-weight: 400; color: var(--text-dim);" id="donut-pending-pct">(0%)</span>
+                    <div class="stat-glass-body">
+                      <span class="stat-glass-val" id="donut-pending-val">0</span>
+                      <span class="stat-glass-pct" id="donut-pending-pct">(0%)</span>
                     </div>
                   </div>
                 </div>

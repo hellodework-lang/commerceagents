@@ -2079,3 +2079,377 @@ body {
     transform: rotate(2deg) translateY(0.5px);
   }
 }
+
+/* ============================================================
+   PREMIUM WIDGET STYLES — Live Diagnostics & Operations Overview
+   ============================================================ */
+
+/* --- Shared: premium-glass-panel base --- */
+.premium-glass-panel {
+  background: linear-gradient(135deg, rgba(18, 18, 26, 0.9) 0%, rgba(12, 12, 20, 0.95) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
+    0 4px 24px rgba(0, 0, 0, 0.4),
+    0 1px 0 rgba(255, 255, 255, 0.06) inset;
+  backdrop-filter: blur(20px);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  position: relative;
+  overflow: hidden;
+}
+
+/* =============================================
+   LIVE DIAGNOSTICS — Health Panel
+   ============================================= */
+
+/* Animated scanner sweep line */
+.scanner-sweep {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 34, 51, 0.03) 40%,
+    rgba(255, 34, 51, 0.08) 50%,
+    rgba(255, 34, 51, 0.03) 60%,
+    transparent 100%
+  );
+  animation: scanner-sweep 4s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes scanner-sweep {
+  0%   { left: -60%; }
+  100% { left: 160%; }
+}
+
+/* Console container */
+.diag-console-premium {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Individual health metric row */
+.health-metric-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: background 0.2s ease, border-color 0.2s ease;
+  cursor: default;
+}
+
+.health-metric-row:hover {
+  background: rgba(255, 255, 255, 0.045);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Icon box */
+.metric-icon-box {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.metric-icon-box .icon-svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Info block */
+.metric-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.metric-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+  letter-spacing: 0.2px;
+}
+
+.metric-desc {
+  font-size: 10px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Status badge */
+.metric-status {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.metric-status.online {
+  color: #2ecc71;
+  background: rgba(46, 204, 113, 0.1);
+  border: 1px solid rgba(46, 204, 113, 0.25);
+}
+
+.metric-status.warning {
+  color: #e67e22;
+  background: rgba(230, 126, 34, 0.1);
+  border: 1px solid rgba(230, 126, 34, 0.25);
+}
+
+.metric-status.neutral {
+  color: #9034ff;
+  background: rgba(144, 52, 255, 0.1);
+  border: 1px solid rgba(144, 52, 255, 0.25);
+}
+
+/* Glowing pulse dot */
+.glow-green-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2ecc71;
+  box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.3);
+  animation: pulse-glow-green 2s ease-in-out infinite;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+@keyframes pulse-glow-green {
+  0%, 100% { box-shadow: 0 0 0 2px rgba(46, 204, 113, 0.3); }
+  50%       { box-shadow: 0 0 0 5px rgba(46, 204, 113, 0.08), 0 0 10px rgba(46, 204, 113, 0.4); }
+}
+
+/* =============================================
+   OPERATIONS OVERVIEW — Radial Chart
+   ============================================= */
+
+/* Layout container */
+.radial-layout-container {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* Radial chart wrapper */
+.radial-chart-wrapper {
+  position: relative;
+  width: 110px;
+  height: 110px;
+  flex-shrink: 0;
+}
+
+.radial-svg {
+  width: 110px;
+  height: 110px;
+  transform: rotate(-90deg);
+  overflow: visible;
+}
+
+/* Track ring */
+.radial-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.05);
+  stroke-width: 8;
+}
+
+/* Progress rings */
+.radial-progress {
+  fill: none;
+  stroke-width: 8;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.stroke-green  { stroke: #2ecc71; }
+.stroke-blue   { stroke: #3498db; }
+.stroke-purple { stroke: #9034ff; }
+.stroke-red    { stroke: #ff2233; }
+
+/* Center content overlay */
+.radial-center-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+}
+
+.radial-total-val {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+.radial-total-lbl {
+  font-size: 9px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-top: 2px;
+}
+
+/* Right side stats container */
+.radial-stats-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-width: 0;
+}
+
+/* Active Companies card */
+.company-stat-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(255, 34, 51, 0.06);
+  border: 1px solid rgba(255, 34, 51, 0.15);
+  border-radius: 10px;
+}
+
+.company-stat-icon {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  background: rgba(255, 34, 51, 0.12);
+  border: 1px solid rgba(255, 34, 51, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-red);
+  flex-shrink: 0;
+}
+
+.company-stat-icon .icon-svg {
+  width: 14px;
+  height: 14px;
+}
+
+.company-stat-text-box { display: flex; flex-direction: column; gap: 1px; }
+
+.company-stat-label {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.company-stat-value {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1;
+  letter-spacing: -0.5px;
+}
+
+/* 2x2 glass stat grid */
+.stats-glass-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+}
+
+.stat-glass-card {
+  padding: 9px 10px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 9px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.stat-glass-card:hover {
+  background: rgba(255, 255, 255, 0.055);
+  border-color: rgba(255, 255, 255, 0.13);
+}
+
+.stat-glass-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stat-glass-name {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stat-glass-body {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  padding-left: 2px;
+}
+
+.stat-glass-val {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.5px;
+}
+
+.stat-glass-pct {
+  font-size: 9px;
+  font-weight: 400;
+  color: var(--text-dim);
+}
+
+/* Colored legend dots */
+.legend-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+
+.legend-dot.bg-green  { background: #2ecc71; }
+.legend-dot.bg-blue   { background: #3498db; }
+.legend-dot.bg-purple { background: #9034ff; }
+.legend-dot.bg-red    { background: #ff2233; }
+
+.legend-dot.glow-green-dot  { box-shadow: 0 0 5px rgba(46, 204, 113, 0.6); }
+.legend-dot.glow-blue-dot   { box-shadow: 0 0 5px rgba(52, 152, 219, 0.6); }
+.legend-dot.glow-purple-dot { box-shadow: 0 0 5px rgba(144, 52, 255, 0.6); }
+.legend-dot.glow-red-dot    { box-shadow: 0 0 5px rgba(255, 34, 51, 0.6); }
+

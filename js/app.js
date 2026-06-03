@@ -6,6 +6,28 @@
   const { store: appStore, MOCK_TEMPLATES } = window.DashboardState;
   const { simulateIncomingMessage } = window.DashboardSimulator;
 
+  // ==========================================
+  // REAL-TIME DATA SYNCHRONIZATION
+  // ==========================================
+  const syncChannel = new BroadcastChannel('creativeops_realtime_sync');
+  
+  syncChannel.onmessage = (event) => {
+    if (event.data.type === 'NEW_MESSAGE') {
+      const msg = event.data.payload;
+      window.appStore.clients[0].chatHistory.push(msg);
+      
+      // If simulator is open, re-render it
+      if (document.querySelector('.simulator-panel') && document.querySelector('.simulator-panel').classList.contains('open')) {
+        renderSimulatorContent(window.appStore.clients[0]);
+      }
+    }
+  };
+
+  // Function to broadcast updates
+  window.broadcastUpdate = function(type, payload) {
+    syncChannel.postMessage({ type, payload });
+  };
+
   // Elements Cache
   let el = {};
 
@@ -133,47 +155,67 @@
     const pctApproval = Math.round((pendingApprovalCount / total) * 100);
     const pctPending = 100 - pctCompleted - pctProgress - pctApproval;
 
-    // Update Donut Chart DOM elements
-    const projectsRing = document.getElementById('donut-projects-ring');
-    const projectsVal = document.getElementById('donut-projects-val');
-    const companiesVal = document.getElementById('donut-companies-val');
-    const completedVal = document.getElementById('donut-completed-val');
-    const completedPct = document.getElementById('donut-completed-pct');
+    // Update Radial Chart DOM elements
+    const projectsVal   = document.getElementById('donut-projects-val');
+    const companiesVal  = document.getElementById('donut-companies-val');
+    const completedVal  = document.getElementById('donut-completed-val');
+    const completedPct  = document.getElementById('donut-completed-pct');
     const productionVal = document.getElementById('donut-production-val');
     const productionPct = document.getElementById('donut-production-pct');
-    const approvalVal = document.getElementById('donut-approval-val');
-    const approvalPct = document.getElementById('donut-approval-pct');
-    const pendingVal = document.getElementById('donut-pending-val');
-    const pendingPct = document.getElementById('donut-pending-pct');
+    const approvalVal   = document.getElementById('donut-approval-val');
+    const approvalPct   = document.getElementById('donut-approval-pct');
+    const pendingVal    = document.getElementById('donut-pending-val');
+    const pendingPct    = document.getElementById('donut-pending-pct');
 
-    if (projectsVal) projectsVal.textContent = totalProjects;
-    if (companiesVal) companiesVal.textContent = state.clients.length;
-    if (completedVal) completedVal.textContent = completedCount;
-    if (completedPct) completedPct.textContent = `(${pctCompleted}%)`;
-    if (productionVal) productionVal.textContent = inProgressCount;
-    if (productionPct) productionPct.textContent = `(${pctProgress}%)`;
-    if (approvalVal) approvalVal.textContent = pendingApprovalCount;
-    if (approvalPct) approvalPct.textContent = `(${pctApproval}%)`;
-    if (pendingVal) pendingVal.textContent = pendingProductionCount;
-    if (pendingPct) pendingPct.textContent = `(${pctPending}%)`;
+    if (projectsVal)   projectsVal.textContent   = totalProjects;
+    if (companiesVal)  companiesVal.textContent   = state.clients.length;
+    if (completedVal)  completedVal.textContent   = completedCount;
+    if (completedPct)  completedPct.textContent   = `(${pctCompleted}%)`;
+    if (productionVal) productionVal.textContent  = inProgressCount;
+    if (productionPct) productionPct.textContent  = `(${pctProgress}%)`;
+    if (approvalVal)   approvalVal.textContent    = pendingApprovalCount;
+    if (approvalPct)   approvalPct.textContent    = `(${pctApproval}%)`;
+    if (pendingVal)    pendingVal.textContent      = pendingProductionCount;
+    if (pendingPct)    pendingPct.textContent      = `(${pctPending}%)`;
 
-    // Conic gradient background rendering:
-    // Completed (Green): #2ecc71
-    // In Production (Blue): #3498db
-    // Pending Approval (Purple): #9034ff
-    // Pending Production (Red): var(--accent-red)
-    if (projectsRing) {
-      const stop1 = pctCompleted;
-      const stop2 = stop1 + pctProgress;
-      const stop3 = stop2 + pctApproval;
-      projectsRing.style.background = `conic-gradient(
-        #2ecc71 0% ${stop1}%,
-        #3498db ${stop1}% ${stop2}%,
-        #9034ff ${stop2}% ${stop3}%,
-        var(--accent-red) ${stop3}% 100%
-      )`;
+    // SVG Radial Ring animation
+    // Circumference = 2 * π * r = 2 * π * 40 ≈ 251.2
+    // Each ring shows its slice of the full circle.
+    // Rings are layered on top of each other; each is offset by the sum of previous arcs.
+    const CIRCUMFERENCE = 251.2;
+
+    const ringCompleted  = document.getElementById('radial-ring-completed');
+    const ringProduction = document.getElementById('radial-ring-production');
+    const ringApproval   = document.getElementById('radial-ring-approval');
+    const ringPending    = document.getElementById('radial-ring-pending');
+
+    // Helper: set dashoffset and rotation offset so each arc starts where the last ended
+    function setRing(el, pct, startPct, delay) {
+      if (!el) return;
+      const arcLen    = CIRCUMFERENCE * (pct / 100);
+      const dashOffset = CIRCUMFERENCE - arcLen;
+      // Rotate the element so the arc begins at startPct around the circle
+      const rotationDeg = (startPct / 100) * 360;
+      el.style.transform = `rotate(${rotationDeg}deg)`;
+      el.style.transformOrigin = '50% 50%';
+      el.style.strokeDasharray  = CIRCUMFERENCE;
+      // Animate in with a slight delay for stagger effect
+      el.style.transition = `stroke-dashoffset 1s cubic-bezier(0.4,0,0.2,1) ${delay}ms`;
+      // Use requestAnimationFrame to ensure transition fires after initial paint
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          el.style.strokeDashoffset = dashOffset;
+        });
+      });
     }
+
+    // Stack order: Green (Completed) → Blue (Production) → Purple (Approval) → Red (Pending)
+    setRing(ringCompleted,  pctCompleted, 0,                                       0);
+    setRing(ringProduction, pctProgress,  pctCompleted,                           100);
+    setRing(ringApproval,   pctApproval,  pctCompleted + pctProgress,             200);
+    setRing(ringPending,    pctPending,   pctCompleted + pctProgress + pctApproval, 300);
   }
+
 
 
 
