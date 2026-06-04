@@ -27,6 +27,32 @@
       statClientsCount: document.getElementById('stat-clients-count'),
       statPromptsCount: document.getElementById('stat-prompts-count'),
       statPendingTasks: document.getElementById('stat-pending-tasks'),
+
+      // New Dashboard Widgets
+      activityFeedList: document.getElementById('activity-feed-list'),
+      activityFeedCount: document.getElementById('activity-feed-count'),
+      campaignChartCanvas: document.getElementById('campaign-chart-canvas'),
+      topClientsList: document.getElementById('top-clients-list'),
+      topClientsCount: document.getElementById('top-clients-count'),
+      aiQueueDepth: document.getElementById('ai-queue-depth'),
+      aiUptime: document.getElementById('ai-uptime'),
+      pendingApprovalsList: document.getElementById('pending-approvals-list'),
+      pendingApprovalsCount: document.getElementById('pending-approvals-count'),
+      weeklyCompleted: document.getElementById('weekly-completed'),
+      weeklyCompletedChange: document.getElementById('weekly-completed-change'),
+      weeklyPrompts: document.getElementById('weekly-prompts'),
+      weeklyPromptsChange: document.getElementById('weekly-prompts-change'),
+      weeklyResponseTime: document.getElementById('weekly-response-time'),
+      weeklyEngagement: document.getElementById('weekly-engagement'),
+      pipelineTotal: document.getElementById('pipeline-total'),
+      pipeCountPending: document.getElementById('pipe-count-pending'),
+      pipeCountApproval: document.getElementById('pipe-count-approval'),
+      pipeCountProduction: document.getElementById('pipe-count-production'),
+      pipeCountCompleted: document.getElementById('pipe-count-completed'),
+      pipeSegPending: document.getElementById('pipe-seg-pending'),
+      pipeSegApproval: document.getElementById('pipe-seg-approval'),
+      pipeSegProduction: document.getElementById('pipe-seg-production'),
+      pipeSegCompleted: document.getElementById('pipe-seg-completed'),
       
       // Clients Directory 4-Column Layout
       clientDbFilterDropdown: document.getElementById('client-db-filter-dropdown'),
@@ -98,15 +124,15 @@
 
   function renderDashboard(state) {
     // Stats
-    el.statClientsCount.textContent = state.clients.length;
-    el.statPromptsCount.textContent = state.recentPrompts.length;
+    if (el.statClientsCount) el.statClientsCount.textContent = state.clients.length;
+    if (el.statPromptsCount) el.statPromptsCount.textContent = state.recentPrompts.length;
     
     // Pending Tasks Count
     let pendingCount = 0;
     state.clients.forEach(c => {
       pendingCount += c.activeProjects.filter(p => p.status === 'Pending Manual Production').length;
     });
-    el.statPendingTasks.textContent = pendingCount;
+    if (el.statPendingTasks) el.statPendingTasks.textContent = pendingCount;
 
     // Calculate Project status split for Company Overview
     let totalProjects = 0;
@@ -165,6 +191,15 @@
     // In Production (Blue): #3498db
     // Pending Approval (Purple): #9034ff
     // Pending Production (Red): var(--accent-red)
+    // Render all new dashboard widgets
+    renderActivityFeed(state);
+    renderCampaignChart(state);
+    renderTopClients(state);
+    renderAIStatus(state);
+    renderPendingApprovals(state);
+    renderWeeklySummary(state);
+    renderPipelineBar(state);
+
     if (projectsRing) {
       const stop1 = pctCompleted;
       const stop2 = stop1 + pctProgress;
@@ -178,6 +213,404 @@
     }
   }
 
+  // ============================================================
+  // NEW DASHBOARD WIDGET RENDER FUNCTIONS
+  // ============================================================
+
+  function renderActivityFeed(state) {
+    if (!el.activityFeedList) return;
+
+    // Build activity events from recent prompts and chat data
+    const events = [];
+
+    // Add prompt generation events
+    state.recentPrompts.forEach(p => {
+      events.push({
+        type: 'prompt',
+        text: `<strong>${p.clientName}</strong> — AI prompt generated for "${p.category}"`,
+        detail: p.generatedPrompt ? p.generatedPrompt.substring(0, 60) + '...' : '',
+        date: new Date(p.date),
+        dotColor: 'blue'
+      });
+    });
+
+    // Add project status events from all clients
+    state.clients.forEach(c => {
+      c.activeProjects.forEach(p => {
+        if (p.status === 'Completed') {
+          events.push({
+            type: 'completed',
+            text: `<strong>${c.name}</strong> — Project "${p.name}" completed`,
+            date: new Date('2026-05-30'),
+            dotColor: 'green'
+          });
+        } else if (p.status === 'Pending Approval') {
+          events.push({
+            type: 'approval',
+            text: `<strong>${c.name}</strong> — "${p.name}" awaiting client approval`,
+            date: new Date('2026-05-31'),
+            dotColor: 'orange'
+          });
+        } else if (p.status === 'In Production') {
+          events.push({
+            type: 'production',
+            text: `<strong>${c.name}</strong> — "${p.name}" moved to production`,
+            date: new Date('2026-06-01'),
+            dotColor: 'purple'
+          });
+        }
+      });
+    });
+
+    // Sort by date descending and take top 6
+    events.sort((a, b) => b.date - a.date);
+    const topEvents = events.slice(0, 6);
+
+    if (el.activityFeedCount) {
+      el.activityFeedCount.textContent = `${topEvents.length} events`;
+    }
+
+    if (topEvents.length === 0) {
+      el.activityFeedList.innerHTML = '<div class="empty-state" style="padding: 20px; font-size: 12px;">No recent activity.</div>';
+      return;
+    }
+
+    const timeAgoLabels = ['2 min ago', '15 min ago', '1 hr ago', '3 hrs ago', '6 hrs ago', 'Yesterday'];
+
+    el.activityFeedList.innerHTML = topEvents.map((evt, i) => `
+      <div class="activity-feed-item">
+        <div class="activity-dot-col">
+          <span class="activity-dot ${evt.dotColor}"></span>
+          ${i < topEvents.length - 1 ? '<span class="activity-line"></span>' : ''}
+        </div>
+        <div class="activity-content">
+          <div class="activity-text">${evt.text}</div>
+          <div class="activity-time">${timeAgoLabels[i] || evt.date.toLocaleDateString()}</div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function renderCampaignChart(state) {
+    const canvas = el.campaignChartCanvas;
+    if (!canvas) return;
+
+    const container = canvas.parentElement;
+    
+    // Defer rendering if container has no dimensions yet (e.g., during splash)
+    if (container.offsetWidth === 0 || container.offsetHeight === 0) {
+      requestAnimationFrame(() => renderCampaignChart(state));
+      return;
+    }
+
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+
+    // Set canvas size based on container
+    canvas.width = container.offsetWidth * dpr;
+    canvas.height = container.offsetHeight * dpr;
+    ctx.scale(dpr, dpr);
+
+    const w = container.offsetWidth;
+    const h = container.offsetHeight;
+
+    // Clear
+    ctx.clearRect(0, 0, w, h);
+
+    // Prepare data: prompts per client
+    const clientData = state.clients.map(c => ({
+      name: c.name.length > 12 ? c.name.substring(0, 12) + '…' : c.name,
+      prompts: c.promptHistory ? c.promptHistory.length : 0,
+      projects: c.activeProjects ? c.activeProjects.length : 0
+    }));
+
+    if (clientData.length === 0) return;
+
+    const barColors = [
+      'rgba(255, 34, 51, 0.7)',
+      'rgba(46, 204, 113, 0.7)',
+      'rgba(241, 196, 15, 0.7)',
+      'rgba(52, 152, 219, 0.7)',
+      'rgba(155, 89, 182, 0.7)'
+    ];
+    const barGlowColors = [
+      'rgba(255, 34, 51, 0.3)',
+      'rgba(46, 204, 113, 0.3)',
+      'rgba(241, 196, 15, 0.3)',
+      'rgba(52, 152, 219, 0.3)',
+      'rgba(155, 89, 182, 0.3)'
+    ];
+
+    const padding = { top: 20, right: 20, bottom: 40, left: 40 };
+    const chartW = w - padding.left - padding.right;
+    const chartH = h - padding.top - padding.bottom;
+    const maxVal = Math.max(...clientData.map(d => d.prompts + d.projects), 1);
+    const barGroupWidth = chartW / clientData.length;
+    const barWidth = Math.min(barGroupWidth * 0.3, 35);
+    const barGap = 4;
+
+    // Draw grid lines
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+      const y = padding.top + (chartH / 4) * i;
+      ctx.beginPath();
+      ctx.moveTo(padding.left, y);
+      ctx.lineTo(w - padding.right, y);
+      ctx.stroke();
+
+      // Y-axis labels
+      const val = Math.round(maxVal - (maxVal / 4) * i);
+      ctx.fillStyle = 'rgba(140, 140, 158, 0.6)';
+      ctx.font = '10px Outfit';
+      ctx.textAlign = 'right';
+      ctx.fillText(val.toString(), padding.left - 8, y + 4);
+    }
+
+    // Draw bars for each client (prompts bar + projects bar)
+    clientData.forEach((d, i) => {
+      const x = padding.left + barGroupWidth * i + (barGroupWidth - (barWidth * 2 + barGap)) / 2;
+
+      // Prompts bar
+      const barH1 = (d.prompts / maxVal) * chartH;
+      const y1 = padding.top + chartH - barH1;
+
+      // Bar glow
+      ctx.shadowColor = barGlowColors[i % barGlowColors.length];
+      ctx.shadowBlur = 12;
+
+      // Rounded rect for prompts
+      const radius = 4;
+      ctx.fillStyle = barColors[i % barColors.length];
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y1);
+      ctx.lineTo(x + barWidth - radius, y1);
+      ctx.quadraticCurveTo(x + barWidth, y1, x + barWidth, y1 + radius);
+      ctx.lineTo(x + barWidth, padding.top + chartH);
+      ctx.lineTo(x, padding.top + chartH);
+      ctx.lineTo(x, y1 + radius);
+      ctx.quadraticCurveTo(x, y1, x + radius, y1);
+      ctx.fill();
+
+      // Projects bar (slightly different shade)
+      const barH2 = (d.projects / maxVal) * chartH;
+      const y2 = padding.top + chartH - barH2;
+      const x2 = x + barWidth + barGap;
+
+      ctx.fillStyle = barColors[i % barColors.length].replace('0.7', '0.35');
+      ctx.beginPath();
+      ctx.moveTo(x2 + radius, y2);
+      ctx.lineTo(x2 + barWidth - radius, y2);
+      ctx.quadraticCurveTo(x2 + barWidth, y2, x2 + barWidth, y2 + radius);
+      ctx.lineTo(x2 + barWidth, padding.top + chartH);
+      ctx.lineTo(x2, padding.top + chartH);
+      ctx.lineTo(x2, y2 + radius);
+      ctx.quadraticCurveTo(x2, y2, x2 + radius, y2);
+      ctx.fill();
+
+      ctx.shadowBlur = 0;
+
+      // Value labels on top of bars
+      ctx.fillStyle = '#f0f0f5';
+      ctx.font = 'bold 11px Outfit';
+      ctx.textAlign = 'center';
+      if (barH1 > 15) ctx.fillText(d.prompts.toString(), x + barWidth / 2, y1 - 6);
+      if (barH2 > 15) ctx.fillText(d.projects.toString(), x2 + barWidth / 2, y2 - 6);
+
+      // Client name labels
+      ctx.fillStyle = 'rgba(140, 140, 158, 0.8)';
+      ctx.font = '11px Outfit';
+      ctx.textAlign = 'center';
+      ctx.fillText(d.name, x + barWidth + barGap / 2, h - 10);
+    });
+
+    // Legend
+    const legendY = h - 26;
+    ctx.font = '10px Outfit';
+    ctx.fillStyle = 'rgba(140, 140, 158, 0.6)';
+
+    // Prompts legend
+    ctx.fillStyle = 'rgba(255, 34, 51, 0.7)';
+    ctx.fillRect(w - 160, legendY - 8, 8, 8);
+    ctx.fillStyle = 'rgba(140, 140, 158, 0.8)';
+    ctx.textAlign = 'left';
+    ctx.fillText('Prompts', w - 148, legendY);
+
+    // Projects legend
+    ctx.fillStyle = 'rgba(255, 34, 51, 0.35)';
+    ctx.fillRect(w - 85, legendY - 8, 8, 8);
+    ctx.fillStyle = 'rgba(140, 140, 158, 0.8)';
+    ctx.fillText('Projects', w - 73, legendY);
+  }
+
+  function renderTopClients(state) {
+    if (!el.topClientsList) return;
+
+    if (el.topClientsCount) {
+      el.topClientsCount.textContent = `${state.clients.length} clients`;
+    }
+
+    el.topClientsList.innerHTML = state.clients.map(c => {
+      const activeCount = c.activeProjects.filter(p => p.status !== 'Completed').length;
+      const totalProjects = c.activeProjects.length;
+
+      // Get last chat message time
+      const chats = state.chats[c.phone] || [];
+      const lastMsg = chats.length > 0 ? chats[chats.length - 1] : null;
+      const lastTime = lastMsg ? lastMsg.time : 'No messages';
+
+      return `
+        <div class="top-client-row" data-phone="${c.phone}">
+          <div class="top-client-avatar">${c.avatar}</div>
+          <div class="top-client-info">
+            <div class="top-client-name">${c.name}</div>
+            <div class="top-client-meta">Last: ${lastTime} · ${c.phone}</div>
+          </div>
+          <div class="top-client-stats">
+            <span class="top-client-proj-count">${activeCount}/${totalProjects} active</span>
+            <button class="top-client-view-btn" data-phone="${c.phone}">View →</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Attach click handlers
+    el.topClientsList.querySelectorAll('.top-client-row').forEach(row => {
+      row.addEventListener('click', () => {
+        const phone = row.getAttribute('data-phone');
+        appStore.updateState({ activeChatPhone: phone });
+        appStore.clearUnreads(phone);
+        handleViewSwitch('clients');
+      });
+    });
+  }
+
+  // Uptime timer state
+  let uptimeSeconds = 0;
+  let uptimeInterval = null;
+
+  function startUptimeTimer() {
+    if (uptimeInterval) return;
+    uptimeInterval = setInterval(() => {
+      uptimeSeconds++;
+      if (el.aiUptime) {
+        const hrs = String(Math.floor(uptimeSeconds / 3600)).padStart(2, '0');
+        const mins = String(Math.floor((uptimeSeconds % 3600) / 60)).padStart(2, '0');
+        const secs = String(uptimeSeconds % 60).padStart(2, '0');
+        el.aiUptime.textContent = `${hrs}:${mins}:${secs}`;
+      }
+    }, 1000);
+  }
+
+  function renderAIStatus(state) {
+    // Update queue depth from pending production projects
+    let queueDepth = 0;
+    state.clients.forEach(c => {
+      queueDepth += c.activeProjects.filter(p => p.status === 'Pending Manual Production').length;
+    });
+    if (el.aiQueueDepth) {
+      el.aiQueueDepth.textContent = `${queueDepth} pending`;
+    }
+  }
+
+  function renderPendingApprovals(state) {
+    if (!el.pendingApprovalsList) return;
+
+    const approvals = [];
+    state.clients.forEach(c => {
+      c.activeProjects.forEach(p => {
+        if (p.status === 'Pending Approval') {
+          approvals.push({
+            projectName: p.name,
+            clientName: c.name,
+            phone: c.phone,
+            projectId: p.id,
+            daysWaiting: Math.floor(Math.random() * 5) + 1 // Mock days
+          });
+        }
+      });
+    });
+
+    if (el.pendingApprovalsCount) {
+      el.pendingApprovalsCount.textContent = approvals.length.toString();
+    }
+
+    if (approvals.length === 0) {
+      el.pendingApprovalsList.innerHTML = `
+        <div class="empty-approvals">
+          <span class="check-icon">✅</span>
+          <span>No pending approvals — all clear!</span>
+        </div>
+      `;
+      return;
+    }
+
+    el.pendingApprovalsList.innerHTML = approvals.map(a => `
+      <div class="pending-approval-item">
+        <div class="pending-approval-info">
+          <div class="pending-approval-project">${a.projectName}</div>
+          <div class="pending-approval-client">${a.clientName}</div>
+        </div>
+        <div class="pending-approval-days">${a.daysWaiting}d waiting</div>
+        <button class="pending-approval-action" data-phone="${a.phone}">View</button>
+      </div>
+    `).join('');
+
+    // Attach view clicks
+    el.pendingApprovalsList.querySelectorAll('.pending-approval-action').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const phone = btn.getAttribute('data-phone');
+        appStore.updateState({ activeChatPhone: phone });
+        appStore.clearUnreads(phone);
+        handleViewSwitch('clients');
+      });
+    });
+  }
+
+  function renderWeeklySummary(state) {
+    // Compute stats from mock data
+    let completedCount = 0;
+    state.clients.forEach(c => {
+      completedCount += c.activeProjects.filter(p => p.status === 'Completed').length;
+    });
+
+    const totalPrompts = state.recentPrompts ? state.recentPrompts.length : 0;
+
+    if (el.weeklyCompleted) el.weeklyCompleted.textContent = completedCount;
+    if (el.weeklyCompletedChange) el.weeklyCompletedChange.textContent = '↑ 33%';
+    if (el.weeklyPrompts) el.weeklyPrompts.textContent = totalPrompts;
+    if (el.weeklyPromptsChange) el.weeklyPromptsChange.textContent = '↑ 25%';
+    if (el.weeklyResponseTime) el.weeklyResponseTime.textContent = '1.2s';
+    if (el.weeklyEngagement) el.weeklyEngagement.textContent = '87%';
+  }
+
+  function renderPipelineBar(state) {
+    let pending = 0, approval = 0, production = 0, completed = 0;
+
+    state.clients.forEach(c => {
+      c.activeProjects.forEach(p => {
+        if (p.status === 'Pending Manual Production' || p.status === 'Pending') pending++;
+        else if (p.status === 'Pending Approval') approval++;
+        else if (p.status === 'In Production') production++;
+        else if (p.status === 'Completed') completed++;
+      });
+    });
+
+    const total = pending + approval + production + completed;
+
+    if (el.pipelineTotal) el.pipelineTotal.textContent = `${total} total`;
+    if (el.pipeCountPending) el.pipeCountPending.textContent = pending;
+    if (el.pipeCountApproval) el.pipeCountApproval.textContent = approval;
+    if (el.pipeCountProduction) el.pipeCountProduction.textContent = production;
+    if (el.pipeCountCompleted) el.pipeCountCompleted.textContent = completed;
+
+    // Update flex proportions based on counts
+    const minFlex = 0.5;
+    if (el.pipeSegPending) el.pipeSegPending.style.flex = Math.max(pending, minFlex);
+    if (el.pipeSegApproval) el.pipeSegApproval.style.flex = Math.max(approval, minFlex);
+    if (el.pipeSegProduction) el.pipeSegProduction.style.flex = Math.max(production, minFlex);
+    if (el.pipeSegCompleted) el.pipeSegCompleted.style.flex = Math.max(completed, minFlex);
+  }
 
 
   function renderClients(state) {
@@ -727,11 +1160,28 @@
     }
     if (el.statCardPending) {
       el.statCardPending.addEventListener('click', () => {
-        handleViewSwitch('clients');
+        handleViewSwitch('status');
       });
     }
 
+    // Quick Actions Bar clicks
+    document.querySelectorAll('.quick-action-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const action = btn.getAttribute('data-action');
+        if (action === 'simulator') {
+          el.simulatorPanel.classList.add('open');
+        } else if (action === 'clients' || action === 'status' || action === 'media') {
+          handleViewSwitch(action);
+        }
+      });
+    });
 
+    // Pipeline segment clicks
+    document.querySelectorAll('.pipeline-segment').forEach(seg => {
+      seg.addEventListener('click', () => {
+        handleViewSwitch('status');
+      });
+    });
 
     // Company custom dropdown filter toggle and change in Client Directory
     if (el.clientDbFilterDropdown) {
@@ -1108,14 +1558,7 @@
 
       updateActiveViewUI(state.activeView);
       
-      const appContainer = document.querySelector('.app-container');
-      if (appContainer) {
-        if (state.activeView === 'clients' || state.activeView === 'status' || state.activeView === 'media') {
-          appContainer.classList.add('sidebar-hidden');
-        } else {
-          appContainer.classList.remove('sidebar-hidden');
-        }
-      }
+
       
       if (state.activeView === 'dashboard') {
         renderDashboard(state);
@@ -1140,6 +1583,9 @@
 
     // Trigger initial dashboard rendering
     renderDashboard(appStore.getState());
+
+    // Start uptime counter
+    startUptimeTimer();
 
     // Start initialization splash screen
     startSplashSequence();
