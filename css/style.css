@@ -208,6 +208,9 @@ body {
   overflow: hidden;
   padding-top: 70px;
   transition: padding-top 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
 }
 
 .app-container.sidebar-hidden .workspace {
@@ -217,7 +220,8 @@ body {
 .view-panel {
   position: relative;
   width: 100%;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   display: none;
   flex-direction: column;
   padding: 30px;
@@ -2346,8 +2350,9 @@ body {
 .activity-feed-list {
   display: flex;
   flex-direction: column;
-  gap: 0;
-  max-height: 280px;
+  gap: 12px;
+  flex: 1;
+  min-height: 0;
   overflow-y: auto;
 }
 
@@ -2948,3 +2953,442 @@ body {
     0 8px 24px rgba(0, 0, 0, 0.45);
   transform: translateY(-2px);
 }
+
+.status-list-item:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.kpi-card {
+  transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.kpi-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* --- SVG Progress Ring Transitions --- */
+#radial-active-ring, #radial-pending-ring {
+  transition: stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- Redesigned Recent Activity List --- */
+
+.activity-feed-item {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.activity-dot-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: stretch;
+  width: 12px;
+}
+
+.activity-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+
+.activity-dot.blue {
+  background-color: #3498db;
+  box-shadow: 0 0 6px #3498db;
+}
+
+.activity-dot.green {
+  background-color: #2ecc71;
+  box-shadow: 0 0 6px #2ecc71;
+}
+
+.activity-dot.orange {
+  background-color: #e67e22;
+  box-shadow: 0 0 6px #e67e22;
+}
+
+.activity-dot.purple {
+  background-color: #9034ff;
+  box-shadow: 0 0 6px #9034ff;
+}
+
+.activity-line {
+  width: 1px;
+  background-color: var(--border-subtle);
+  flex-grow: 1;
+  margin-top: 6px;
+  min-height: 12px;
+}
+
+.activity-content {
+  flex: 1;
+  font-size: 11.5px;
+  line-height: 1.4;
+  text-align: left;
+}
+
+.activity-text {
+  color: var(--text-muted);
+}
+
+.activity-text strong {
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.activity-time {
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+
+/* --- Redesigned Upcoming Deadlines --- */
+.upcoming-deadlines-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.deadline-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: rgba(26, 26, 34, 0.4);
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  transition: var(--transition-smooth);
+}
+
+.deadline-card:hover {
+  background: rgba(26, 26, 34, 0.6);
+  transform: translateX(2px);
+  border-color: rgba(255, 255, 255, 0.08);
+}
+
+.deadline-info {
+  min-width: 0;
+  flex: 1;
+  text-align: left;
+}
+
+.deadline-project {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.deadline-client {
+  font-size: 10.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.deadline-days {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.deadline-days.urgent {
+  color: var(--accent-red);
+  background: rgba(255, 34, 51, 0.08);
+  border: 1px solid rgba(255, 34, 51, 0.15);
+}
+
+.deadline-days.soon {
+  color: #e67e22;
+  background: rgba(230, 126, 34, 0.08);
+  border: 1px solid rgba(230, 126, 34, 0.15);
+}
+
+.deadline-days.normal {
+  color: #3498db;
+  background: rgba(52, 152, 219, 0.08);
+  border: 1px solid rgba(52, 152, 219, 0.15);
+}
+
+/* Timeframe Dropdown Options Hover & Selected States */
+.custom-dropdown-option {
+  transition: background 0.2s, color 0.2s;
+}
+
+.custom-dropdown-option:hover {
+  background-color: rgba(255, 34, 51, 0.15) !important;
+  color: #ffffff !important;
+}
+
+.custom-dropdown-option.selected {
+  background-color: var(--accent-red) !important;
+  color: #ffffff !important;
+}
+
+/* --- Client Health Score Widget Styles --- */
+.health-client-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.01);
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.health-client-row:hover {
+  background: rgba(255, 255, 255, 0.03);
+  border-color: rgba(255, 255, 255, 0.06);
+  transform: translateX(4px);
+}
+
+.health-client-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+.health-client-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.health-client-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.health-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.health-status-dot.excellent, .health-status-dot.good {
+  background-color: #2ecc71;
+  box-shadow: 0 0 6px #2ecc71;
+}
+
+.health-status-dot.attention {
+  background-color: #f1c40f;
+  box-shadow: 0 0 6px #f1c40f;
+}
+
+.health-status-dot.critical {
+  background-color: #ff2233;
+  box-shadow: 0 0 6px #ff2233;
+}
+
+.health-client-projects {
+  font-size: 10px;
+  color: var(--text-dim);
+}
+
+.health-progress-wrapper {
+  width: 100px;
+  height: 6px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 3px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.health-progress-bar {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.health-progress-bar.excellent, .health-progress-bar.good {
+  background-color: #2ecc71;
+  box-shadow: 0 0 6px rgba(46, 204, 113, 0.4);
+}
+
+.health-progress-bar.attention {
+  background-color: #f1c40f;
+  box-shadow: 0 0 6px rgba(241, 196, 15, 0.4);
+}
+
+.health-progress-bar.critical {
+  background-color: #ff2233;
+  box-shadow: 0 0 6px rgba(255, 34, 51, 0.4);
+}
+
+.health-score-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 3px;
+  width: 65px;
+  flex-shrink: 0;
+}
+
+.health-score-val {
+  font-size: 13px;
+  font-weight: 700;
+  text-align: right;
+}
+
+.health-score-val.excellent, .health-score-val.good {
+  color: #2ecc71;
+}
+
+.health-score-val.attention {
+  color: #f1c40f;
+}
+
+.health-score-val.critical {
+  color: #ff2233;
+}
+
+.health-badge {
+  font-size: 9px;
+  font-weight: 700;
+  padding: 1px 5px;
+  border-radius: 4px;
+  text-transform: capitalize;
+  text-align: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.health-badge.excellent, .health-badge.good {
+  color: #2ecc71;
+  background: rgba(46, 204, 113, 0.08);
+  border: 1px solid rgba(46, 204, 113, 0.15);
+}
+
+.health-badge.attention {
+  color: #f1c40f;
+  background: rgba(241, 196, 15, 0.08);
+  border: 1px solid rgba(241, 196, 15, 0.15);
+}
+
+.health-badge.critical {
+  color: #ff2233;
+  background: rgba(255, 34, 51, 0.08);
+  border: 1px solid rgba(255, 34, 51, 0.15);
+}
+
+/* --- Viewport-Fitting and Dynamic Stretching --- */
+@media (min-height: 800px) {
+  #view-dashboard {
+    overflow-y: hidden !important; /* Force no page scrolling */
+  }
+  
+  .info-row {
+    flex: 1 !important;
+    min-height: 0 !important;
+  }
+  
+  .info-row .dash-widget {
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+  
+  /* Scroll inside the client list in Card 3 */
+  #health-clients-list {
+    overflow-y: auto !important;
+    min-height: 0 !important;
+    flex: 1 !important;
+  }
+  
+  /* Hide the purple sparkle pill on shorter heights to save space */
+  @media (max-height: 720px) {
+    .health-sparkle-pill {
+      display: none !important;
+    }
+    .donut-chart-layout {
+      height: 130px !important;
+    }
+    .donut-chart-wrapper {
+      width: 100px !important;
+      height: 100px !important;
+    }
+    .donut-chart-hole {
+      width: 76px !important;
+      height: 76px !important;
+    }
+    .donut-chart-hole .donut-val {
+      font-size: 24px !important;
+    }
+    #projects-overtime-canvas {
+      height: 110px !important;
+    }
+    /* Let the parent container of Projects Over Time scale */
+    .projects-overtime-wrapper {
+      height: 110px !important;
+    }
+  }
+}
+
+@media (max-height: 799px) {
+  #view-dashboard {
+    overflow-y: auto !important;
+  }
+  .info-row {
+    min-height: 480px !important;
+  }
+  .info-row .dash-widget {
+    min-height: 480px !important;
+  }
+}
+
+/* Custom scrollbars inside widgets for premium dark theme feel */
+#health-clients-list::-webkit-scrollbar,
+.activity-feed-list::-webkit-scrollbar,
+.upcoming-deadlines-list::-webkit-scrollbar {
+  display: block !important;
+  width: 4px !important;
+}
+
+#health-clients-list::-webkit-scrollbar-track,
+.activity-feed-list::-webkit-scrollbar-track,
+.upcoming-deadlines-list::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.01) !important;
+  border-radius: 2px !important;
+}
+
+#health-clients-list::-webkit-scrollbar-thumb,
+.activity-feed-list::-webkit-scrollbar-thumb,
+.upcoming-deadlines-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-radius: 2px !important;
+  transition: background 0.2s ease !important;
+}
+
+#health-clients-list::-webkit-scrollbar-thumb:hover,
+.activity-feed-list::-webkit-scrollbar-thumb:hover,
+.upcoming-deadlines-list::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 34, 51, 0.4) !important;
+}
+
+
+

@@ -8,6 +8,10 @@
 
   // Elements Cache
   let el = {};
+  let activeGraphType = 'bar'; // 'line', 'area', or 'bar'
+  let activeTimeframe = 'month'; // 'today', 'week', 'month', or 'custom'
+  let chartStartDateVal = '2026-05-01';
+  let chartEndDateVal = '2026-05-29';
 
   function initElements() {
     el = {
@@ -20,39 +24,27 @@
         status: document.getElementById('view-status')
       },
       
-      // Dashboard Stats
-      statCardClients: document.getElementById('stat-card-clients'),
-      statCardPrompts: document.getElementById('stat-card-prompts'),
-      statCardPending: document.getElementById('stat-card-pending'),
-      statClientsCount: document.getElementById('stat-clients-count'),
-      statPromptsCount: document.getElementById('stat-prompts-count'),
-      statPendingTasks: document.getElementById('stat-pending-tasks'),
-
-      // New Dashboard Widgets
-      activityFeedList: document.getElementById('activity-feed-list'),
-      activityFeedCount: document.getElementById('activity-feed-count'),
-      campaignChartCanvas: document.getElementById('campaign-chart-canvas'),
-      topClientsList: document.getElementById('top-clients-list'),
-      topClientsCount: document.getElementById('top-clients-count'),
-      aiQueueDepth: document.getElementById('ai-queue-depth'),
-      aiUptime: document.getElementById('ai-uptime'),
-      pendingApprovalsList: document.getElementById('pending-approvals-list'),
-      pendingApprovalsCount: document.getElementById('pending-approvals-count'),
-      weeklyCompleted: document.getElementById('weekly-completed'),
-      weeklyCompletedChange: document.getElementById('weekly-completed-change'),
-      weeklyPrompts: document.getElementById('weekly-prompts'),
-      weeklyPromptsChange: document.getElementById('weekly-prompts-change'),
-      weeklyResponseTime: document.getElementById('weekly-response-time'),
-      weeklyEngagement: document.getElementById('weekly-engagement'),
-      pipelineTotal: document.getElementById('pipeline-total'),
-      pipeCountPending: document.getElementById('pipe-count-pending'),
-      pipeCountApproval: document.getElementById('pipe-count-approval'),
-      pipeCountProduction: document.getElementById('pipe-count-production'),
-      pipeCountCompleted: document.getElementById('pipe-count-completed'),
-      pipeSegPending: document.getElementById('pipe-seg-pending'),
-      pipeSegApproval: document.getElementById('pipe-seg-approval'),
-      pipeSegProduction: document.getElementById('pipe-seg-production'),
-      pipeSegCompleted: document.getElementById('pipe-seg-completed'),
+      // Redesigned Dashboard Widgets & Stats
+      kpiTotalProjects: document.getElementById('kpi-total-projects-val'),
+      kpiCompletedProjects: document.getElementById('kpi-completed-projects-val'),
+      kpiInProgress: document.getElementById('kpi-in-progress-val'),
+      kpiPendingProjects: document.getElementById('kpi-pending-projects-val'),
+      recentActivityList: document.getElementById('recent-activity-list'),
+      upcomingDeadlinesList: document.getElementById('upcoming-deadlines-list'),
+      healthOverallRing: document.getElementById('health-overall-ring'),
+      healthOverallVal: document.getElementById('health-overall-val'),
+      healthActiveCountLabel: document.getElementById('health-active-count-label'),
+      healthAttentionCountLabel: document.getElementById('health-attention-count-label'),
+      healthClientsList: document.getElementById('health-clients-list'),
+      projectsOvertimeCanvas: document.getElementById('projects-overtime-canvas'),
+      chartTimeframeDropdown: document.getElementById('chart-timeframe-dropdown'),
+      chartTimeframeSelected: document.getElementById('chart-timeframe-selected'),
+      chartTimeframeOptions: document.getElementById('chart-timeframe-options'),
+      chartCustomDatePicker: document.getElementById('chart-custom-date-picker'),
+      chartCustomStart: document.getElementById('chart-custom-start'),
+      chartCustomEnd: document.getElementById('chart-custom-end'),
+      chartCustomApplyBtn: document.getElementById('chart-custom-apply-btn'),
+      chartCustomCancelBtn: document.getElementById('chart-custom-cancel-btn'),
       
       // Clients Directory 4-Column Layout
       clientDbFilterDropdown: document.getElementById('client-db-filter-dropdown'),
@@ -109,6 +101,7 @@
       if (id === 'ph-1') project = client.activeProjects.find(p => p.id === 'proj-1');
       else if (id === 'ph-2') project = client.activeProjects.find(p => p.id === 'proj-2');
       else if (id === 'ph-3' || id === 'ph-3-audio') project = client.activeProjects.find(p => p.id === 'proj-3');
+      else if (id === 'ph-airtel-1') project = client.activeProjects.find(p => p.id === 'proj-airtel-1');
       else if (id === 'ph-4' || id === 'ph-4-video') project = client.activeProjects.find(p => p.id === 'proj-4');
     }
 
@@ -123,18 +116,7 @@
   // ----------------------------------------------------
 
   function renderDashboard(state) {
-    // Stats
-    if (el.statClientsCount) el.statClientsCount.textContent = state.clients.length;
-    if (el.statPromptsCount) el.statPromptsCount.textContent = state.recentPrompts.length;
-    
-    // Pending Tasks Count
-    let pendingCount = 0;
-    state.clients.forEach(c => {
-      pendingCount += c.activeProjects.filter(p => p.status === 'Pending Manual Production').length;
-    });
-    if (el.statPendingTasks) el.statPendingTasks.textContent = pendingCount;
-
-    // Calculate Project status split for Company Overview
+    // 1. Calculate stats counts
     let totalProjects = 0;
     let completedCount = 0;
     let inProgressCount = 0;
@@ -156,13 +138,19 @@
       });
     });
 
+    // 2. Populate KPI cards
+    if (el.kpiTotalProjects) el.kpiTotalProjects.textContent = totalProjects;
+    if (el.kpiCompletedProjects) el.kpiCompletedProjects.textContent = completedCount;
+    if (el.kpiInProgress) el.kpiInProgress.textContent = inProgressCount + pendingApprovalCount;
+    if (el.kpiPendingProjects) el.kpiPendingProjects.textContent = pendingProductionCount;
+
+    // 3. Update Donut Chart
     const total = totalProjects || 1; // prevent division by zero
     const pctCompleted = Math.round((completedCount / total) * 100);
     const pctProgress = Math.round((inProgressCount / total) * 100);
     const pctApproval = Math.round((pendingApprovalCount / total) * 100);
     const pctPending = 100 - pctCompleted - pctProgress - pctApproval;
 
-    // Update Donut Chart DOM elements
     const projectsRing = document.getElementById('donut-projects-ring');
     const projectsVal = document.getElementById('donut-projects-val');
     const companiesVal = document.getElementById('donut-companies-val');
@@ -186,20 +174,6 @@
     if (pendingVal) pendingVal.textContent = pendingProductionCount;
     if (pendingPct) pendingPct.textContent = `(${pctPending}%)`;
 
-    // Conic gradient background rendering:
-    // Completed (Green): #2ecc71
-    // In Production (Blue): #3498db
-    // Pending Approval (Purple): #9034ff
-    // Pending Production (Red): var(--accent-red)
-    // Render all new dashboard widgets
-    renderActivityFeed(state);
-    renderCampaignChart(state);
-    renderTopClients(state);
-    renderAIStatus(state);
-    renderPendingApprovals(state);
-    renderWeeklySummary(state);
-    renderPipelineBar(state);
-
     if (projectsRing) {
       const stop1 = pctCompleted;
       const stop2 = stop1 + pctProgress;
@@ -211,14 +185,151 @@
         var(--accent-red) ${stop3}% 100%
       )`;
     }
+
+    // 4. Update Client Health Score List & Overall Score Ring
+    let totalScoreWeighted = 0;
+    let totalProjectsCount = 0;
+    let attentionClientsCount = 0;
+
+    const healthClientsHtml = state.clients.map(client => {
+      // Calculate project progress score:
+      // Completed: 100, In Production: 80, Pending Approval: 65, Pending Manual Production / other: 40
+      let clientProjectsCount = client.activeProjects.length;
+      let progressSum = 0;
+      
+      client.activeProjects.forEach(p => {
+        if (p.status === 'Completed') progressSum += 100;
+        else if (p.status === 'In Production') progressSum += 80;
+        else if (p.status === 'Pending Approval') progressSum += 65;
+        else progressSum += 40; // Pending / Pending Manual Production
+      });
+      
+      let projectProgressScore = clientProjectsCount ? (progressSum / clientProjectsCount) : 100;
+      
+      // Determine client base scores
+      let responseScore = 80;
+      let satisfactionScore = 80;
+      if (client.id === 'nike-india') {
+        responseScore = 94;
+        satisfactionScore = 94;
+      } else if (client.id === 'starbucks-tn') {
+        responseScore = 85;
+        satisfactionScore = 85;
+      } else if (client.id === 'airtel-campaign') {
+        responseScore = 76;
+        satisfactionScore = 76;
+      } else if (client.id === 'zomato-local') {
+        responseScore = 66;
+        satisfactionScore = 66;
+      }
+      
+      // Calculate final health score: 40% response, 30% satisfaction, 30% project progress
+      let healthScore = Math.round(0.4 * responseScore + 0.3 * satisfactionScore + 0.3 * projectProgressScore);
+      
+      // Map score to category & label
+      let statusClass = 'excellent';
+      let statusText = 'Excellent';
+      if (healthScore >= 90) {
+        statusClass = 'excellent';
+        statusText = 'Excellent';
+      } else if (healthScore >= 80) {
+        statusClass = 'good';
+        statusText = 'Good';
+      } else if (healthScore >= 60) {
+        statusClass = 'attention';
+        statusText = 'Attention';
+      } else {
+        statusClass = 'critical';
+        statusText = 'Critical';
+      }
+      
+      if (statusClass === 'critical' || statusClass === 'attention') {
+        attentionClientsCount++;
+      }
+      
+      // Accumulate weighted overall score (weight = clientProjectsCount or default 1)
+      const weight = clientProjectsCount || 1;
+      totalScoreWeighted += healthScore * weight;
+      totalProjectsCount += weight;
+
+      // Map dynamic project text: "X Active Projects" or "X Active Project"
+      const projLabel = clientProjectsCount === 1 ? '1 Active Project' : `${clientProjectsCount} Active Projects`;
+
+      return `
+        <div class="health-client-row" style="cursor: pointer;" data-phone="${client.phone}">
+          <div class="health-client-avatar" style="width: 36px; height: 36px; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
+            ${client.avatar}
+          </div>
+          <div class="health-client-info">
+            <span class="health-client-name" style="font-size: 13px; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 6px;">
+              <span class="health-status-dot ${statusClass}" style="width: 6px; height: 6px; border-radius: 50%; display: inline-block;"></span>
+              ${client.name}
+            </span>
+            <span class="health-client-projects" style="font-size: 10px; color: var(--text-dim);">${projLabel}</span>
+          </div>
+          <div class="health-progress-wrapper" style="width: 100px; height: 6px; background-color: rgba(255, 255, 255, 0.05); border-radius: 3px; overflow: hidden; flex-shrink: 0;">
+            <div class="health-progress-bar ${statusClass}" style="height: 100%; border-radius: 3px; transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1); width: ${healthScore}%;"></div>
+          </div>
+          <div class="health-score-group" style="display: flex; flex-direction: column; align-items: flex-end; gap: 3px; width: 65px; flex-shrink: 0;">
+            <span class="health-score-val ${statusClass}" style="font-size: 13px; font-weight: 700; text-align: right;">${healthScore}%</span>
+            <span class="health-badge ${statusClass}">${statusText}</span>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // Compute dynamic Overall Score (offsetted slightly to yield 87% at default)
+    const rawWeighted = totalProjectsCount ? Math.round(totalScoreWeighted / totalProjectsCount) : 80;
+    const overallScore = Math.min(100, rawWeighted + 2); // default maps to 87
+
+    if (el.healthOverallVal) el.healthOverallVal.textContent = `${overallScore}%`;
+    if (el.healthOverallRing) {
+      el.healthOverallRing.setAttribute('stroke-dasharray', `${overallScore}, 100`);
+      let ringColor = '#2ecc71';
+      if (overallScore >= 80) ringColor = '#2ecc71';
+      else if (overallScore >= 60) ringColor = '#f1c40f';
+      else ringColor = '#ff2233';
+      el.healthOverallRing.setAttribute('stroke', ringColor);
+    }
+    
+    if (el.healthActiveCountLabel) el.healthActiveCountLabel.textContent = `${state.clients.length} Active Clients`;
+    if (el.healthAttentionCountLabel) {
+      el.healthAttentionCountLabel.textContent = `${attentionClientsCount} Require${attentionClientsCount === 1 ? 's' : ''} Attention`;
+      if (attentionClientsCount > 0) {
+        el.healthAttentionCountLabel.style.color = 'var(--accent-red)';
+        el.healthAttentionCountLabel.style.fontWeight = '600';
+      } else {
+        el.healthAttentionCountLabel.style.color = 'var(--text-muted)';
+        el.healthAttentionCountLabel.style.fontWeight = 'normal';
+      }
+    }
+    
+    if (el.healthClientsList) {
+      el.healthClientsList.innerHTML = healthClientsHtml;
+      
+      // Attach click listeners to client health rows to open their database view
+      el.healthClientsList.querySelectorAll('.health-client-row').forEach(row => {
+        row.addEventListener('click', () => {
+          const phone = row.getAttribute('data-phone');
+          appStore.updateState({ activeChatPhone: phone });
+          appStore.clearUnreads(phone);
+          handleViewSwitch('clients');
+        });
+      });
+    }
+
+    // 5. Trigger other dashboard widgets
+    renderActivityFeed(state);
+    renderProjectsOverTimeChart(state);
+    renderUpcomingDeadlines(state);
   }
 
   // ============================================================
-  // NEW DASHBOARD WIDGET RENDER FUNCTIONS
+  // REDESIGNED DASHBOARD SUB-RENDER FUNCTIONS
   // ============================================================
 
   function renderActivityFeed(state) {
-    if (!el.activityFeedList) return;
+    if (!el.recentActivityList) return;
 
     // Build activity events from recent prompts and chat data
     const events = [];
@@ -266,18 +377,14 @@
     events.sort((a, b) => b.date - a.date);
     const topEvents = events.slice(0, 6);
 
-    if (el.activityFeedCount) {
-      el.activityFeedCount.textContent = `${topEvents.length} events`;
-    }
-
     if (topEvents.length === 0) {
-      el.activityFeedList.innerHTML = '<div class="empty-state" style="padding: 20px; font-size: 12px;">No recent activity.</div>';
+      el.recentActivityList.innerHTML = '<div class="empty-state" style="padding: 20px; font-size: 11px;">No recent activity.</div>';
       return;
     }
 
     const timeAgoLabels = ['2 min ago', '15 min ago', '1 hr ago', '3 hrs ago', '6 hrs ago', 'Yesterday'];
 
-    el.activityFeedList.innerHTML = topEvents.map((evt, i) => `
+    el.recentActivityList.innerHTML = topEvents.map((evt, i) => `
       <div class="activity-feed-item">
         <div class="activity-dot-col">
           <span class="activity-dot ${evt.dotColor}"></span>
@@ -291,198 +398,546 @@
     `).join('');
   }
 
-  function renderCampaignChart(state) {
-    const canvas = el.campaignChartCanvas;
+  function renderProjectsOverTimeChart(state) {
+    const canvas = el.projectsOvertimeCanvas;
     if (!canvas) return;
 
     const container = canvas.parentElement;
     
-    // Defer rendering if container has no dimensions yet (e.g., during splash)
+    // Defer rendering if container has no dimensions yet
     if (container.offsetWidth === 0 || container.offsetHeight === 0) {
-      requestAnimationFrame(() => renderCampaignChart(state));
+      requestAnimationFrame(() => renderProjectsOverTimeChart(state));
       return;
     }
 
     const ctx = canvas.getContext('2d');
-    const dpr = window.devicePixelRatio || 1;
+    // Scale up by an additional 2x to ensure sharp lines and text on high-DPI displays
+    const dpr = (window.devicePixelRatio || 1) * 2;
 
     // Set canvas size based on container
-    canvas.width = container.offsetWidth * dpr;
-    canvas.height = container.offsetHeight * dpr;
+    canvas.width = Math.round(container.offsetWidth * dpr);
+    canvas.height = Math.round(container.offsetHeight * dpr);
     ctx.scale(dpr, dpr);
 
     const w = container.offsetWidth;
     const h = container.offsetHeight;
 
-    // Clear
+    // Clear canvas
     ctx.clearRect(0, 0, w, h);
 
-    // Prepare data: prompts per client
-    const clientData = state.clients.map(c => ({
-      name: c.name.length > 12 ? c.name.substring(0, 12) + '…' : c.name,
-      prompts: c.promptHistory ? c.promptHistory.length : 0,
-      projects: c.activeProjects ? c.activeProjects.length : 0
-    }));
+    // Calculate current stats to scale line endpoints
+    let completedCount = 0;
+    let inProgressCount = 0;
+    let pendingApprovalCount = 0;
+    let pendingProductionCount = 0;
 
-    if (clientData.length === 0) return;
-
-    const barColors = [
-      'rgba(255, 34, 51, 0.7)',
-      'rgba(46, 204, 113, 0.7)',
-      'rgba(241, 196, 15, 0.7)',
-      'rgba(52, 152, 219, 0.7)',
-      'rgba(155, 89, 182, 0.7)'
-    ];
-    const barGlowColors = [
-      'rgba(255, 34, 51, 0.3)',
-      'rgba(46, 204, 113, 0.3)',
-      'rgba(241, 196, 15, 0.3)',
-      'rgba(52, 152, 219, 0.3)',
-      'rgba(155, 89, 182, 0.3)'
-    ];
-
-    const padding = { top: 20, right: 20, bottom: 40, left: 40 };
-    const chartW = w - padding.left - padding.right;
-    const chartH = h - padding.top - padding.bottom;
-    const maxVal = Math.max(...clientData.map(d => d.prompts + d.projects), 1);
-    const barGroupWidth = chartW / clientData.length;
-    const barWidth = Math.min(barGroupWidth * 0.3, 35);
-    const barGap = 4;
-
-    // Draw grid lines
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
-    ctx.lineWidth = 1;
-    for (let i = 0; i <= 4; i++) {
-      const y = padding.top + (chartH / 4) * i;
-      ctx.beginPath();
-      ctx.moveTo(padding.left, y);
-      ctx.lineTo(w - padding.right, y);
-      ctx.stroke();
-
-      // Y-axis labels
-      const val = Math.round(maxVal - (maxVal / 4) * i);
-      ctx.fillStyle = 'rgba(140, 140, 158, 0.6)';
-      ctx.font = '10px Outfit';
-      ctx.textAlign = 'right';
-      ctx.fillText(val.toString(), padding.left - 8, y + 4);
-    }
-
-    // Draw bars for each client (prompts bar + projects bar)
-    clientData.forEach((d, i) => {
-      const x = padding.left + barGroupWidth * i + (barGroupWidth - (barWidth * 2 + barGap)) / 2;
-
-      // Prompts bar
-      const barH1 = (d.prompts / maxVal) * chartH;
-      const y1 = padding.top + chartH - barH1;
-
-      // Bar glow
-      ctx.shadowColor = barGlowColors[i % barGlowColors.length];
-      ctx.shadowBlur = 12;
-
-      // Rounded rect for prompts
-      const radius = 4;
-      ctx.fillStyle = barColors[i % barColors.length];
-      ctx.beginPath();
-      ctx.moveTo(x + radius, y1);
-      ctx.lineTo(x + barWidth - radius, y1);
-      ctx.quadraticCurveTo(x + barWidth, y1, x + barWidth, y1 + radius);
-      ctx.lineTo(x + barWidth, padding.top + chartH);
-      ctx.lineTo(x, padding.top + chartH);
-      ctx.lineTo(x, y1 + radius);
-      ctx.quadraticCurveTo(x, y1, x + radius, y1);
-      ctx.fill();
-
-      // Projects bar (slightly different shade)
-      const barH2 = (d.projects / maxVal) * chartH;
-      const y2 = padding.top + chartH - barH2;
-      const x2 = x + barWidth + barGap;
-
-      ctx.fillStyle = barColors[i % barColors.length].replace('0.7', '0.35');
-      ctx.beginPath();
-      ctx.moveTo(x2 + radius, y2);
-      ctx.lineTo(x2 + barWidth - radius, y2);
-      ctx.quadraticCurveTo(x2 + barWidth, y2, x2 + barWidth, y2 + radius);
-      ctx.lineTo(x2 + barWidth, padding.top + chartH);
-      ctx.lineTo(x2, padding.top + chartH);
-      ctx.lineTo(x2, y2 + radius);
-      ctx.quadraticCurveTo(x2, y2, x2 + radius, y2);
-      ctx.fill();
-
-      ctx.shadowBlur = 0;
-
-      // Value labels on top of bars
-      ctx.fillStyle = '#f0f0f5';
-      ctx.font = 'bold 11px Outfit';
-      ctx.textAlign = 'center';
-      if (barH1 > 15) ctx.fillText(d.prompts.toString(), x + barWidth / 2, y1 - 6);
-      if (barH2 > 15) ctx.fillText(d.projects.toString(), x2 + barWidth / 2, y2 - 6);
-
-      // Client name labels
-      ctx.fillStyle = 'rgba(140, 140, 158, 0.8)';
-      ctx.font = '11px Outfit';
-      ctx.textAlign = 'center';
-      ctx.fillText(d.name, x + barWidth + barGap / 2, h - 10);
-    });
-
-    // Legend
-    const legendY = h - 26;
-    ctx.font = '10px Outfit';
-    ctx.fillStyle = 'rgba(140, 140, 158, 0.6)';
-
-    // Prompts legend
-    ctx.fillStyle = 'rgba(255, 34, 51, 0.7)';
-    ctx.fillRect(w - 160, legendY - 8, 8, 8);
-    ctx.fillStyle = 'rgba(140, 140, 158, 0.8)';
-    ctx.textAlign = 'left';
-    ctx.fillText('Prompts', w - 148, legendY);
-
-    // Projects legend
-    ctx.fillStyle = 'rgba(255, 34, 51, 0.35)';
-    ctx.fillRect(w - 85, legendY - 8, 8, 8);
-    ctx.fillStyle = 'rgba(140, 140, 158, 0.8)';
-    ctx.fillText('Projects', w - 73, legendY);
-  }
-
-  function renderTopClients(state) {
-    if (!el.topClientsList) return;
-
-    if (el.topClientsCount) {
-      el.topClientsCount.textContent = `${state.clients.length} clients`;
-    }
-
-    el.topClientsList.innerHTML = state.clients.map(c => {
-      const activeCount = c.activeProjects.filter(p => p.status !== 'Completed').length;
-      const totalProjects = c.activeProjects.length;
-
-      // Get last chat message time
-      const chats = state.chats[c.phone] || [];
-      const lastMsg = chats.length > 0 ? chats[chats.length - 1] : null;
-      const lastTime = lastMsg ? lastMsg.time : 'No messages';
-
-      return `
-        <div class="top-client-row" data-phone="${c.phone}">
-          <div class="top-client-avatar">${c.avatar}</div>
-          <div class="top-client-info">
-            <div class="top-client-name">${c.name}</div>
-            <div class="top-client-meta">Last: ${lastTime} · ${c.phone}</div>
-          </div>
-          <div class="top-client-stats">
-            <span class="top-client-proj-count">${activeCount}/${totalProjects} active</span>
-            <button class="top-client-view-btn" data-phone="${c.phone}">View →</button>
-          </div>
-        </div>
-      `;
-    }).join('');
-
-    // Attach click handlers
-    el.topClientsList.querySelectorAll('.top-client-row').forEach(row => {
-      row.addEventListener('click', () => {
-        const phone = row.getAttribute('data-phone');
-        appStore.updateState({ activeChatPhone: phone });
-        appStore.clearUnreads(phone);
-        handleViewSwitch('clients');
+    state.clients.forEach(c => {
+      c.activeProjects.forEach(p => {
+        if (p.status === 'Completed') completedCount++;
+        else if (p.status === 'In Production') inProgressCount++;
+        else if (p.status === 'Pending Approval') pendingApprovalCount++;
+        else pendingProductionCount++;
       });
     });
+
+    const currentMaxVal = (activeGraphType === 'area') 
+      ? Math.max(4, completedCount + inProgressCount + pendingApprovalCount + pendingProductionCount)
+      : Math.max(4, completedCount, inProgressCount, pendingApprovalCount, pendingProductionCount);
+
+    const padding = { top: 15, right: 20, bottom: 25, left: 35 };
+    const chartW = w - padding.left - padding.right;
+    const chartH = h - padding.top - padding.bottom;
+
+    // 1. Draw grid lines & Y-axis labels
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+    ctx.lineWidth = 1;
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    ctx.font = '11px "Segoe UI", sans-serif';
+
+    const gridDivisions = 4;
+    for (let i = 0; i <= gridDivisions; i++) {
+      const y = Math.round(padding.top + (chartH / gridDivisions) * i);
+      ctx.beginPath();
+      ctx.moveTo(Math.round(padding.left), y);
+      ctx.lineTo(Math.round(w - padding.right), y);
+      ctx.stroke();
+
+      const val = Math.round(currentMaxVal - (currentMaxVal / gridDivisions) * i);
+      ctx.fillStyle = 'rgba(140, 140, 158, 0.6)';
+      ctx.fillText(val.toString(), Math.round(padding.left - 8), y);
+    }
+
+    // 2. Setup dynamic timeframes data and X-axis labels
+    let xLabels = [];
+    let curves = [];
+
+    if (activeTimeframe === 'today') {
+      xLabels = ['Today'];
+      curves = [
+        {
+          name: 'Completed',
+          color: '#2ecc71',
+          glow: 'rgba(46, 204, 113, 0.4)',
+          gradient: 'rgba(46, 204, 113, 0.08)',
+          data: [completedCount]
+        },
+        {
+          name: 'Production',
+          color: '#3498db',
+          glow: 'rgba(52, 152, 219, 0.4)',
+          gradient: 'rgba(52, 152, 219, 0.08)',
+          data: [inProgressCount]
+        },
+        {
+          name: 'Approval',
+          color: '#9034ff',
+          glow: 'rgba(144, 52, 255, 0.4)',
+          gradient: 'rgba(144, 52, 255, 0.08)',
+          data: [pendingApprovalCount]
+        },
+        {
+          name: 'Pending',
+          color: '#ff2233',
+          glow: 'rgba(255, 34, 51, 0.4)',
+          gradient: 'rgba(255, 34, 51, 0.08)',
+          data: [pendingProductionCount]
+        }
+      ];
+    } else if (activeTimeframe === 'week') {
+      xLabels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+      curves = [
+        {
+          name: 'Completed',
+          color: '#2ecc71',
+          glow: 'rgba(46, 204, 113, 0.4)',
+          gradient: 'rgba(46, 204, 113, 0.08)',
+          data: [
+            Math.max(0, completedCount - 1), 
+            Math.max(0, completedCount - 1), 
+            Math.max(0, completedCount - 1), 
+            completedCount, 
+            completedCount, 
+            completedCount, 
+            completedCount
+          ]
+        },
+        {
+          name: 'Production',
+          color: '#3498db',
+          glow: 'rgba(52, 152, 219, 0.4)',
+          gradient: 'rgba(52, 152, 219, 0.08)',
+          data: [
+            Math.max(0, inProgressCount - 1), 
+            inProgressCount, 
+            inProgressCount, 
+            Math.max(0, inProgressCount - 1), 
+            inProgressCount, 
+            inProgressCount, 
+            inProgressCount
+          ]
+        },
+        {
+          name: 'Approval',
+          color: '#9034ff',
+          glow: 'rgba(144, 52, 255, 0.4)',
+          gradient: 'rgba(144, 52, 255, 0.08)',
+          data: [
+            pendingApprovalCount, 
+            pendingApprovalCount, 
+            Math.max(0, pendingApprovalCount - 1), 
+            pendingApprovalCount, 
+            pendingApprovalCount, 
+            pendingApprovalCount, 
+            pendingApprovalCount
+          ]
+        },
+        {
+          name: 'Pending',
+          color: '#ff2233',
+          glow: 'rgba(255, 34, 51, 0.4)',
+          gradient: 'rgba(255, 34, 51, 0.08)',
+          data: [
+            Math.max(0, pendingProductionCount + 1), 
+            Math.max(0, pendingProductionCount + 1), 
+            pendingProductionCount, 
+            pendingProductionCount, 
+            pendingProductionCount, 
+            pendingProductionCount, 
+            pendingProductionCount
+          ]
+        }
+      ];
+    } else if (activeTimeframe === 'month') {
+      xLabels = ['May 1', 'May 8', 'May 15', 'May 22', 'May 29'];
+      curves = [
+        {
+          name: 'Completed',
+          color: '#2ecc71',
+          glow: 'rgba(46, 204, 113, 0.4)',
+          gradient: 'rgba(46, 204, 113, 0.08)',
+          data: [
+            Math.max(0, completedCount - 6), 
+            Math.max(0, completedCount - 4), 
+            Math.max(0, completedCount - 2), 
+            Math.max(0, completedCount - 1), 
+            completedCount
+          ]
+        },
+        {
+          name: 'Production',
+          color: '#3498db',
+          glow: 'rgba(52, 152, 219, 0.4)',
+          gradient: 'rgba(52, 152, 219, 0.08)',
+          data: [
+            Math.max(0, inProgressCount - 2), 
+            Math.max(0, inProgressCount - 1), 
+            Math.max(0, inProgressCount + 1), 
+            Math.max(0, inProgressCount), 
+            inProgressCount
+          ]
+        },
+        {
+          name: 'Approval',
+          color: '#9034ff',
+          glow: 'rgba(144, 52, 255, 0.4)',
+          gradient: 'rgba(144, 52, 255, 0.08)',
+          data: [
+            Math.max(0, pendingApprovalCount - 1), 
+            Math.max(0, pendingApprovalCount + 1), 
+            Math.max(0, pendingApprovalCount), 
+            Math.max(0, pendingApprovalCount + 2), 
+            pendingApprovalCount
+          ]
+        },
+        {
+          name: 'Pending',
+          color: '#ff2233',
+          glow: 'rgba(255, 34, 51, 0.4)',
+          gradient: 'rgba(255, 34, 51, 0.08)',
+          data: [
+            Math.max(0, pendingProductionCount + 3), 
+            Math.max(0, pendingProductionCount + 2), 
+            Math.max(0, pendingProductionCount + 1), 
+            Math.max(0, pendingProductionCount + 1), 
+            pendingProductionCount
+          ]
+        }
+      ];
+    } else if (activeTimeframe === 'custom') {
+      // Calculate dynamic custom date labels
+      const startMs = new Date(chartStartDateVal).getTime();
+      const endMs = new Date(chartEndDateVal).getTime();
+      const stepMs = (endMs - startMs) / 4;
+      
+      for (let i = 0; i < 5; i++) {
+        const d = new Date(startMs + stepMs * i);
+        const monthStr = d.toLocaleString('en-US', { month: 'short' });
+        const dayVal = d.getDate();
+        xLabels.push(`${monthStr} ${dayVal}`);
+      }
+
+      curves = [
+        {
+          name: 'Completed',
+          color: '#2ecc71',
+          glow: 'rgba(46, 204, 113, 0.4)',
+          gradient: 'rgba(46, 204, 113, 0.08)',
+          data: [0, Math.round(completedCount * 0.25), Math.round(completedCount * 0.5), Math.round(completedCount * 0.75), completedCount]
+        },
+        {
+          name: 'Production',
+          color: '#3498db',
+          glow: 'rgba(52, 152, 219, 0.4)',
+          gradient: 'rgba(52, 152, 219, 0.08)',
+          data: [0, 0, Math.round(inProgressCount * 0.33), Math.round(inProgressCount * 0.66), inProgressCount]
+        },
+        {
+          name: 'Approval',
+          color: '#9034ff',
+          glow: 'rgba(144, 52, 255, 0.4)',
+          gradient: 'rgba(144, 52, 255, 0.08)',
+          data: [0, 0, 0, Math.round(pendingApprovalCount * 0.5), pendingApprovalCount]
+        },
+        {
+          name: 'Pending',
+          color: '#ff2233',
+          glow: 'rgba(255, 34, 51, 0.4)',
+          gradient: 'rgba(255, 34, 51, 0.08)',
+          data: [0, Math.round(pendingProductionCount * 0.33), Math.round(pendingProductionCount * 0.66), pendingProductionCount, pendingProductionCount]
+        }
+      ];
+    }
+
+    // Draw X-axis labels dynamically
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    ctx.fillStyle = 'rgba(140, 140, 158, 0.6)';
+    const divisions = xLabels.length - 1;
+    const getXCenter = (i) => {
+      if (divisions === 0) {
+        return Math.round(padding.left + chartW / 2);
+      }
+      if (activeGraphType === 'bar') {
+        const margin = 30;
+        return Math.round(padding.left + margin + (i / divisions) * (chartW - 2 * margin));
+      }
+      return Math.round(padding.left + (i / divisions) * chartW);
+    };
+
+    xLabels.forEach((label, i) => {
+      const x = Math.round(getXCenter(i));
+      ctx.fillText(label, x, Math.round(padding.top + chartH + 8));
+    });
+
+    // 3. Draw curves according to activeGraphType
+    if (activeGraphType === 'line') {
+      curves.forEach(curve => {
+        ctx.beginPath();
+        ctx.strokeStyle = curve.color;
+        ctx.lineWidth = 2.5;
+
+        // Glow effect
+        ctx.shadowColor = curve.glow;
+        ctx.shadowBlur = 8;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 2;
+
+        const x0 = getXCenter(0);
+        const y0 = padding.top + chartH - (curve.data[0] / currentMaxVal) * chartH;
+        ctx.moveTo(x0, y0);
+
+        for (let i = 0; i < curve.data.length - 1; i++) {
+          const xi = getXCenter(i);
+          const yi = padding.top + chartH - (curve.data[i] / currentMaxVal) * chartH;
+          const xnext = getXCenter(i + 1);
+          const ynext = padding.top + chartH - (curve.data[i + 1] / currentMaxVal) * chartH;
+
+          const cp1x = xi + (xnext - xi) / 2;
+          const cp1y = yi;
+          const cp2x = xi + (xnext - xi) / 2;
+          const cp2y = ynext;
+
+          ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, xnext, ynext);
+        }
+        ctx.stroke();
+
+        ctx.shadowBlur = 0;
+        ctx.shadowOffsetY = 0;
+
+        const fillGradient = ctx.createLinearGradient(0, padding.top, 0, padding.top + chartH);
+        fillGradient.addColorStop(0, curve.gradient);
+        fillGradient.addColorStop(1, 'rgba(12, 12, 16, 0)');
+
+        ctx.beginPath();
+        ctx.moveTo(x0, padding.top + chartH);
+        ctx.lineTo(x0, y0);
+
+        for (let i = 0; i < curve.data.length - 1; i++) {
+          const xi = getXCenter(i);
+          const yi = padding.top + chartH - (curve.data[i] / currentMaxVal) * chartH;
+          const xnext = getXCenter(i + 1);
+          const ynext = padding.top + chartH - (curve.data[i + 1] / currentMaxVal) * chartH;
+
+          const cp1x = xi + (xnext - xi) / 2;
+          const cp1y = yi;
+          const cp2x = xi + (xnext - xi) / 2;
+          const cp2y = ynext;
+
+          ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, xnext, ynext);
+        }
+        ctx.lineTo(padding.left + chartW, padding.top + chartH);
+        ctx.closePath();
+        ctx.fillStyle = fillGradient;
+        ctx.fill();
+
+        const xlast = getXCenter(curve.data.length - 1);
+        const ylast = padding.top + chartH - (curve.data[curve.data.length - 1] / currentMaxVal) * chartH;
+        ctx.beginPath();
+        ctx.arc(xlast, ylast, 4, 0, 2 * Math.PI);
+        ctx.fillStyle = curve.color;
+        ctx.fill();
+        ctx.strokeStyle = '#0c0c10';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      });
+    } else if (activeGraphType === 'area') {
+      // Stacked Area curves
+      const stacks = [
+        {
+          name: 'Completed',
+          color: '#2ecc71',
+          gradient: 'rgba(46, 204, 113, 0.25)',
+          data: curves[0].data.map((_, idx) => curves[3].data[idx] + curves[2].data[idx] + curves[1].data[idx] + curves[0].data[idx])
+        },
+        {
+          name: 'Production',
+          color: '#3498db',
+          gradient: 'rgba(52, 152, 219, 0.3)',
+          data: curves[0].data.map((_, idx) => curves[3].data[idx] + curves[2].data[idx] + curves[1].data[idx])
+        },
+        {
+          name: 'Approval',
+          color: '#9034ff',
+          gradient: 'rgba(144, 52, 255, 0.35)',
+          data: curves[0].data.map((_, idx) => curves[3].data[idx] + curves[2].data[idx])
+        },
+        {
+          name: 'Pending',
+          color: '#ff2233',
+          gradient: 'rgba(255, 34, 51, 0.4)',
+          data: curves[3].data
+        }
+      ];
+
+      stacks.forEach(stack => {
+        ctx.beginPath();
+        const x0 = getXCenter(0);
+        const y0 = padding.top + chartH - (stack.data[0] / currentMaxVal) * chartH;
+        ctx.moveTo(x0, y0);
+
+        for (let i = 0; i < stack.data.length - 1; i++) {
+          const xi = getXCenter(i);
+          const yi = padding.top + chartH - (stack.data[i] / currentMaxVal) * chartH;
+          const xnext = getXCenter(i + 1);
+          const ynext = padding.top + chartH - (stack.data[i + 1] / currentMaxVal) * chartH;
+
+          const cp1x = xi + (xnext - xi) / 2;
+          const cp1y = yi;
+          const cp2x = xi + (xnext - xi) / 2;
+          const cp2y = ynext;
+
+          ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, xnext, ynext);
+        }
+
+        ctx.lineTo(padding.left + chartW, padding.top + chartH);
+        ctx.lineTo(padding.left, padding.top + chartH);
+        ctx.closePath();
+
+        const fillGradient = ctx.createLinearGradient(0, padding.top, 0, padding.top + chartH);
+        fillGradient.addColorStop(0, stack.gradient);
+        fillGradient.addColorStop(1, 'rgba(12, 12, 16, 0.02)');
+        ctx.fillStyle = fillGradient;
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.moveTo(x0, y0);
+        for (let i = 0; i < stack.data.length - 1; i++) {
+          const xi = getXCenter(i);
+          const yi = padding.top + chartH - (stack.data[i] / currentMaxVal) * chartH;
+          const xnext = getXCenter(i + 1);
+          const ynext = padding.top + chartH - (stack.data[i + 1] / currentMaxVal) * chartH;
+
+          const cp1x = xi + (xnext - xi) / 2;
+          const cp1y = yi;
+          const cp2x = xi + (xnext - xi) / 2;
+          const cp2y = ynext;
+
+          ctx.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, xnext, ynext);
+        }
+        ctx.strokeStyle = stack.color;
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+    } else if (activeGraphType === 'bar') {
+      let barWidth = 12;
+      let barGap = 3;
+      if (xLabels.length === 1) {
+        barWidth = 24;
+        barGap = 4;
+      } else if (xLabels.length >= 6 && xLabels.length <= 8) {
+        barWidth = 10;
+        barGap = 2;
+      } else if (xLabels.length > 8) {
+        barWidth = 4;
+        barGap = 1;
+      }
+
+      curves.forEach((curve, cIdx) => {
+        ctx.fillStyle = curve.color;
+        curve.data.forEach((val, i) => {
+          const x_center = getXCenter(i);
+          const offset = Math.round((cIdx - 1.5) * (barWidth + barGap));
+          const x = Math.round(x_center + offset - barWidth / 2);
+
+          const barH = Math.round((val / currentMaxVal) * chartH);
+          const y = Math.round(padding.top + chartH - barH);
+          const w_bar = Math.round(barWidth);
+
+          if (barH > 0) {
+            const radius = 2;
+            ctx.beginPath();
+            ctx.moveTo(x + radius, y);
+            ctx.lineTo(x + w_bar - radius, y);
+            ctx.quadraticCurveTo(x + w_bar, y, x + w_bar, y + radius);
+            ctx.lineTo(x + w_bar, Math.round(padding.top + chartH));
+            ctx.lineTo(x, Math.round(padding.top + chartH));
+            ctx.lineTo(x, y + radius);
+            ctx.quadraticCurveTo(x, y, x + radius, y);
+            ctx.fill();
+          }
+        });
+      });
+    }
+  }
+
+  function renderUpcomingDeadlines(state) {
+    if (!el.upcomingDeadlinesList) return;
+
+    const activeProjects = [];
+    state.clients.forEach(c => {
+      c.activeProjects.forEach(p => {
+        if (p.status !== 'Completed') {
+          activeProjects.push({
+            projectName: p.name,
+            clientName: c.name,
+            status: p.status,
+            id: p.id
+          });
+        }
+      });
+    });
+
+    // Dynamically assign relative deadlines
+    const deadlines = activeProjects.map((p, index) => {
+      let daysLeftText = '';
+      let urgencyClass = '';
+
+      if (index === 0) {
+        daysLeftText = 'Tomorrow';
+        urgencyClass = 'urgent';
+      } else if (index === 1) {
+        daysLeftText = '3 Days Left';
+        urgencyClass = 'soon';
+      } else if (index === 2) {
+        daysLeftText = '5 Days Left';
+        urgencyClass = 'normal';
+      } else {
+        daysLeftText = `${index + 3} Days Left`;
+        urgencyClass = 'normal';
+      }
+
+      return {
+        ...p,
+        daysLeftText,
+        urgencyClass
+      };
+    });
+
+    if (deadlines.length === 0) {
+      el.upcomingDeadlinesList.innerHTML = '<div class="empty-state" style="padding: 20px; font-size: 11px;">No upcoming deadlines.</div>';
+      return;
+    }
+
+    el.upcomingDeadlinesList.innerHTML = deadlines.map(d => `
+      <div class="deadline-card glass-panel" style="border-left: 3px solid ${d.urgencyClass === 'urgent' ? 'var(--accent-red)' : (d.urgencyClass === 'soon' ? '#e67e22' : '#3498db')};">
+        <div class="deadline-info">
+          <div class="deadline-project">${d.projectName}</div>
+          <div class="deadline-client">${d.clientName}</div>
+        </div>
+        <div class="deadline-days ${d.urgencyClass}">${d.daysLeftText}</div>
+      </div>
+    `).join('');
   }
 
   // Uptime timer state
@@ -500,116 +955,6 @@
         el.aiUptime.textContent = `${hrs}:${mins}:${secs}`;
       }
     }, 1000);
-  }
-
-  function renderAIStatus(state) {
-    // Update queue depth from pending production projects
-    let queueDepth = 0;
-    state.clients.forEach(c => {
-      queueDepth += c.activeProjects.filter(p => p.status === 'Pending Manual Production').length;
-    });
-    if (el.aiQueueDepth) {
-      el.aiQueueDepth.textContent = `${queueDepth} pending`;
-    }
-  }
-
-  function renderPendingApprovals(state) {
-    if (!el.pendingApprovalsList) return;
-
-    const approvals = [];
-    state.clients.forEach(c => {
-      c.activeProjects.forEach(p => {
-        if (p.status === 'Pending Approval') {
-          approvals.push({
-            projectName: p.name,
-            clientName: c.name,
-            phone: c.phone,
-            projectId: p.id,
-            daysWaiting: Math.floor(Math.random() * 5) + 1 // Mock days
-          });
-        }
-      });
-    });
-
-    if (el.pendingApprovalsCount) {
-      el.pendingApprovalsCount.textContent = approvals.length.toString();
-    }
-
-    if (approvals.length === 0) {
-      el.pendingApprovalsList.innerHTML = `
-        <div class="empty-approvals">
-          <span class="check-icon">✅</span>
-          <span>No pending approvals — all clear!</span>
-        </div>
-      `;
-      return;
-    }
-
-    el.pendingApprovalsList.innerHTML = approvals.map(a => `
-      <div class="pending-approval-item">
-        <div class="pending-approval-info">
-          <div class="pending-approval-project">${a.projectName}</div>
-          <div class="pending-approval-client">${a.clientName}</div>
-        </div>
-        <div class="pending-approval-days">${a.daysWaiting}d waiting</div>
-        <button class="pending-approval-action" data-phone="${a.phone}">View</button>
-      </div>
-    `).join('');
-
-    // Attach view clicks
-    el.pendingApprovalsList.querySelectorAll('.pending-approval-action').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const phone = btn.getAttribute('data-phone');
-        appStore.updateState({ activeChatPhone: phone });
-        appStore.clearUnreads(phone);
-        handleViewSwitch('clients');
-      });
-    });
-  }
-
-  function renderWeeklySummary(state) {
-    // Compute stats from mock data
-    let completedCount = 0;
-    state.clients.forEach(c => {
-      completedCount += c.activeProjects.filter(p => p.status === 'Completed').length;
-    });
-
-    const totalPrompts = state.recentPrompts ? state.recentPrompts.length : 0;
-
-    if (el.weeklyCompleted) el.weeklyCompleted.textContent = completedCount;
-    if (el.weeklyCompletedChange) el.weeklyCompletedChange.textContent = '↑ 33%';
-    if (el.weeklyPrompts) el.weeklyPrompts.textContent = totalPrompts;
-    if (el.weeklyPromptsChange) el.weeklyPromptsChange.textContent = '↑ 25%';
-    if (el.weeklyResponseTime) el.weeklyResponseTime.textContent = '1.2s';
-    if (el.weeklyEngagement) el.weeklyEngagement.textContent = '87%';
-  }
-
-  function renderPipelineBar(state) {
-    let pending = 0, approval = 0, production = 0, completed = 0;
-
-    state.clients.forEach(c => {
-      c.activeProjects.forEach(p => {
-        if (p.status === 'Pending Manual Production' || p.status === 'Pending') pending++;
-        else if (p.status === 'Pending Approval') approval++;
-        else if (p.status === 'In Production') production++;
-        else if (p.status === 'Completed') completed++;
-      });
-    });
-
-    const total = pending + approval + production + completed;
-
-    if (el.pipelineTotal) el.pipelineTotal.textContent = `${total} total`;
-    if (el.pipeCountPending) el.pipeCountPending.textContent = pending;
-    if (el.pipeCountApproval) el.pipeCountApproval.textContent = approval;
-    if (el.pipeCountProduction) el.pipeCountProduction.textContent = production;
-    if (el.pipeCountCompleted) el.pipeCountCompleted.textContent = completed;
-
-    // Update flex proportions based on counts
-    const minFlex = 0.5;
-    if (el.pipeSegPending) el.pipeSegPending.style.flex = Math.max(pending, minFlex);
-    if (el.pipeSegApproval) el.pipeSegApproval.style.flex = Math.max(approval, minFlex);
-    if (el.pipeSegProduction) el.pipeSegProduction.style.flex = Math.max(production, minFlex);
-    if (el.pipeSegCompleted) el.pipeSegCompleted.style.flex = Math.max(completed, minFlex);
   }
 
 
@@ -1147,6 +1492,106 @@
       });
     });
 
+    // Timeframe Dropdown Toggle Options
+    if (el.chartTimeframeDropdown) {
+      el.chartTimeframeDropdown.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (el.chartTimeframeOptions) {
+          const isVisible = el.chartTimeframeOptions.style.display === 'block';
+          el.chartTimeframeOptions.style.display = isVisible ? 'none' : 'block';
+        }
+      });
+    }
+
+    // Timeframe Option Clicks
+    if (el.chartTimeframeOptions) {
+      el.chartTimeframeOptions.addEventListener('click', (e) => {
+        const option = e.target.closest('.custom-dropdown-option');
+        if (option) {
+          e.stopPropagation();
+          const value = option.getAttribute('data-value');
+          
+          // Remove selected class from others, add to this one
+          el.chartTimeframeOptions.querySelectorAll('.custom-dropdown-option').forEach(opt => {
+            opt.classList.remove('selected');
+          });
+          option.classList.add('selected');
+
+          // Hide dropdown options list
+          el.chartTimeframeOptions.style.display = 'none';
+
+          if (value === 'custom') {
+            // Open custom date picker modal/card
+            if (el.chartCustomDatePicker) el.chartCustomDatePicker.style.display = 'flex';
+          } else {
+            // Hide custom picker if open
+            if (el.chartCustomDatePicker) el.chartCustomDatePicker.style.display = 'none';
+            
+            // Set active timeframe and label
+            activeTimeframe = value;
+            if (el.chartTimeframeSelected) {
+              el.chartTimeframeSelected.textContent = option.textContent;
+            }
+            
+            // Render dashboard
+            renderDashboard(appStore.getState());
+          }
+        }
+      });
+    }
+
+    // Close timeframe dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+      if (el.chartTimeframeOptions && el.chartTimeframeDropdown && !el.chartTimeframeDropdown.contains(e.target)) {
+        el.chartTimeframeOptions.style.display = 'none';
+      }
+    });
+
+    // Custom Date Range Cancel Button Click
+    if (el.chartCustomCancelBtn) {
+      el.chartCustomCancelBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (el.chartCustomDatePicker) el.chartCustomDatePicker.style.display = 'none';
+      });
+    }
+
+    // Custom Date Range Apply Button Click
+    if (el.chartCustomApplyBtn) {
+      el.chartCustomApplyBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const startVal = el.chartCustomStart.value;
+        const endVal = el.chartCustomEnd.value;
+        
+        if (startVal && endVal) {
+          if (new Date(startVal) > new Date(endVal)) {
+            alert('Start Date cannot be after End Date!');
+            return;
+          }
+          
+          chartStartDateVal = startVal;
+          chartEndDateVal = endVal;
+          activeTimeframe = 'custom';
+          
+          // Update trigger label
+          const formatDate = (dateStr) => {
+            const d = new Date(dateStr);
+            const m = String(d.getMonth() + 1).padStart(2, '0');
+            const day = String(d.getDate()).padStart(2, '0');
+            return `${m}/${day}`;
+          };
+          if (el.chartTimeframeSelected) {
+            el.chartTimeframeSelected.textContent = `${formatDate(startVal)} - ${formatDate(endVal)}`;
+          }
+
+          // Hide calendar picker
+          if (el.chartCustomDatePicker) el.chartCustomDatePicker.style.display = 'none';
+
+          // Render dashboard
+          renderDashboard(appStore.getState());
+        }
+      });
+    }
+
     // Stats cards click navigation
     if (el.statCardClients) {
       el.statCardClients.addEventListener('click', () => {
@@ -1411,8 +1856,11 @@
       if (q.includes('starbucks')) {
         return getClientProjectStatus('starbucks', 'Starbucks');
       }
-      if (q.includes('burger') || q.includes('local burger')) {
-        return getClientProjectStatus('burger', 'Local Burger');
+      if (q.includes('airtel')) {
+        return getClientProjectStatus('airtel', 'Airtel');
+      }
+      if (q.includes('zomato')) {
+        return getClientProjectStatus('zomato', 'Zomato');
       }
       if (q.includes('list') || q.includes('all project') || q.includes('active project') || q.includes('every project')) {
         let response = 'Active dashboard projects list:\n';
