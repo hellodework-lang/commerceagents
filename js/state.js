@@ -6,7 +6,7 @@
       id: "nike-india",
       name: "Nike India",
       phone: "+91 98765 43210",
-      avatar: `<svg class="icon-svg" viewBox="0 0 24 24" style="stroke: #ff2233; width: 22px; height: 22px;"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>`,
+      avatar: `<div class="client-logo-avatar" style="background: #111; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;"><svg viewBox="0 0 24 24" fill="#fff" style="width: 60%; height: 60%;"><path d="M21.055 3.32 C 19.344 4.887 15.344 8.785 11.238 12.39 C 9.388 14.015 7.152 15.535 5.094 16.316 C 4.098 16.695 3.129 16.89 2.215 16.89 C 1.23 16.89 0.707 16.484 0.707 15.72 C 0.707 14.281 2.133 11.082 4.496 6.89 C 4.906 6.16 5.371 5.992 5.727 6.332 C 5.922 6.516 5.977 6.85 5.867 7.277 C 5.586 8.355 5.176 9.871 4.707 11.277 C 4.566 11.699 4.863 11.895 5.254 11.84 C 6.559 11.66 8.738 10.742 11.285 9.07 C 14.887 6.707 18.734 3.75 20.355 2.5 C 20.762 2.188 21.055 2.367 21.055 2.87 C 21.055 2.996 21.055 3.125 21.055 3.32 Z"/></svg></div>`,
       guidelines: {
         brandColors: ["#E4002B", "#000000", "#FFFFFF"],
         brandFonts: ["Futura Bold", "Helvetica Neue"],
@@ -16,7 +16,9 @@
       activeProjects: [
         { id: "proj-1", name: "Air Max Pulse launch", status: "In Production", category: "Poster Design", description: "Design high-energy promotional posters for the Air Max Pulse launch, incorporating bright red neon trails and motion-blurred runner silhouettes." },
         { id: "proj-2", name: "Monsoon Runners social", status: "Pending Approval", category: "Social Media Campaign", description: "Social campaign focused on urban running in heavy rain. Requirements: overcast mood, wet asphalt reflection, and vibrant overlay details." },
-        { id: "proj-comp-1", name: "Pegasus 40 promotion", status: "Completed", category: "Poster Design", description: "Design promotional materials for Pegasus 40 launch." }
+        { id: "proj-comp-1", name: "Pegasus 40 promotion", status: "Completed", category: "Poster Design", description: "Design promotional materials for Pegasus 40 launch." },
+        { id: "proj-nike-3", name: "Pegasus Trail running campaign", status: "Completed", category: "Poster Design", description: "Design promotional materials for Pegasus Trail running shoes." },
+        { id: "proj-nike-4", name: "Alphafly 3 launch event", status: "Completed", category: "Poster Design", description: "Marketing materials for the Alphafly 3 launch." }
       ],
       promptHistory: [
         {
@@ -45,7 +47,7 @@
       id: "starbucks-tn",
       name: "Starbucks Tamil Nadu",
       phone: "+91 91234 56789",
-      avatar: `<svg class="icon-svg" viewBox="0 0 24 24" style="stroke: #2ecc71; width: 22px; height: 22px;"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>`,
+      avatar: `<div class="client-logo-avatar" style="background: #00704A; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;"><svg viewBox="0 0 100 100" fill="#fff" style="width: 65%; height: 65%;"><circle cx="50" cy="50" r="48" fill="#00704a"/><circle cx="50" cy="50" r="40" fill="none" stroke="#fff" stroke-width="4"/><path d="M50 32 L53 25 L50 22 L47 25 Z" fill="#fff"/><path d="M42 29 L45 26 L43 23 Z" fill="#fff"/><path d="M58 29 L55 26 L57 23 Z" fill="#fff"/><circle cx="50" cy="35" r="4" fill="#fff"/><path d="M50 40 C43 40 40 48 40 55 C40 62 48 68 50 68 C52 68 60 62 60 55 C60 48 57 40 50 40 Z" fill="#fff"/><circle cx="50" cy="48" r="8" fill="#00704a"/><circle cx="47" cy="46" r="1.5" fill="#fff"/><circle cx="53" cy="46" r="1.5" fill="#fff"/><path d="M48 51 Q50 53 52 51" stroke="#fff" stroke-width="1.5" fill="none"/><path d="M22 50 L24 47 L21 45 L24 43 L22 40 L26 43 L29 40 L28 43 L31 45 L28 47 Z" fill="#fff"/><path d="M78 50 L76 47 L79 45 L76 43 L78 40 L74 43 L71 40 L72 43 L69 45 L72 47 Z" fill="#fff"/></svg></div>`,
       guidelines: {
         brandColors: ["#00704A", "#27251F", "#F2F0EB"],
         brandFonts: ["Sodo Sans", "Lander"],
@@ -54,7 +56,8 @@
       creativeDirection: "Warm sunlight filters, cozy aesthetic setups, organic textures, elegant flatlays, minimalist typography, green-tinted shadows.",
       activeProjects: [
         { id: "proj-3", name: "Filter Coffee Fusion campaign", status: "In Production", category: "Social Media Banner", description: "Promoting South Indian Filter Coffee with warm wooden textures, cozy morning sunlight, scattered coffee beans, and traditional brass tumblers." },
-        { id: "proj-comp-2", name: "Summer Drink campaign", status: "Completed", category: "Social Media Banner", description: "Completed social assets for summer season drinks." }
+        { id: "proj-comp-2", name: "Summer Drink campaign", status: "Completed", category: "Social Media Banner", description: "Completed social assets for summer season drinks." },
+        { id: "proj-sb-3", name: "Frappuccino Fest 2026", status: "Completed", category: "Social Media Banner", description: "Campaign assets for the annual Frappuccino festival." }
       ],
       promptHistory: [
         {
@@ -81,19 +84,46 @@
       ]
     },
     {
-      id: "local-burger",
-      name: "The Local Burger Co.",
+      id: "airtel-campaign",
+      name: "Airtel Campaign",
       phone: "+91 88888 77777",
-      avatar: `<svg class="icon-svg" viewBox="0 0 24 24" style="stroke: #f1c40f; width: 22px; height: 22px;"><path d="M3 11h18a1 1 0 0 1 0 2H3a1 1 0 0 1 0-2z"></path><path d="M12 2C6.48 2 2 6.48 2 12h20c0-5.52-4.48-10-10-10z"></path><path d="M2 14a3 3 0 0 0 3 3h14a3 3 0 0 0 3-3H2z"></path><path d="M4 18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2H4z"></path></svg>`,
+      avatar: `<div class="client-logo-avatar" style="background: #111; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; border: 1px solid rgba(255,255,255,0.05);"><svg viewBox="0 0 100 100" fill="none" stroke="#ff2233" stroke-width="12" stroke-linecap="round" style="width: 55%; height: 55%;"><path d="M 30 70 C 30 50, 45 35, 60 35 C 75 35, 75 50, 75 60 C 75 70, 60 70, 50 70 C 40 70, 35 60, 35 50 C 35 30, 50 20, 70 20"/></svg></div>`,
       guidelines: {
-        brandColors: ["#FFB000", "#D00000", "#1C1C1C"],
-        brandFonts: ["Druk Bold", "Inter Black"],
-        brandTone: "Bold, Funky, Edgy, Indulgent",
+        brandColors: ["#E4002B", "#000000", "#FFFFFF"],
+        brandFonts: ["Airtel Sans", "Helvetica Neue"],
+        brandTone: "Fast, Reliable, Energetic, Modern",
       },
-      creativeDirection: "Saturated popping colors, close-up macro shots of melting cheese, retro pop-art style vectors, neon signage backgrounds, street-style poster design.",
+      creativeDirection: "Dynamic light streaks, high-tech networks, neon red accents, seamless futuristic data streams, speed visual overlays.",
       activeProjects: [
-        { id: "proj-4", name: "Ghost Pepper Burger launch", status: "Pending Manual Production", category: "Poster Design", description: "Promote the ultra-spicy Ghost Pepper Cheese Burger. Focuses on macro cheese melting, dipping chili sauce, steam effects, and flashing retro neon signs." },
-        { id: "proj-comp-3", name: "Grand Opening banner", status: "Completed", category: "Poster Design", description: "Completed storefront banner design." }
+        { id: "proj-airtel-1", name: "5G Plus Unlimited launch", status: "In Production", category: "Poster Design", description: "Launch promotions for Airtel 5G Plus unlimited plans in urban regions." },
+        { id: "proj-airtel-2", name: "Airtel Black family plans", status: "Pending Approval", category: "Poster Design", description: "Promotional campaign showcasing unified family telecom plans." }
+      ],
+      promptHistory: [
+        {
+          id: "ph-airtel-1",
+          date: "2026-05-31",
+          category: "Midjourney",
+          userMessage: "Airtel 5G speed light trails hyper detailed dark background",
+          generatedPrompt: "Futuristic city skyline at night with high-speed light trails in red and white representing 5G connectivity, dark moody lighting, cinematic perspective, highly detailed --ar 16:9 --v 6.0",
+          status: "Completed",
+          mediaType: "image",
+          media: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800"
+        }
+      ]
+    },
+    {
+      id: "zomato-local",
+      name: "Zomato Local",
+      phone: "+91 77777 66666",
+      avatar: `<div class="client-logo-avatar" style="background: #cb202d; font-family: 'Outfit', 'Inter', sans-serif; font-weight: 900; color: #fff; font-size: 0.6em; letter-spacing: -0.2px; text-transform: lowercase; user-select: none; display: flex; align-items: center; justify-content: center; width: 100%; height: 100%;">zomato</div>`,
+      guidelines: {
+        brandColors: ["#E23744", "#2D2D2D", "#FFFFFF"],
+        brandFonts: ["Metropolis", "System UI"],
+        brandTone: "Friendly, Witty, Local, Mouthwatering",
+      },
+      creativeDirection: "Rich food closeups, melting cheese details, vibrant red backdrops, bold fun text tags, steam effects, street style mockups.",
+      activeProjects: [
+        { id: "proj-4", name: "Ghost Pepper Burger launch", status: "Pending Manual Production", category: "Poster Design", description: "Promote the ultra-spicy Ghost Pepper Cheese Burger. Focuses on macro cheese melting, dipping chili sauce, steam effects, and flashing retro neon signs." }
       ],
       promptHistory: [
         {
@@ -185,7 +215,17 @@
       promptCategory: "Video Motion Prompt"
     },
     {
-      clientId: "local-burger",
+      clientId: "airtel-campaign",
+      userMessage: "Bro Airtel 5G campaign speed trails red neon",
+      language: "Tanglish",
+      msgType: "text",
+      generatedPrompt: "Futuristic city skyline at night with high-speed light trails in red and white representing 5G connectivity, dark moody lighting, cinematic perspective, highly detailed --ar 16:9 --v 6.0",
+      category: "Midjourney",
+      projectTitle: "5G Plus Unlimited launch",
+      promptCategory: "Creative Image Prompt"
+    },
+    {
+      clientId: "zomato-local",
       userMessage: "Special weekend discount social media post, spicy chicken burger neon theme",
       language: "Tanglish",
       msgType: "text",
@@ -195,7 +235,7 @@
       promptCategory: "Creative Image Prompt"
     },
     {
-      clientId: "local-burger",
+      clientId: "zomato-local",
       userMessage: "Cheesy burger close-up reference for pop-art poster design",
       language: "English (Image)",
       msgType: "image",
@@ -222,6 +262,11 @@
       { sender: "client", text: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", time: "10:10 AM", type: "audio", duration: "0:12" }
     ],
     "+91 88888 77777": [
+      { sender: "client", text: "Hi, Airtel Campaign assets ready. Moving to 5G launch soon.", time: "11:05 AM", type: "text" },
+      { sender: "head", text: "Great, share the references so we can start generating prompts.", time: "11:07 AM", type: "text" },
+      { sender: "client", text: "Airtel speedrun prompt ready pannunga, speed lines red overlay lines podunga.", time: "11:10 AM", type: "text" }
+    ],
+    "+91 77777 66666": [
       { sender: "client", text: "Bro, check this video mockup from last campaign.", time: "11:15 AM", type: "text" },
       { sender: "client", text: "https://assets.mixkit.co/videos/preview/mixkit-pouring-sauce-on-a-hamburger-40057-large.mp4", time: "11:16 AM", type: "video" },
       { sender: "client", text: "Weekend spicy special poster redesign venum, check template.", time: "11:18 AM", type: "text" }
@@ -240,7 +285,8 @@
         unreadCounts: {
           "+91 98765 43210": 0,
           "+91 91234 56789": 0,
-          "+91 88888 77777": 0
+          "+91 88888 77777": 0,
+          "+91 77777 66666": 0
         },
         aiGenerationState: {
           isParsing: false,
