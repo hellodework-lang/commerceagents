@@ -256,7 +256,7 @@
       const projLabel = clientProjectsCount === 1 ? '1 Active Project' : `${clientProjectsCount} Active Projects`;
 
       return `
-        <div class="health-client-row" style="cursor: pointer;" data-phone="${client.phone}">
+        <div class="health-client-row" data-phone="${client.phone}">
           <div class="health-client-avatar" style="width: 36px; height: 36px; border-radius: 8px; overflow: hidden; display: flex; align-items: center; justify-content: center;">
             ${client.avatar}
           </div>
@@ -307,15 +307,7 @@
     if (el.healthClientsList) {
       el.healthClientsList.innerHTML = healthClientsHtml;
       
-      // Attach click listeners to client health rows to open their database view
-      el.healthClientsList.querySelectorAll('.health-client-row').forEach(row => {
-        row.addEventListener('click', () => {
-          const phone = row.getAttribute('data-phone');
-          appStore.updateState({ activeChatPhone: phone });
-          appStore.clearUnreads(phone);
-          handleViewSwitch('clients');
-        });
-      });
+      // Client health rows are now informational and non-clickable as requested
     }
 
     // 5. Trigger other dashboard widgets
@@ -881,6 +873,65 @@
     }
   }
 
+  // Upcoming deadlines countdown state
+  let deadlineInterval = null;
+
+  function tickCountdowns() {
+    if (!el.upcomingDeadlinesList) return;
+    
+    // Only run if the active view is dashboard
+    if (appStore.getState().activeView !== 'dashboard') return;
+
+    const cards = el.upcomingDeadlinesList.querySelectorAll('.deadline-card');
+    if (cards.length === 0) {
+      if (deadlineInterval) {
+        clearInterval(deadlineInterval);
+        deadlineInterval = null;
+      }
+      return;
+    }
+
+    const now = Date.now();
+    cards.forEach(card => {
+      const dueDateVal = card.getAttribute('data-due-date');
+      const badge = card.querySelector('[data-role="countdown-badge"]');
+      if (!badge || !dueDateVal) return;
+
+      const dueDate = parseInt(dueDateVal, 10);
+      const diff = dueDate - now;
+
+      if (diff <= 0) {
+        badge.textContent = 'Overdue';
+        badge.className = 'deadline-days urgent';
+      } else {
+        const secs = Math.floor(diff / 1000) % 60;
+        const mins = Math.floor(diff / (1000 * 60)) % 60;
+        const hours = Math.floor(diff / (1000 * 60 * 60)) % 24;
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+        let text = '';
+        if (days > 0) {
+          text = `${days}d ${hours}h ${mins}m ${secs}s`;
+        } else if (hours > 0) {
+          text = `${hours}h ${mins}m ${secs}s`;
+        } else {
+          text = `${mins}m ${secs}s`;
+        }
+
+        badge.textContent = text;
+
+        // Set urgency styles
+        if (days === 0) {
+          badge.className = 'deadline-days urgent';
+        } else if (days >= 1 && days <= 2) {
+          badge.className = 'deadline-days soon';
+        } else {
+          badge.className = 'deadline-days normal';
+        }
+      }
+    });
+  }
+
   function renderUpcomingDeadlines(state) {
     if (!el.upcomingDeadlinesList) return;
 
@@ -888,56 +939,93 @@
     state.clients.forEach(c => {
       c.activeProjects.forEach(p => {
         if (p.status !== 'Completed') {
+          // Assign stable dueDate if not present
+          if (!p.dueDate) {
+            let daysOffset = 4;
+            if (p.id === 'proj-1') daysOffset = 1;
+            else if (p.id === 'proj-2') daysOffset = 3;
+            else if (p.id === 'proj-3') daysOffset = 5;
+            else if (p.id === 'proj-airtel-1') daysOffset = 6;
+            else if (p.id === 'proj-airtel-2') daysOffset = 7;
+            else if (p.id === 'proj-4') daysOffset = 8;
+            else {
+              daysOffset = 4;
+            }
+            
+            const date = new Date();
+            date.setDate(date.getDate() + daysOffset);
+            date.setHours(18, 0, 0, 0); // End of day 6:00 PM
+            p.dueDate = date.getTime();
+          }
+
           activeProjects.push({
             projectName: p.name,
             clientName: c.name,
             status: p.status,
-            id: p.id
+            id: p.id,
+            phone: c.phone,
+            dueDate: p.dueDate
           });
         }
       });
     });
 
-    // Dynamically assign relative deadlines
-    const deadlines = activeProjects.map((p, index) => {
-      let daysLeftText = '';
-      let urgencyClass = '';
-
-      if (index === 0) {
-        daysLeftText = 'Tomorrow';
-        urgencyClass = 'urgent';
-      } else if (index === 1) {
-        daysLeftText = '3 Days Left';
-        urgencyClass = 'soon';
-      } else if (index === 2) {
-        daysLeftText = '5 Days Left';
-        urgencyClass = 'normal';
-      } else {
-        daysLeftText = `${index + 3} Days Left`;
-        urgencyClass = 'normal';
-      }
-
-      return {
-        ...p,
-        daysLeftText,
-        urgencyClass
-      };
-    });
-
-    if (deadlines.length === 0) {
+    if (activeProjects.length === 0) {
       el.upcomingDeadlinesList.innerHTML = '<div class="empty-state" style="padding: 20px; font-size: 11px;">No upcoming deadlines.</div>';
+      if (deadlineInterval) {
+        clearInterval(deadlineInterval);
+        deadlineInterval = null;
+      }
       return;
     }
 
-    el.upcomingDeadlinesList.innerHTML = deadlines.map(d => `
-      <div class="deadline-card glass-panel" style="border-left: 3px solid ${d.urgencyClass === 'urgent' ? 'var(--accent-red)' : (d.urgencyClass === 'soon' ? '#e67e22' : '#3498db')};">
+    el.upcomingDeadlinesList.innerHTML = activeProjects.map(d => `
+      <div class="deadline-card glass-panel" style="cursor: pointer;" data-phone="${d.phone}" data-project-id="${d.id}" data-due-date="${d.dueDate}">
         <div class="deadline-info">
           <div class="deadline-project">${d.projectName}</div>
           <div class="deadline-client">${d.clientName}</div>
         </div>
-        <div class="deadline-days ${d.urgencyClass}">${d.daysLeftText}</div>
+        <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+          <div class="deadline-days" data-role="countdown-badge">--</div>
+          <button class="deadline-done-btn" title="Mark as Completed">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="width: 10px; height: 10px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </button>
+        </div>
       </div>
     `).join('');
+
+    // Attach click listeners to deadline cards
+    el.upcomingDeadlinesList.querySelectorAll('.deadline-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        const doneBtn = e.target.closest('.deadline-done-btn');
+        if (doneBtn) {
+          e.stopPropagation();
+          const phone = card.getAttribute('data-phone');
+          const projId = card.getAttribute('data-project-id');
+          
+          // Play success chime sound if simulator available
+          if (window.DashboardSimulator && typeof window.DashboardSimulator.playSynthSound === 'function') {
+            window.DashboardSimulator.playSynthSound('ai-success');
+          }
+          
+          // Update status in store
+          appStore.updateProjectStatus(phone, projId, 'Completed');
+          return;
+        }
+
+        // Navigate to the client view
+        const phone = card.getAttribute('data-phone');
+        appStore.updateState({ activeChatPhone: phone });
+        appStore.clearUnreads(phone);
+        handleViewSwitch('clients');
+      });
+    });
+
+    // Start ticking countdowns
+    tickCountdowns();
+    if (!deadlineInterval) {
+      deadlineInterval = setInterval(tickCountdowns, 1000);
+    }
   }
 
   // Uptime timer state
@@ -1801,12 +1889,16 @@
       const appContainer = document.querySelector('.app-container');
       if (appContainer) {
         appContainer.style.display = 'flex';
+        // Trigger cinematic entries for widgets and header
+        setTimeout(() => {
+          appContainer.classList.add('entry-start');
+        }, 50);
       }
       // Once faded, render first views
       setTimeout(() => {
         el.splash.style.display = 'none';
       }, 600);
-    }, 7500);
+    }, 5000);
   }
 
   // ----------------------------------------------------
