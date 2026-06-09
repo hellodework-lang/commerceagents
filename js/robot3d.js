@@ -1,4 +1,5 @@
 (function() {
+  return; // Disable 3D robot scene logic completely
   // Interactive 3D Robot Integration using Three.js
   // Renders a high-fidelity glowing red robot logo in real 3D
   // Supports fallbacks if WebGL is unavailable
